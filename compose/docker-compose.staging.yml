@@ -350,6 +350,10 @@ services:
       - "443:443"
     volumes:
       - ../nginx/conf.d/staging.conf:/etc/nginx/conf.d/default.conf:ro
+      # stage.algolab.me — proxies to the algo-preview-* stack over algo-edge.
+      # Mounted as an explicit file (not the whole conf.d dir) so the unused
+      # legacy algolab.conf isn't loaded alongside it.
+      - ../nginx/conf.d/preview.conf:/etc/nginx/conf.d/preview.conf:ro
       - ../../certbot/www:/var/www/certbot:ro
       - /etc/letsencrypt:/etc/letsencrypt:ro
     depends_on:
@@ -361,6 +365,9 @@ services:
     restart: unless-stopped
     networks:
       - algo-internal
+      # Shared network with the preview stack. Only nginx crosses over —
+      # the two stacks' app containers and databases stay isolated.
+      - algo-edge
 
 # ==============================================================================
 volumes:
@@ -377,3 +384,7 @@ networks:
   algo-internal:
     driver: bridge
     name: algo-staging-network
+  # Created out-of-band (`docker network create algo-edge`) because it is
+  # shared with the independent algo-preview compose project.
+  algo-edge:
+    external: true

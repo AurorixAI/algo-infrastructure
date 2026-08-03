@@ -1,0 +1,379 @@
+# ==============================================================================
+# ALGO — Staging Environment
+# ==============================================================================
+# Mirrors production: no dev defaults, DEBUG=false, Nginx included.
+# Services talk on algo-internal (not exposed); only Nginx is public.
+#
+# SETUP:
+#   cp .env.example .env.staging
+#   # fill in .env.staging — every REQUIRED field must be set
+#   make staging-up
+#
+# ENDPOINTS (via Nginx on port 80):
+#   Frontend:    http://<host>/
+#   Auth API:    http://<host>/api/v1/auth/
+#   Diag API:    http://<host>/api/v1/diagnostic/
+#   Exam API:    http://<host>/api/v1/exam/
+#   Content API: http://<host>/api/v1/content/
+# ==============================================================================
+
+name: algo-staging
+
+services:
+
+  # ── Databases ──────────────────────────────────────────────────────────────
+
+  auth-db:
+    image: postgres:15-alpine
+    container_name: algo-staging-auth-db
+    environment:
+      POSTGRES_USER: algo
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_DB: algo_auth
+    volumes:
+      - auth-db-data:/var/lib/postgresql/data
+    # Loopback-only — reachable solely via an SSH tunnel from the host itself,
+    # never from the public internet. See docs/DB_ACCESS.md.
+    ports:
+      - "127.0.0.1:5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U algo -d algo_auth"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - algo-internal
+
+  diagnostic-db:
+    image: postgres:15-alpine
+    container_name: algo-staging-diagnostic-db
+    environment:
+      POSTGRES_USER: algo
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_DB: algo_diagnostic
+    volumes:
+      - diagnostic-db-data:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U algo -d algo_diagnostic"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - algo-internal
+
+  exam-db:
+    image: postgres:15-alpine
+    container_name: algo-staging-exam-db
+    environment:
+      POSTGRES_USER: algo
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_DB: algo_exam
+    volumes:
+      - exam-db-data:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:5435:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U algo -d algo_exam"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - algo-internal
+
+  content-db:
+    image: postgres:15-alpine
+    container_name: algo-staging-content-db
+    environment:
+      POSTGRES_USER: algo
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_DB: algo_content
+    volumes:
+      - content-db-data:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:5434:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U algo -d algo_content"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - algo-internal
+
+  # ── Redis instances ────────────────────────────────────────────────────────
+
+  auth-redis:
+    image: redis:7-alpine
+    container_name: algo-staging-auth-redis
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - auth-redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - algo-internal
+
+  diagnostic-redis:
+    image: redis:7-alpine
+    container_name: algo-staging-diagnostic-redis
+    command: redis-server --appendonly yes --maxmemory 128mb --maxmemory-policy allkeys-lru
+    volumes:
+      - diagnostic-redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - algo-internal
+
+  exam-redis:
+    image: redis:7-alpine
+    container_name: algo-staging-exam-redis
+    command: redis-server --appendonly yes --maxmemory 128mb --maxmemory-policy allkeys-lru
+    volumes:
+      - exam-redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - algo-internal
+
+  content-redis:
+    image: redis:7-alpine
+    container_name: algo-staging-content-redis
+    command: redis-server --appendonly yes --maxmemory 128mb --maxmemory-policy allkeys-lru
+    volumes:
+      - content-redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - algo-internal
+
+  # ── Microservices ──────────────────────────────────────────────────────────
+
+  auth-service:
+    build:
+      context: ../../auth-services
+      dockerfile: Dockerfile
+      target: production
+    container_name: algo-staging-auth
+    environment:
+      - DATABASE_URL=postgresql+psycopg2://algo:${POSTGRES_PASSWORD:?required}@auth-db:5432/algo_auth
+      - REDIS_URL=redis://auth-redis:6379/0
+      - APP_ENV=staging
+      - DEBUG=false
+      - SECRET_KEY=${SECRET_KEY:?SECRET_KEY is required}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - MATHPIX_APP_ID=${MATHPIX_APP_ID:-}
+      - MATHPIX_APP_KEY=${MATHPIX_APP_KEY:-}
+      - SENTRY_DSN=${SENTRY_DSN:-}
+      - EXAM_SERVICE_URL=http://exam-service:8003/api/v1
+      - CORS_ORIGINS=${CORS_ORIGINS:-["http://localhost","http://localhost:3000"]}
+    depends_on:
+      auth-db:
+        condition: service_healthy
+      auth-redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+    networks:
+      - algo-internal
+
+  diagnostic-service:
+    build:
+      context: ../../diagnostics-service
+      dockerfile: Dockerfile
+    container_name: algo-staging-diagnostic
+    environment:
+      DATABASE_URL: postgresql://algo:${POSTGRES_PASSWORD:?required}@diagnostic-db:5432/algo_diagnostic
+      REDIS_URL: redis://diagnostic-redis:6379
+      APP_ENV: staging
+      DEBUG: "false"
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      CORS_ORIGINS: '["http://localhost","http://localhost:3000"]'
+      AUTH_SERVICE_URL: http://auth-service:8000
+      CONTENT_SERVICE_URL: http://content-service:8004
+      WARMUP_ITEMS: ${WARMUP_ITEMS:-3}
+      MAX_ITEMS: ${MAX_ITEMS:-25}
+      SE_THRESHOLD: ${SE_THRESHOLD:-0.30}
+    depends_on:
+      diagnostic-db:
+        condition: service_healthy
+      diagnostic-redis:
+        condition: service_healthy
+      auth-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    restart: unless-stopped
+    networks:
+      - algo-internal
+
+  exam-service:
+    build:
+      context: ../../exam-service
+      dockerfile: Dockerfile
+    container_name: algo-staging-exam
+    environment:
+      DATABASE_URL: postgresql://algo:${POSTGRES_PASSWORD:?required}@exam-db:5432/algo_exam
+      REDIS_URL: redis://exam-redis:6379
+      APP_ENV: staging
+      DEBUG: "false"
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-2.5-flash}
+      CONTENT_SERVICE_URL: http://content-service:8004
+      MAX_TASKS_PER_EXAM: ${MAX_TASKS_PER_EXAM:-50}
+      MAX_VARIANTS: ${MAX_VARIANTS:-30}
+      DEFAULT_TIME_MINUTES: ${DEFAULT_TIME_MINUTES:-45}
+    depends_on:
+      exam-db:
+        condition: service_healthy
+      exam-redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8003/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    restart: unless-stopped
+    networks:
+      - algo-internal
+
+  content-service:
+    build:
+      context: ../../content-service
+      dockerfile: Dockerfile
+    container_name: algo-staging-content
+    environment:
+      DATABASE_URL: postgresql://algo:${POSTGRES_PASSWORD:?required}@content-db:5432/algo_content
+      REDIS_URL: redis://content-redis:6379
+      APP_ENV: staging
+      DEBUG: "false"
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      VERTEX_PROJECT_ID: ${VERTEX_PROJECT_ID:-}
+      VERTEX_LOCATION: ${VERTEX_LOCATION:-global}
+      GOOGLE_CREDENTIALS_PATH: ${GOOGLE_CREDENTIALS_PATH:-}
+      MATHPIX_APP_ID: ${MATHPIX_APP_ID:-}
+      MATHPIX_APP_KEY: ${MATHPIX_APP_KEY:-}
+    depends_on:
+      content-db:
+        condition: service_healthy
+      content-redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8004/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    restart: unless-stopped
+    networks:
+      - algo-internal
+
+  # ── Frontend ───────────────────────────────────────────────────────────────
+
+  frontend:
+    build:
+      context: ../../algo-front
+      dockerfile: Dockerfile
+      args:
+        # These are baked into the Next.js bundle at build time.
+        # For staging, point to the same host the user accesses (via Nginx path).
+        NEXT_PUBLIC_AUTH_API_URL: ${NEXT_PUBLIC_AUTH_API_URL:?NEXT_PUBLIC_AUTH_API_URL is required}
+        NEXT_PUBLIC_EXAM_API_URL: ${NEXT_PUBLIC_EXAM_API_URL:?NEXT_PUBLIC_EXAM_API_URL is required}
+        NEXT_PUBLIC_DIAG_API_URL: ${NEXT_PUBLIC_DIAG_API_URL:?NEXT_PUBLIC_DIAG_API_URL is required}
+    container_name: algo-staging-frontend
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      auth-service:
+        condition: service_healthy
+      diagnostic-service:
+        condition: service_healthy
+      exam-service:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - algo-internal
+
+  # ── Landing Page ───────────────────────────────────────────────────────────
+
+  landing:
+    build:
+      context: ../../algo-landing
+      dockerfile: Dockerfile
+    container_name: algo-staging-landing
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - CONTACT_EMAIL=${CONTACT_EMAIL:-}
+      - RESEND_API_KEY=${RESEND_API_KEY:-}
+    restart: unless-stopped
+    networks:
+      - algo-internal
+
+  # ── Nginx reverse proxy ────────────────────────────────────────────────────
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: algo-staging-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ../nginx/conf.d/staging.conf:/etc/nginx/conf.d/default.conf:ro
+      - ../../certbot/www:/var/www/certbot:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+    depends_on:
+      - frontend
+      - auth-service
+      - diagnostic-service
+      - exam-service
+      - content-service
+    restart: unless-stopped
+    networks:
+      - algo-internal
+
+# ==============================================================================
+volumes:
+  auth-db-data:
+  diagnostic-db-data:
+  exam-db-data:
+  content-db-data:
+  auth-redis-data:
+  diagnostic-redis-data:
+  exam-redis-data:
+  content-redis-data:
+
+networks:
+  algo-internal:
+    driver: bridge
+    name: algo-staging-network

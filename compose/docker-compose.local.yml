@@ -1,0 +1,431 @@
+# ==============================================================================
+# ALGO — Unified Local Development Environment
+# ==============================================================================
+#
+# Runs all ALGO microservices + databases + caches from a single place.
+# Uses Docker Compose profiles for flexible partial startup.
+#
+# USAGE:
+#   make up                          # Start default profile (backend-nocontent)
+#   make up PROFILE=full             # Start everything
+#   make up PROFILE=auth             # Start only auth-service + its db/redis
+#   make up PROFILE=backend          # All backends + databases + caches
+#   make up PROFILE=backend-nocontent# All backends except content-service
+#   make up PROFILE=db               # Databases + caches only (no app services)
+#   make up PROFILE=frontend         # Next.js frontend only
+#   make up PROFILE=landing          # Landing page only
+#   make up-build                    # Rebuild images then start
+#   make down                        # Stop all
+#   make down-v                      # Stop and wipe volumes
+#   make logs                        # Follow logs
+#   make logs-svc S=auth-service     # Follow logs for one service
+#   make ps                          # Show running containers
+#   make smoke-tests                 # Run Python smoke tests
+#   make reset                       # Full teardown + rebuild + start
+#
+# ENDPOINTS (when fully started):
+#   Auth Service:        http://localhost:8000
+#   Diagnostic Service:  http://localhost:8002
+#   Exam Service:        http://localhost:8003
+#   Content Service:     http://localhost:8004  (if content-service folder exists)
+#   Next.js Frontend:    http://localhost:3000
+#   Landing Page:        http://localhost:5001
+#
+# NOTE:
+#   content-service is excluded from `backend-nocontent` and `backend` profiles
+#   unless you have the ./content-service folder. It only runs under `content`
+#   or `full` profiles. Use backend-nocontent to skip it safely.
+#
+# ==============================================================================
+
+name: algo
+
+# ==============================================================================
+# SERVICES
+# ==============================================================================
+services:
+
+  # ============================================================================
+  # AUTH SERVICE
+  # ============================================================================
+  auth-service:
+    build:
+      context: ../../auth-services
+      dockerfile: Dockerfile
+      target: production
+    container_name: algo-auth
+    profiles: ["full", "backend", "backend-nocontent", "auth"]
+    environment:
+      - DATABASE_URL=postgresql+psycopg2://algo:algo_password@auth-db:5432/algo_auth
+      - REDIS_URL=redis://auth-redis:6379/0
+      - APP_ENV=${APP_ENV:-development}
+      - SECRET_KEY=${SECRET_KEY:-local-dev-secret-key-change-in-prod-min-32ch}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - MATHPIX_APP_ID=${MATHPIX_APP_ID:-}
+      - MATHPIX_APP_KEY=${MATHPIX_APP_KEY:-}
+      - GCP_PROJECT_ID=${GCP_PROJECT_ID:-}
+      - SENTRY_DSN=${SENTRY_DSN:-}
+      - EXAM_SERVICE_URL=http://exam-service:8003/api/v1
+      - CORS_ORIGINS=${CORS_ORIGINS:-["http://localhost:3000","http://localhost:5001"]}
+    ports:
+      - "8000:8000"
+    depends_on:
+      auth-db:
+        condition: service_healthy
+      auth-redis:
+        condition: service_healthy
+    networks:
+      - algo-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  auth-db:
+    image: postgres:15-alpine
+    container_name: algo-auth-db
+    profiles: ["full", "backend", "backend-nocontent", "auth", "db"]
+    environment:
+      POSTGRES_USER: algo
+      POSTGRES_PASSWORD: algo_password
+      POSTGRES_DB: algo_auth
+    ports:
+      - "5432:5432"
+    volumes:
+      - auth-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U algo -d algo_auth"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - algo-network
+
+  auth-redis:
+    image: redis:7-alpine
+    container_name: algo-auth-redis
+    profiles: ["full", "backend", "backend-nocontent", "auth", "db"]
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    ports:
+      - "6379:6379"
+    volumes:
+      - auth-redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - algo-network
+
+  # ============================================================================
+  # DIAGNOSTIC SERVICE
+  # ============================================================================
+  diagnostic-service:
+    build:
+      context: ../../diagnostics-service
+      dockerfile: Dockerfile
+    container_name: algo-diagnostic
+    profiles: ["full", "backend", "backend-nocontent", "diagnostic"]
+    environment:
+      DATABASE_URL: postgresql://algo:algo_password@diagnostic-db:5432/algo_diagnostic
+      REDIS_URL: redis://diagnostic-redis:6379
+      APP_ENV: ${APP_ENV:-development}
+      DEBUG: ${DEBUG:-true}
+      STANDALONE: ${STANDALONE:-true}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      CORS_ORIGINS: '["http://localhost:3000","http://localhost:8000"]'
+      AUTH_SERVICE_URL: http://auth-service:8000
+      CONTENT_SERVICE_URL: http://content-service:8004
+      WARMUP_ITEMS: ${WARMUP_ITEMS:-3}
+      MAX_ITEMS: ${MAX_ITEMS:-25}
+      SE_THRESHOLD: ${SE_THRESHOLD:-0.30}
+    depends_on:
+      diagnostic-db:
+        condition: service_healthy
+      diagnostic-redis:
+        condition: service_healthy
+    ports:
+      - "8002:8002"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    restart: unless-stopped
+    networks:
+      - algo-network
+
+  diagnostic-db:
+    image: postgres:15-alpine
+    container_name: algo-diagnostic-db
+    profiles: ["full", "backend", "backend-nocontent", "diagnostic", "db"]
+    environment:
+      POSTGRES_USER: algo
+      POSTGRES_PASSWORD: algo_password
+      POSTGRES_DB: algo_diagnostic
+    ports:
+      - "5433:5432"
+    volumes:
+      - diagnostic-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U algo -d algo_diagnostic"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - algo-network
+
+  diagnostic-redis:
+    image: redis:7-alpine
+    container_name: algo-diagnostic-redis
+    profiles: ["full", "backend", "backend-nocontent", "diagnostic", "db"]
+    command: >
+      redis-server
+      --appendonly yes
+      --maxmemory 128mb
+      --maxmemory-policy allkeys-lru
+    ports:
+      - "6380:6379"
+    volumes:
+      - diagnostic-redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - algo-network
+
+  # ============================================================================
+  # EXAM SERVICE
+  # ============================================================================
+  exam-service:
+    build:
+      context: ../../exam-service
+      dockerfile: Dockerfile
+    container_name: algo-exam
+    profiles: ["full", "backend", "backend-nocontent", "exam"]
+    environment:
+      DATABASE_URL: postgresql://algo:algo_password@exam-db:5432/algo_exam
+      REDIS_URL: redis://exam-redis:6379
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-2.5-flash}
+      APP_ENV: ${APP_ENV:-development}
+      DEBUG: ${DEBUG:-true}
+      CONTENT_SERVICE_URL: http://content-service:8004
+      MAX_TASKS_PER_EXAM: ${MAX_TASKS_PER_EXAM:-50}
+      MAX_VARIANTS: ${MAX_VARIANTS:-30}
+      DEFAULT_TIME_MINUTES: ${DEFAULT_TIME_MINUTES:-45}
+    depends_on:
+      exam-db:
+        condition: service_healthy
+      exam-redis:
+        condition: service_healthy
+    ports:
+      - "8003:8003"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8003/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    restart: unless-stopped
+    networks:
+      - algo-network
+
+  exam-db:
+    image: postgres:15-alpine
+    container_name: algo-exam-db
+    profiles: ["full", "backend", "backend-nocontent", "exam", "db"]
+    environment:
+      POSTGRES_USER: algo
+      POSTGRES_PASSWORD: algo_password
+      POSTGRES_DB: algo_exam
+    ports:
+      - "5435:5432"
+    volumes:
+      - exam-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U algo -d algo_exam"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - algo-network
+
+  exam-redis:
+    image: redis:7-alpine
+    container_name: algo-exam-redis
+    profiles: ["full", "backend", "backend-nocontent", "exam", "db"]
+    command: redis-server --appendonly yes
+    ports:
+      - "6382:6379"
+    volumes:
+      - exam-redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - algo-network
+
+  # ============================================================================
+  # CONTENT SERVICE
+  # NOTE: Only runs under 'content' or 'full' profiles.
+  #       Requires ./content-service folder to exist.
+  #       Use 'backend-nocontent' profile to skip it if the folder is absent.
+  # ============================================================================
+  content-service:
+    build:
+      context: ../../content-service
+      dockerfile: Dockerfile
+    container_name: algo-content
+    profiles: ["full", "backend", "content"]
+    environment:
+      DATABASE_URL: postgresql://algo:algo_password@content-db:5432/algo_content
+      REDIS_URL: redis://content-redis:6379
+      APP_ENV: ${APP_ENV:-development}
+      DEBUG: ${DEBUG:-true}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+    depends_on:
+      content-db:
+        condition: service_healthy
+      content-redis:
+        condition: service_healthy
+    ports:
+      - "8004:8004"
+    volumes:
+      - content-data:/app/data
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8004/api/v1/health', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    restart: unless-stopped
+    networks:
+      - algo-network
+
+  content-db:
+    image: postgres:15-alpine
+    container_name: algo-content-db
+    profiles: ["full", "backend", "content", "db"]
+    environment:
+      POSTGRES_USER: algo
+      POSTGRES_PASSWORD: algo_password
+      POSTGRES_DB: algo_content
+    ports:
+      - "5434:5432"
+    volumes:
+      - content-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U algo -d algo_content"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - algo-network
+
+  content-redis:
+    image: redis:7-alpine
+    container_name: algo-content-redis
+    profiles: ["full", "backend", "content", "db"]
+    command: redis-server --appendonly yes --maxmemory 128mb --maxmemory-policy allkeys-lru
+    ports:
+      - "6384:6379"
+    volumes:
+      - content-redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - algo-network
+
+  # ============================================================================
+  # NEXT.JS FRONTEND
+  # ============================================================================
+  frontend:
+    build:
+      context: ../../algo-front
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_AUTH_API_URL: ${NEXT_PUBLIC_AUTH_API_URL:-http://localhost:8000}
+        NEXT_PUBLIC_EXAM_API_URL: ${NEXT_PUBLIC_EXAM_API_URL:-http://localhost:8003}
+        NEXT_PUBLIC_DIAG_API_URL: ${NEXT_PUBLIC_DIAG_API_URL:-http://localhost:8002}
+    container_name: algo-frontend
+    profiles: ["full", "backend", "backend-nocontent", "frontend"]
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_AUTH_API_URL=${NEXT_PUBLIC_AUTH_API_URL:-http://localhost:8000}
+      - NEXT_PUBLIC_EXAM_API_URL=${NEXT_PUBLIC_EXAM_API_URL:-http://localhost:8003}
+      - NEXT_PUBLIC_DIAG_API_URL=${NEXT_PUBLIC_DIAG_API_URL:-http://localhost:8002}
+    ports:
+      - "3000:3000"
+    depends_on:
+      auth-service:
+        condition: service_healthy
+      diagnostic-service:
+        condition: service_healthy
+      exam-service:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - algo-network
+
+  # ============================================================================
+  # LANDING PAGE
+  # ============================================================================
+  landing:
+    build:
+      context: ../../algo-landing
+      dockerfile: Dockerfile
+    container_name: algo-landing
+    profiles: ["full", "landing"]
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - CONTACT_EMAIL=${CONTACT_EMAIL:-aurorixai@gmail.com}
+      - RESEND_API_KEY=${RESEND_API_KEY:-}
+    ports:
+      - "5001:5000"
+    restart: unless-stopped
+    networks:
+      - algo-network
+
+# ==============================================================================
+# VOLUMES
+# ==============================================================================
+volumes:
+  auth-db-data:
+  auth-redis-data:
+  diagnostic-db-data:
+  diagnostic-redis-data:
+  exam-db-data:
+  exam-redis-data:
+  content-db-data:
+  content-redis-data:
+  content-data:
+
+# ==============================================================================
+# NETWORKS
+# ==============================================================================
+networks:
+  algo-network:
+    driver: bridge
+    name: algo-network

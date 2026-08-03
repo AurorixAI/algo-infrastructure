@@ -171,7 +171,7 @@ services:
 
   auth-service:
     build:
-      context: ../../auth-services
+      context: ../../preview-src/auth-services
       dockerfile: Dockerfile
       target: production
     container_name: algo-preview-auth
@@ -205,7 +205,7 @@ services:
 
   diagnostic-service:
     build:
-      context: ../../diagnostics-service
+      context: ../../preview-src/diagnostics-service
       dockerfile: Dockerfile
     container_name: algo-preview-diagnostic
     environment:
@@ -240,7 +240,7 @@ services:
 
   exam-service:
     build:
-      context: ../../exam-service
+      context: ../../preview-src/exam-service
       dockerfile: Dockerfile
     container_name: algo-preview-exam
     environment:
@@ -272,7 +272,7 @@ services:
 
   content-service:
     build:
-      context: ../../content-service
+      context: ../../preview-src/content-service
       dockerfile: Dockerfile
     container_name: algo-preview-content
     environment:
@@ -306,7 +306,7 @@ services:
 
   frontend:
     build:
-      context: ../../algo-front
+      context: ../../preview-src/algo-front
       dockerfile: Dockerfile
       args:
         # These are baked into the Next.js bundle at build time.
@@ -333,7 +333,7 @@ services:
 
   landing:
     build:
-      context: ../../algo-landing
+      context: ../../preview-src/algo-landing
       dockerfile: Dockerfile
     container_name: algo-preview-landing
     environment:

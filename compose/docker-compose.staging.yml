@@ -213,6 +213,13 @@ services:
       APP_ENV: staging
       DEBUG: "false"
       GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      # Primary model for report generation; Gemini is the fallback. The
+      # service's Settings reads a `.env` file that never exists in the image,
+      # so these must be forwarded here or the key is silently unset and every
+      # request quietly degrades to Gemini.
+      AZURE_DEEPSEEK_API_KEY: ${AZURE_DEEPSEEK_API_KEY:-}
+      AZURE_DEEPSEEK_ENDPOINT: ${AZURE_DEEPSEEK_ENDPOINT:-}
+      AZURE_DEEPSEEK_MODEL: ${AZURE_DEEPSEEK_MODEL:-deepseek-v4-flash}
       CORS_ORIGINS: '["http://localhost","http://localhost:3000"]'
       AUTH_SERVICE_URL: http://auth-service:8000
       CONTENT_SERVICE_URL: http://content-service:8004
@@ -248,6 +255,10 @@ services:
       DEBUG: "false"
       GEMINI_API_KEY: ${GEMINI_API_KEY:-}
       GEMINI_MODEL: ${GEMINI_MODEL:-gemini-2.5-flash}
+      # Primary model for exam report generation; Gemini is the fallback.
+      AZURE_DEEPSEEK_API_KEY: ${AZURE_DEEPSEEK_API_KEY:-}
+      AZURE_DEEPSEEK_ENDPOINT: ${AZURE_DEEPSEEK_ENDPOINT:-}
+      AZURE_DEEPSEEK_MODEL: ${AZURE_DEEPSEEK_MODEL:-deepseek-v4-flash}
       CONTENT_SERVICE_URL: http://content-service:8004
       MAX_TASKS_PER_EXAM: ${MAX_TASKS_PER_EXAM:-50}
       MAX_VARIANTS: ${MAX_VARIANTS:-30}
@@ -278,6 +289,11 @@ services:
       APP_ENV: staging
       DEBUG: "false"
       GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      # The digitisation pipeline raises outright when these are blank, unlike
+      # exam/diagnostics which fall back to Gemini.
+      AZURE_DEEPSEEK_API_KEY: ${AZURE_DEEPSEEK_API_KEY:-}
+      AZURE_DEEPSEEK_ENDPOINT: ${AZURE_DEEPSEEK_ENDPOINT:-}
+      AZURE_DEEPSEEK_MODEL: ${AZURE_DEEPSEEK_MODEL:-deepseek-v4-flash}
       VERTEX_PROJECT_ID: ${VERTEX_PROJECT_ID:-}
       VERTEX_LOCATION: ${VERTEX_LOCATION:-global}
       GOOGLE_CREDENTIALS_PATH: ${GOOGLE_CREDENTIALS_PATH:-}

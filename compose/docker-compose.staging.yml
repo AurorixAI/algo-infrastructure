@@ -349,11 +349,16 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ../nginx/conf.d/staging.conf:/etc/nginx/conf.d/default.conf:ro
-      # stage.algolab.me — proxies to the algo-preview-* stack over algo-edge.
-      # Mounted as an explicit file (not the whole conf.d dir) so the unused
-      # legacy algolab.conf isn't loaded alongside it.
-      - ../nginx/conf.d/preview.conf:/etc/nginx/conf.d/preview.conf:ro
+      # The whole directory, not the two files individually. A single-file
+      # bind mount is pinned to the inode it was created from, and `git pull`
+      # replaces a file rather than rewriting it — so config changes were
+      # silently invisible to the running container, which kept serving the
+      # copy it started with until someone recreated it. `nginx -t` and
+      # `nginx -s reload` both "succeeded" against that stale copy. The unused
+      # legacy algolab.conf that this mount used to avoid has been deleted.
+      # Which server answers an unmatched Host is pinned by `default_server`
+      # in staging.conf, not by the load order of these files.
+      - ../nginx/conf.d:/etc/nginx/conf.d:ro
       - ../../certbot/www:/var/www/certbot:ro
       - /etc/letsencrypt:/etc/letsencrypt:ro
     depends_on:

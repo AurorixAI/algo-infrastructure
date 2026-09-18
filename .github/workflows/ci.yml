@@ -1,5 +1,15 @@
 name: CI
 
+# This repo holds infrastructure only — compose files, nginx configs and
+# operational scripts. Application lint/tests belong to each service's own
+# repo (see their deploy.yml), which is where the source actually lives.
+#
+# The previous version of this workflow ran ruff / pytest / docker-build with
+# `working-directory: auth-service`, `content-service`, and so on. Those
+# directories do not exist here — every service is a separate repo — so all
+# ten jobs failed within seconds of checkout, and had done so since the
+# workflow was first written. Replaced with checks that match this repo.
+
 on:
   push:
     branches: [main, master, develop]
@@ -7,138 +17,75 @@ on:
     branches: [main, master]
 
 jobs:
-  # ─────────────────────────────────────────────────────────────────────────────
-  # Lint — ruff for all Python services
-  # ─────────────────────────────────────────────────────────────────────────────
-  lint:
-    name: Lint (${{ matrix.service }})
+  compose:
+    name: Validate compose files
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        service:
-          - auth-service
-          - diagnostic-service
-          - exam-service
-          - content-service
+    # Placeholder values only — `config` resolves and type-checks the files,
+    # it does not need the sibling service repos or real secrets to be present.
+    env:
+      SECRET_KEY: ci
+      POSTGRES_PASSWORD: ci
+      GEMINI_API_KEY: ci
+      NEXT_PUBLIC_AUTH_API_URL: https://ci.invalid
+      NEXT_PUBLIC_EXAM_API_URL: https://ci.invalid
+      NEXT_PUBLIC_DIAG_API_URL: https://ci.invalid
+      CORS_ORIGINS: '["https://ci.invalid"]'
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
+      - name: staging (production — algolab.me)
+        run: docker compose -f compose/docker-compose.staging.yml config -q
 
-      - name: Install ruff
-        run: pip install ruff==0.4.4
+      - name: preview (stage.algolab.me)
+        run: docker compose -f compose/docker-compose.preview.yml config -q
 
-      - name: Run ruff
-        working-directory: ${{ matrix.service }}
-        run: ruff check src/ --select E,F,W --ignore E501
+      - name: local development
+        run: docker compose -f compose/docker-compose.local.yml config -q
 
-  # ─────────────────────────────────────────────────────────────────────────────
-  # Tests — auth-service (full coverage), exam-service (unit only)
-  # ─────────────────────────────────────────────────────────────────────────────
-  test-auth:
-    name: Tests — auth-service
-    runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:16-alpine
-        env:
-          POSTGRES_USER: algo_user
-          POSTGRES_PASSWORD: algo_password
-          POSTGRES_DB: algo_auth_test
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U algo_user"
-          --health-interval 5s
-          --health-timeout 5s
-          --health-retries 10
-      redis:
-        image: redis:7-alpine
-        ports:
-          - 6379:6379
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 5s
-          --health-timeout 5s
-          --health-retries 10
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Install dependencies
-        working-directory: auth-service
-        run: pip install -r requirements.txt pytest pytest-asyncio pytest-cov
-
-      - name: Run tests
-        working-directory: auth-service
-        env:
-          DATABASE_URL: postgresql://algo_user:algo_password@localhost:5432/algo_auth_test
-          REDIS_URL: redis://localhost:6379/0
-          SECRET_KEY: ci-test-secret-key-32-characters-long
-          ALGORITHM: HS256
-          ACCESS_TOKEN_EXPIRE_MINUTES: "30"
-          ENVIRONMENT: test
-        run: pytest tests/ -v --tb=short --cov=src --cov-report=term-missing --cov-fail-under=60
-
-  test-exam:
-    name: Tests — exam-service (unit)
+  nginx:
+    name: Validate nginx configs
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
+      - name: nginx -t (staging + preview together)
+        run: |
+          # Both configs are loaded by the same nginx, so test them together —
+          # that is what catches duplicate upstream or server_name collisions.
+          # A throwaway self-signed cert stands in for Let's Encrypt at the
+          # path the configs reference.
+          mkdir -p certs
+          openssl req -x509 -newkey rsa:2048 -nodes -days 1 \
+            -keyout certs/privkey.pem -out certs/fullchain.pem \
+            -subj "/CN=algolab.me" 2>/dev/null
 
-      - name: Install dependencies
-        working-directory: exam-service
-        run: pip install -r requirements.txt pytest pytest-asyncio
+          # nginx resolves every `upstream` host at config-load time and aborts
+          # if one is unknown, so point them all at loopback for the test.
+          # Upstreams are pinned to container names on purpose — see the
+          # comment at the top of staging.conf.
+          HOSTS=""
+          for c in frontend auth diagnostic exam content landing; do
+            HOSTS="$HOSTS --add-host algo-staging-$c:127.0.0.1"
+            HOSTS="$HOSTS --add-host algo-preview-$c:127.0.0.1"
+          done
 
-      - name: Run unit tests
-        working-directory: exam-service
-        env:
-          ENVIRONMENT: test
-          DATABASE_URL: postgresql://dummy:dummy@localhost:5432/dummy
-          REDIS_URL: redis://localhost:6379/0
-          CONTENT_SERVICE_URL: http://localhost:8004
-        run: pytest tests/test_unit.py -v --tb=short --ignore=tests/test_integration.py
+          # shellcheck disable=SC2086
+          docker run --rm $HOSTS \
+            -v "$PWD/nginx/conf.d/staging.conf:/etc/nginx/conf.d/default.conf:ro" \
+            -v "$PWD/nginx/conf.d/preview.conf:/etc/nginx/conf.d/preview.conf:ro" \
+            -v "$PWD/certs:/etc/letsencrypt/live/algolab.me:ro" \
+            nginx:1.27-alpine nginx -t
 
-  # ─────────────────────────────────────────────────────────────────────────────
-  # Docker Build — verify each service builds without error
-  # ─────────────────────────────────────────────────────────────────────────────
-  docker-build:
-    name: Docker Build (${{ matrix.service }})
+  scripts:
+    name: Shell script syntax
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - service: auth-service
-            image: algo-auth
-          - service: diagnostic-service
-            image: algo-diagnostic
-          - service: exam-service
-            image: algo-exam
-          - service: content-service
-            image: algo-content
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build ${{ matrix.service }}
-        uses: docker/build-push-action@v5
-        with:
-          context: ${{ matrix.service }}
-          push: false
-          tags: ${{ matrix.image }}:ci-${{ github.sha }}
-          cache-from: type=gha,scope=${{ matrix.service }}
-          cache-to: type=gha,scope=${{ matrix.service }},mode=max
+      - name: bash -n on every script
+        run: |
+          fail=0
+          while IFS= read -r f; do
+            bash -n "$f" || { echo "syntax error: $f"; fail=1; }
+          done < <(find scripts -name '*.sh')
+          exit $fail

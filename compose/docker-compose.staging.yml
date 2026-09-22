@@ -180,7 +180,11 @@ services:
       - REDIS_URL=redis://auth-redis:6379/0
       - APP_ENV=staging
       - DEBUG=false
+      - RELEASE_SHA=${RELEASE_SHA:-unknown}
+      - RELEASE_REF=${RELEASE_REF:-unknown}
+      - RELEASED_AT=${RELEASED_AT:-unknown}
       - SECRET_KEY=${SECRET_KEY:?SECRET_KEY is required}
+      - INTERNAL_SERVICE_TOKEN=${INTERNAL_SERVICE_TOKEN:?INTERNAL_SERVICE_TOKEN is required}
       - GEMINI_API_KEY=${GEMINI_API_KEY:-}
       - MATHPIX_APP_ID=${MATHPIX_APP_ID:-}
       - MATHPIX_APP_KEY=${MATHPIX_APP_KEY:-}
@@ -212,6 +216,9 @@ services:
       REDIS_URL: redis://diagnostic-redis:6379
       APP_ENV: staging
       DEBUG: "false"
+      RELEASE_SHA: ${RELEASE_SHA:-unknown}
+      RELEASE_REF: ${RELEASE_REF:-unknown}
+      RELEASED_AT: ${RELEASED_AT:-unknown}
       GEMINI_API_KEY: ${GEMINI_API_KEY:-}
       # Primary model for report generation; Gemini is the fallback. The
       # service's Settings reads a `.env` file that never exists in the image,
@@ -220,9 +227,10 @@ services:
       AZURE_DEEPSEEK_API_KEY: ${AZURE_DEEPSEEK_API_KEY:-}
       AZURE_DEEPSEEK_ENDPOINT: ${AZURE_DEEPSEEK_ENDPOINT:-}
       AZURE_DEEPSEEK_MODEL: ${AZURE_DEEPSEEK_MODEL:-deepseek-v4-flash}
-      CORS_ORIGINS: '["http://localhost","http://localhost:3000"]'
+      CORS_ORIGINS: ${CORS_ORIGINS:?CORS_ORIGINS is required}
       AUTH_SERVICE_URL: http://auth-service:8000
       CONTENT_SERVICE_URL: http://content-service:8004
+      INTERNAL_SERVICE_TOKEN: ${INTERNAL_SERVICE_TOKEN:?INTERNAL_SERVICE_TOKEN is required}
       WARMUP_ITEMS: ${WARMUP_ITEMS:-3}
       MAX_ITEMS: ${MAX_ITEMS:-25}
       SE_THRESHOLD: ${SE_THRESHOLD:-0.30}
@@ -253,6 +261,9 @@ services:
       REDIS_URL: redis://exam-redis:6379
       APP_ENV: staging
       DEBUG: "false"
+      RELEASE_SHA: ${RELEASE_SHA:-unknown}
+      RELEASE_REF: ${RELEASE_REF:-unknown}
+      RELEASED_AT: ${RELEASED_AT:-unknown}
       GEMINI_API_KEY: ${GEMINI_API_KEY:-}
       GEMINI_MODEL: ${GEMINI_MODEL:-gemini-2.5-flash}
       # Primary model for exam report generation; Gemini is the fallback.
@@ -260,6 +271,9 @@ services:
       AZURE_DEEPSEEK_ENDPOINT: ${AZURE_DEEPSEEK_ENDPOINT:-}
       AZURE_DEEPSEEK_MODEL: ${AZURE_DEEPSEEK_MODEL:-deepseek-v4-flash}
       CONTENT_SERVICE_URL: http://content-service:8004
+      AUTH_SERVICE_URL: http://auth-service:8000
+      INTERNAL_SERVICE_TOKEN: ${INTERNAL_SERVICE_TOKEN:?INTERNAL_SERVICE_TOKEN is required}
+      CORS_ORIGINS: ${CORS_ORIGINS:?CORS_ORIGINS is required}
       MAX_TASKS_PER_EXAM: ${MAX_TASKS_PER_EXAM:-50}
       MAX_VARIANTS: ${MAX_VARIANTS:-30}
       DEFAULT_TIME_MINUTES: ${DEFAULT_TIME_MINUTES:-45}
@@ -288,6 +302,9 @@ services:
       REDIS_URL: redis://content-redis:6379
       APP_ENV: staging
       DEBUG: "false"
+      RELEASE_SHA: ${RELEASE_SHA:-unknown}
+      RELEASE_REF: ${RELEASE_REF:-unknown}
+      RELEASED_AT: ${RELEASED_AT:-unknown}
       GEMINI_API_KEY: ${GEMINI_API_KEY:-}
       # The digitisation pipeline raises outright when these are blank, unlike
       # exam/diagnostics which fall back to Gemini.
@@ -329,6 +346,9 @@ services:
     container_name: algo-staging-frontend
     environment:
       - NODE_ENV=production
+      - RELEASE_SHA=${RELEASE_SHA:-unknown}
+      - RELEASE_REF=${RELEASE_REF:-unknown}
+      - RELEASED_AT=${RELEASED_AT:-unknown}
     depends_on:
       auth-service:
         condition: service_healthy

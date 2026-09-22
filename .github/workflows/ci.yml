@@ -25,6 +25,7 @@ jobs:
     env:
       SECRET_KEY: ci
       POSTGRES_PASSWORD: ci
+      INTERNAL_SERVICE_TOKEN: ci-internal-service-token-only-for-compose-validation
       GEMINI_API_KEY: ci
       NEXT_PUBLIC_AUTH_API_URL: https://ci.invalid
       NEXT_PUBLIC_EXAM_API_URL: https://ci.invalid
@@ -47,6 +48,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Keep answer-bearing Content API internal
+        run: |
+          # /api/v1/content/tasks returns answer keys and distractor metadata.
+          # Browser traffic must never be able to reach it through Nginx;
+          # exam and diagnostic use the Docker-internal service address.
+          if grep -RInE '^[[:space:]]*location[[:space:]]+/api/v1/content/' nginx/conf.d; then
+            echo 'Content Read API must not be exposed through public Nginx.' >&2
+            exit 1
+          fi
 
       - name: nginx -t (staging + preview together)
         run: |
@@ -75,6 +86,28 @@ jobs:
             -v "$PWD/nginx/conf.d/preview.conf:/etc/nginx/conf.d/preview.conf:ro" \
             -v "$PWD/certs:/etc/letsencrypt/live/algolab.me:ro" \
             nginx:1.27-alpine nginx -t
+
+  runtime-contract:
+    name: Keep internal callback contract explicit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Require one shared internal token per server stack
+        run: |
+          # The token must reach auth (receiver), diagnostic (sender) and
+          # exam (sender/receiver). A root .env is not implicitly inherited
+          # when deployment uses --env-file, hence each compose definition
+          # must carry this contract explicitly.
+          for compose_file in \
+            compose/docker-compose.staging.yml \
+            compose/docker-compose.preview.yml; do
+            count=$(grep -c 'INTERNAL_SERVICE_TOKEN' "$compose_file")
+            if [ "$count" -lt 3 ]; then
+              echo "$compose_file must pass INTERNAL_SERVICE_TOKEN to auth, diagnostic and exam" >&2
+              exit 1
+            fi
+          done
 
   scripts:
     name: Shell script syntax

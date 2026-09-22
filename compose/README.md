@@ -51,7 +51,69 @@ Env files hold secrets and stay **out of git**, on the server only:
 | `docker-compose.staging.yml` | `~/algo/.env.staging` | `algo-staging` |
 | `docker-compose.preview.yml` | `~/algo/.env.preview` | `algo-preview` |
 
-`.env.example` in the cluster root documents the required keys.
+[`compose/.env.example`](.env.example) documents the versioned schema. Copy
+it to the **cluster root** as `.env.staging` or `.env.preview`; never put real
+values into the repository. `INTERNAL_SERVICE_TOKEN` is required and must be
+identical in auth, diagnostic and exam containers of one stack. A root `.env`
+file is not loaded by Docker Compose when `--env-file` is specified, so it is
+not a substitute for the named server env-file.
+
+Before a rollout, run the resolved-config check with the exact server env-file:
+
+```bash
+docker compose -f algo-infrastructure/compose/docker-compose.staging.yml \
+  -p algo-staging --env-file .env.staging config -q
+```
+
+Use `algolab.me` in `CORS_ORIGINS` and all `NEXT_PUBLIC_*_API_URL` values for
+production; use only `stage.algolab.me` for preview. The Azure endpoint must
+be a complete Azure chat-completions URL for the configured deployment. Do not
+paste keys into terminal output or CI logs.
+
+## Release identity and verification
+
+Every application deployment carries three **non-secret**, runtime-only values:
+`RELEASE_SHA`, `RELEASE_REF`, and `RELEASED_AT`. They are supplied by the
+service deployment workflow, not stored in either server env file. Thus a
+single stack can correctly show different revisions while services are rolled
+out one at a time.
+
+The existing `/health` routes retain their dependency-focused contract. Release
+identity is intentionally separate:
+
+| Component | Route | Reachability |
+|---|---|---|
+| auth | `/version` | container network / server shell |
+| diagnostic | `/version` | container network / server shell |
+| exam | `/version` | container network / server shell |
+| content | `/api/v1/version` | container network / server shell |
+| frontend | `/api/version` | public, no credentials or secrets |
+
+Before enabling a service workflow that checks revision metadata, update the
+`algo-infrastructure` checkout on the target server to the matching release
+branch. Otherwise the older compose definition will omit the `RELEASE_*`
+environment values and the workflow will fail intentionally rather than mark
+an unverifiable deployment as successful.
+
+After a deployment, validate a backend container without exposing its internal
+route through Nginx (example for production diagnostic):
+
+```bash
+docker exec algo-staging-diagnostic curl -fsS http://localhost:8002/version
+```
+
+The deployment job also stores `release-manifest.txt` as a CI artifact with the
+service, source SHA/ref, container image ID and deployment time. For frontend,
+the same non-secret identity can be viewed at
+`https://algolab.me/api/version` (or the preview domain).
+
+### Rollback rule
+
+Application code may be rolled back only to a previously recorded SHA after
+checking the migration history for the target service. A database migration is
+**not** rolled back implicitly. If a newer migration is incompatible with the
+old code, restore a verified database backup or execute a separately reviewed
+downgrade procedure before starting the old container.
 
 ## Database ports
 

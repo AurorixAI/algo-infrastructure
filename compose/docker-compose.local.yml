@@ -303,6 +303,7 @@ services:
       APP_ENV: ${APP_ENV:-development}
       DEBUG: ${DEBUG:-true}
       GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      INTERNAL_SERVICE_TOKEN: ${INTERNAL_SERVICE_TOKEN:-local-development-internal-token-change-before-release}
     depends_on:
       content-db:
         condition: service_healthy

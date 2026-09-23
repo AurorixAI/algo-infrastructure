@@ -14,7 +14,9 @@
 #   Auth API:    http://<host>/api/v1/auth/
 #   Diag API:    http://<host>/api/v1/diagnostic/
 #   Exam API:    http://<host>/api/v1/exam/
-#   Content API: http://<host>/api/v1/content/
+#   (Content API is intentionally NOT exposed through Nginx — it returns
+#   answer keys and is reachable only on the internal Docker network, with
+#   its own internal-service-token auth on top. See nginx/conf.d/staging.conf.)
 # ==============================================================================
 
 name: algo-staging
@@ -316,6 +318,7 @@ services:
       GOOGLE_CREDENTIALS_PATH: ${GOOGLE_CREDENTIALS_PATH:-}
       MATHPIX_APP_ID: ${MATHPIX_APP_ID:-}
       MATHPIX_APP_KEY: ${MATHPIX_APP_KEY:-}
+      INTERNAL_SERVICE_TOKEN: ${INTERNAL_SERVICE_TOKEN:?INTERNAL_SERVICE_TOKEN is required}
     depends_on:
       content-db:
         condition: service_healthy

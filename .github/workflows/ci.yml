@@ -95,16 +95,18 @@ jobs:
 
       - name: Require one shared internal token per server stack
         run: |
-          # The token must reach auth (receiver), diagnostic (sender) and
-          # exam (sender/receiver). A root .env is not implicitly inherited
-          # when deployment uses --env-file, hence each compose definition
-          # must carry this contract explicitly.
+          # The token must reach auth (receiver), diagnostic (sender),
+          # exam (sender/receiver) and content (receiver, since SEC-01 --
+          # its full-answer-key read API is otherwise unauthenticated). A
+          # root .env is not implicitly inherited when deployment uses
+          # --env-file, hence each compose definition must carry this
+          # contract explicitly.
           for compose_file in \
             compose/docker-compose.staging.yml \
             compose/docker-compose.preview.yml; do
             count=$(grep -c 'INTERNAL_SERVICE_TOKEN' "$compose_file")
-            if [ "$count" -lt 3 ]; then
-              echo "$compose_file must pass INTERNAL_SERVICE_TOKEN to auth, diagnostic and exam" >&2
+            if [ "$count" -lt 4 ]; then
+              echo "$compose_file must pass INTERNAL_SERVICE_TOKEN to auth, diagnostic, exam and content" >&2
               exit 1
             fi
           done

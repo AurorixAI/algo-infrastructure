@@ -127,3 +127,30 @@ exposed to the internet regardless of firewall state.
 | diagnostic | 5433 | 15433 |
 | content | 5434 | 15434 |
 | exam | 5435 | 15435 |
+
+## Подготовка сервера
+
+Одноразовая (идемпотентная) подготовка хоста Hetzner — скрипт
+[`../scripts/server_prep.sh`](../scripts/server_prep.sh), запускается на
+сервере под `sudo`:
+
+```bash
+cd ~/algo
+sudo ./algo-infrastructure/scripts/server_prep.sh                  # всё, кроме рестарта docker
+sudo ./algo-infrastructure/scripts/server_prep.sh --restart-docker # + рестарт dockerd
+```
+
+Что делает:
+
+- swap 4G (`/swapfile`, запись в `/etc/fstab`) и `vm.swappiness=10` (`/etc/sysctl.d/99-algo.conf`);
+- `/etc/docker/daemon.json`: `json-file`, `max-size=10m`, `max-file=3` (мерж с существующим JSON, копия в `daemon.json.bak`);
+- cron `/etc/cron.d/algo-maintenance`: 03:30 бэкап prod-БД контента
+  (`algo-staging-content-db`, `backup_algo_content.sh`, дампы в `~/backups/algo_content`, хранится 14 дней),
+  04:30 `docker image prune -f` и `docker builder prune -f --filter until=72h`;
+- в конце печатает `free -h`, `swapon --show`, `df -h /`.
+
+**Рестарт docker.** Без `--restart-docker` скрипт только сообщает, что рестарт нужен.
+`systemctl restart docker` перезапускает ВСЕ контейнеры (prod и stage) — запускать
+в тихое время. Новые лимиты логов применяются только к заново созданным контейнерам
+(следующий деплой или `up -d --force-recreate`). Лимиты памяти из compose-файлов
+(`mem_limit`) тоже вступают в силу при пересоздании контейнера.

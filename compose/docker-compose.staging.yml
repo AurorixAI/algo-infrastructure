@@ -291,6 +291,7 @@ services:
       retries: 3
       start_period: 20s
     restart: unless-stopped
+    mem_limit: 1536m
     networks:
       - algo-internal
 

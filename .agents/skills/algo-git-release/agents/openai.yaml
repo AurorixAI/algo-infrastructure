@@ -1,0 +1,6 @@
+interface:
+  display_name: "ALGO: релиз через Git"
+  short_description: "Фиксация кода, stage и проверяемый откат"
+  default_prompt: "Используй $algo-git-release, чтобы сохранить изменения ALGO в Git и подготовить проверяемый stage-релиз в разрешённом объёме."
+policy:
+  allow_implicit_invocation: true

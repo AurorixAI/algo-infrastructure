@@ -12,7 +12,7 @@ name: CI
 
 on:
   push:
-    branches: [main, master, develop]
+    branches: [main, master, develop, CEO]
   pull_request:
     branches: [main, master]
 
@@ -116,6 +116,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Verify immutable Git source preparation
+        run: python3 -m unittest discover -s tests -p 'test_*.py' -v
 
       - name: bash -n on every script
         run: |

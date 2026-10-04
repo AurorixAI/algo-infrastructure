@@ -154,3 +154,7 @@ sudo ./algo-infrastructure/scripts/server_prep.sh --restart-docker # + рест�
 в тихое время. Новые лимиты логов применяются только к заново созданным контейнерам
 (следующий деплой или `up -d --force-recreate`). Лимиты памяти из compose-файлов
 (`mem_limit`) тоже вступают в силу при пересоздании контейнера.
+
+## Git-first stage releases
+
+CEO runs checks without an automatic deployment. See the current [Git-first stage runbook](../docs/releases/GIT_FIRST_STAGE.md) for committed-source exports, legacy runtime provenance, immutable image checks and separate code/database rollback.

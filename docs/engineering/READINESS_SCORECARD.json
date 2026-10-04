@@ -1,0 +1,349 @@
+{
+  "version": 1,
+  "date": "2026-10-04",
+  "metric": "Доля закрытых критериев готовности выбранного ядра платформы",
+  "scope": "Ядро: диагностика, отчёт, teacher/admin, online/print, выпуск и пилот. P2/P3 owner/payroll/branches/Telegram не входят в знаменатель.",
+  "rule": "20 фиксированных критериев по 5 баллов; частичное выполнение не даёт баллов. Равные веса — прозрачный учёт этапов, не оценка ценности фич.",
+  "limits": [
+    "Это не процент точности диагностики и не процент работающего кода.",
+    "Прошлый сопоставимый индекс не измерялся; прирост за всю предыдущую работу в процентах неизвестен.",
+    "Будущие баллы начисляются после приёмки критериев, а не после написания кода.",
+    "Блокирующий P0 не компенсируется суммой баллов. Нынешний расширенный production gate открыт.",
+    "Проверка кандидата в локальном Chrome с синтетическими HTTP fixtures не означает его публикацию на stage."
+  ],
+  "gates": [
+    {
+      "id": "G01",
+      "title": "База и рисунки восстановлены",
+      "weight": 5,
+      "stage_status": "accepted",
+      "candidate_status": "accepted",
+      "next_stage": "N00",
+      "refs": "D01",
+      "acceptance": "Сравнение 16 таблиц и постоянное хранение 45/45 нужных рисунков приняты.",
+      "evidence": "EVIDENCE_INDEX.md"
+    },
+    {
+      "id": "G02",
+      "title": "Единый источник условия",
+      "weight": 5,
+      "stage_status": "accepted",
+      "candidate_status": "accepted",
+      "next_stage": "N00",
+      "refs": "D02",
+      "acceptance": "Заполненный question_latex выбирается в UI, отчёте и PDF; выбор по длине убран.",
+      "evidence": "../releases/2026-10-04-git-checkpoint.md"
+    },
+    {
+      "id": "G03",
+      "title": "Сохранение финального ответа",
+      "weight": 5,
+      "stage_status": "accepted",
+      "candidate_status": "accepted",
+      "next_stage": "N00",
+      "refs": "D03",
+      "acceptance": "Атомарное завершение, snapshot, идемпотентный повтор и refresh приняты.",
+      "evidence": "evidence/p06-diagnostic-acceptance-2026-10-03.md"
+    },
+    {
+      "id": "G04",
+      "title": "Восстановление фоновых заданий",
+      "weight": 5,
+      "stage_status": "accepted",
+      "candidate_status": "accepted",
+      "next_stage": "N00",
+      "refs": "D03",
+      "acceptance": "Durable report/auth-sync jobs сохраняются с завершением; отказ описания не отменяет ответы.",
+      "evidence": "evidence/p06-diagnostic-acceptance-2026-10-03.md"
+    },
+    {
+      "id": "G05",
+      "title": "Базовый доступ и маршруты",
+      "weight": 5,
+      "stage_status": "accepted",
+      "candidate_status": "accepted",
+      "next_stage": "N00",
+      "refs": "D04",
+      "acceptance": "Проверены базовые роли, ownership и отзыв доступа; history routing исправлен. Полная матрица — G19.",
+      "evidence": "EVIDENCE_INDEX.md"
+    },
+    {
+      "id": "G06",
+      "title": "Техническая политика остановки",
+      "weight": 5,
+      "stage_status": "accepted",
+      "candidate_status": "accepted",
+      "next_stage": "N00",
+      "refs": "D05",
+      "acceptance": "Cap25 устранён; max42, строгая SE-ветка и guarded ранняя остановка приняты на stage. Эмпирическая точность — G20.",
+      "evidence": "evidence/p06-diagnostic-acceptance-2026-10-03.md"
+    },
+    {
+      "id": "G07",
+      "title": "Адаптивный подбор",
+      "weight": 5,
+      "stage_status": "accepted",
+      "candidate_status": "accepted",
+      "next_stage": "N00",
+      "refs": "D05",
+      "acceptance": "Ранжирование пула до LIMIT, target_b=0 и сильный/средний/с пробелами профили проверены.",
+      "evidence": "evidence/p06-diagnostic-acceptance-2026-10-03.md"
+    },
+    {
+      "id": "G08",
+      "title": "Код сохранён и базовый CI пройден",
+      "weight": 5,
+      "stage_status": "accepted",
+      "candidate_status": "accepted",
+      "next_stage": "N00",
+      "refs": "D09",
+      "acceptance": "Пять приложений и infrastructure опубликованы в CEO, CI прошёл, legacy source hashes сопоставлены. Git image/rollback — G18.",
+      "evidence": "../releases/2026-10-04-git-checkpoint.md"
+    },
+    {
+      "id": "G09",
+      "title": "Высокие формулы видны целиком",
+      "weight": 5,
+      "stage_status": "open",
+      "candidate_status": "accepted",
+      "next_stage": "N00U",
+      "refs": "P09",
+      "acceptance": "Интеграл, вложенные дроби/корни, скобка системы и широкая формула: 27 браузерных состояний в шести сценариях при 360/768/1280; без вертикального обрезания и с прокруткой широкой формулы.",
+      "evidence": "evidence/p09-display-audit-2026-10-04.md"
+    },
+    {
+      "id": "G10",
+      "title": "Известные дефекты банка разобраны",
+      "weight": 5,
+      "stage_status": "open",
+      "candidate_status": "open",
+      "next_stage": "N01",
+      "refs": "T01–T06 / L01–L05",
+      "acceptance": "По шести находкам и очереди длинных записей приняты адресные решения; сохранены условия, ключи, источник, история и откат. Массовую точность банка проверяет G20.",
+      "evidence": "ROADMAP.md"
+    },
+    {
+      "id": "G11",
+      "title": "История попыток сохраняет смысл",
+      "weight": 5,
+      "stage_status": "open",
+      "candidate_status": "open",
+      "next_stage": "N01/N02",
+      "refs": "R03",
+      "acceptance": "Snapshot условия/вариантов/ключа/версии неизменен; пересчёт имеет отдельную ревизию.",
+      "evidence": "evidence/p07-diagnostic-report-audit-2026-10-03.md"
+    },
+    {
+      "id": "G12",
+      "title": "Один согласованный итог уровня",
+      "weight": 5,
+      "stage_status": "open",
+      "candidate_status": "open",
+      "next_stage": "N02",
+      "refs": "R01",
+      "acceptance": "CAT и пять бизнес-статусов получают итог из согласованного контракта, пограничные случаи совпадают.",
+      "evidence": "ROADMAP.md"
+    },
+    {
+      "id": "G13",
+      "title": "Навыки и Deep Scan опираются на ответы",
+      "weight": 5,
+      "stage_status": "open",
+      "candidate_status": "open",
+      "next_stage": "N02",
+      "refs": "R02/R15",
+      "acceptance": "Нет ложной слабой темы из Alpha; четыре потерянных маршрута и порядок цепочек исправлены и проверены.",
+      "evidence": "evidence/p08-specific-attempt-verification-2026-10-03.md"
+    },
+    {
+      "id": "G14",
+      "title": "Профессиональный отчёт и восстановление",
+      "weight": 5,
+      "stage_status": "open",
+      "candidate_status": "open",
+      "next_stage": "N03/N04/N05",
+      "refs": "R04–R14/R16",
+      "acceptance": "Все вкладки, 0 ошибок, failed/stale/retry и mobile приняты; ненужный баннер и процент надёжности удалены, fallback понятен и ограничен фактами.",
+      "evidence": "ROADMAP.md"
+    },
+    {
+      "id": "G15",
+      "title": "Учебный план приводит к действию",
+      "weight": 5,
+      "stage_status": "open",
+      "candidate_status": "open",
+      "next_stage": "N03/N05",
+      "refs": "R10/R14",
+      "acceptance": "Приоритет навыка, конкретная учебная работа, критерий проверки и следующий шаг понятны преподавателю; итог диагностики принят целиком.",
+      "evidence": "ROADMAP.md"
+    },
+    {
+      "id": "G16",
+      "title": "Ежедневная работа преподавателя",
+      "weight": 5,
+      "stage_status": "open",
+      "candidate_status": "open",
+      "next_stage": "N08",
+      "refs": "B1–B4",
+      "acceptance": "Дашборд, расписание, отмена регулярности, посещаемость, история и UI приняты полной матрицей.",
+      "evidence": "ROADMAP.md"
+    },
+    {
+      "id": "G17",
+      "title": "Администратор и online/print экзамены",
+      "weight": 5,
+      "stage_status": "open",
+      "candidate_status": "open",
+      "next_stage": "N09",
+      "refs": "C1/C3/D1/D2",
+      "acceptance": "Зачисление, группы, lifecycle, варианты, PDF/ключ, frozen snapshots и ошибки приняты.",
+      "evidence": "ROADMAP.md"
+    },
+    {
+      "id": "G18",
+      "title": "Git-релиз и возврат проверенного образа",
+      "weight": 5,
+      "stage_status": "open",
+      "candidate_status": "open",
+      "next_stage": "N07",
+      "refs": "A4",
+      "acceptance": "Точный pushed SHA → immutable image; multi-repository promotion, совместимость схемы/данных и combined rollback/restore проверены.",
+      "evidence": "../releases/GIT_FIRST_STAGE.md"
+    },
+    {
+      "id": "G19",
+      "title": "Расширенные проверки и эксплуатация",
+      "weight": 5,
+      "stage_status": "open",
+      "candidate_status": "open",
+      "next_stage": "N07/N11",
+      "refs": "A5/H1/H2",
+      "acceptance": "Полная RBAC/error/recovery/load матрица, полезные alerts и incident runbooks приняты.",
+      "evidence": "ROADMAP.md"
+    },
+    {
+      "id": "G20",
+      "title": "Пилот и общий production gate",
+      "weight": 5,
+      "stage_status": "open",
+      "candidate_status": "open",
+      "next_stage": "N10/N11",
+      "refs": "F1/F2/H3",
+      "acceptance": "Реальные ученики, внешний критерий уровня, независимая выборка банка и длительность; доказательства всех core-gates и production-кандидат приняты.",
+      "evidence": "ROADMAP.md"
+    }
+  ],
+  "milestones": [
+    {
+      "id": "stage_now",
+      "label": "Stage сейчас",
+      "kind": "measured",
+      "gates": [
+        "G01",
+        "G02",
+        "G03",
+        "G04",
+        "G05",
+        "G06",
+        "G07",
+        "G08"
+      ],
+      "score": 40
+    },
+    {
+      "id": "candidate_now",
+      "label": "Проверенный UI-кандидат",
+      "kind": "local_candidate",
+      "gates": [
+        "G01",
+        "G02",
+        "G03",
+        "G04",
+        "G05",
+        "G06",
+        "G07",
+        "G08",
+        "G09"
+      ],
+      "score": 45
+    },
+    {
+      "id": "after_N05",
+      "label": "После N00U и N01–N05",
+      "kind": "conditional_target",
+      "gates": [
+        "G01",
+        "G02",
+        "G03",
+        "G04",
+        "G05",
+        "G06",
+        "G07",
+        "G08",
+        "G09",
+        "G10",
+        "G11",
+        "G12",
+        "G13",
+        "G14",
+        "G15"
+      ],
+      "score": 75
+    },
+    {
+      "id": "after_N09",
+      "label": "После N07–N09",
+      "kind": "conditional_target",
+      "gates": [
+        "G01",
+        "G02",
+        "G03",
+        "G04",
+        "G05",
+        "G06",
+        "G07",
+        "G08",
+        "G09",
+        "G10",
+        "G11",
+        "G12",
+        "G13",
+        "G14",
+        "G15",
+        "G16",
+        "G17",
+        "G18",
+        "G19"
+      ],
+      "score": 95
+    },
+    {
+      "id": "after_N11",
+      "label": "После пилота и общего gate",
+      "kind": "conditional_target",
+      "gates": [
+        "G01",
+        "G02",
+        "G03",
+        "G04",
+        "G05",
+        "G06",
+        "G07",
+        "G08",
+        "G09",
+        "G10",
+        "G11",
+        "G12",
+        "G13",
+        "G14",
+        "G15",
+        "G16",
+        "G17",
+        "G18",
+        "G19",
+        "G20"
+      ],
+      "score": 100
+    }
+  ]
+}

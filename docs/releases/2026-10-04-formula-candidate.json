@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-04",
+  "status": "local_browser_accepted_pushed_CEO_stage_not_deployed",
+  "frontend_sha": "b389ee87d824a88e502eeb81f7230334307cbeca",
+  "frontend_tree": "2c8bba826f6484cb18aeaafdd3e9d005a2632cb4",
+  "source_archive_sha256": "7d95555f09148de51b431b26225234c318b63cb4ceb93be838e38f581d0baa3e",
+  "local_standalone_build_id": "ymeG5fCksvDugZr-e5x9T",
+  "checks": {
+    "task_display_tests": 9,
+    "workflow_guard_tests": 8,
+    "typecheck": "passed",
+    "production_build": "passed",
+    "browser_states": 27,
+    "vertical_glyph_clips": 0,
+    "wide_formula_scroll_to_end": "passed_360_768_1280",
+    "page_errors": 0,
+    "math_parse_errors": 0
+  },
+  "content_mutations": false,
+  "schema_mutations": false,
+  "stage_mutations": false,
+  "limits": [
+    "Local build output is not an immutable release image.",
+    "Browser fixtures intercept synthetic API responses; backend/RBAC/model acceptance is separate.",
+    "GitHub CI for this SHA is recorded separately when complete."
+  ]
+}

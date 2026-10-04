@@ -1,0 +1,578 @@
+{
+  "scope": "Local frontend with synthetic intercepted HTTP data; geometry and visible glyphs, not bank/math/authorization acceptance",
+  "label": "before",
+  "base": "http://127.0.0.1:3310",
+  "checks": [
+    {
+      "surface": "diagnostic-integral",
+      "width": 360,
+      "viewport": 360,
+      "pageWidth": 360,
+      "renderers": 4,
+      "glyphs": 30,
+      "mathErrors": 0,
+      "legacyVisible": false,
+      "verticalClips": [
+        {
+          "text": "π",
+          "ancestor": "katex-display",
+          "overTop": 4.02,
+          "overBottom": -53.02
+        }
+      ],
+      "verticalClipCount": 1
+    },
+    {
+      "surface": "diagnostic-integral",
+      "width": 768,
+      "viewport": 768,
+      "pageWidth": 768,
+      "renderers": 4,
+      "glyphs": 30,
+      "mathErrors": 0,
+      "legacyVisible": false,
+      "verticalClips": [
+        {
+          "text": "2",
+          "ancestor": "katex-display",
+          "overTop": -53.52,
+          "overBottom": 2.52
+        },
+        {
+          "text": "π",
+          "ancestor": "katex-display",
+          "overTop": 4.59,
+          "overBottom": -59.59
+        }
+      ],
+      "verticalClipCount": 2
+    },
+    {
+      "surface": "diagnostic-integral",
+      "width": 1280,
+      "viewport": 1280,
+      "pageWidth": 1280,
+      "renderers": 4,
+      "glyphs": 30,
+      "mathErrors": 0,
+      "legacyVisible": false,
+      "verticalClips": [
+        {
+          "text": "2",
+          "ancestor": "katex-display",
+          "overTop": -64.59,
+          "overBottom": 2.59
+        },
+        {
+          "text": "π",
+          "ancestor": "katex-display",
+          "overTop": 5.72,
+          "overBottom": -71.72
+        }
+      ],
+      "verticalClipCount": 2
+    },
+    {
+      "surface": "diagnostic-root",
+      "width": 360,
+      "viewport": 360,
+      "pageWidth": 360,
+      "renderers": 4,
+      "glyphs": 26,
+      "mathErrors": 0,
+      "legacyVisible": false,
+      "verticalClips": [],
+      "verticalClipCount": 0
+    },
+    {
+      "surface": "diagnostic-root",
+      "width": 768,
+      "viewport": 768,
+      "pageWidth": 768,
+      "renderers": 4,
+      "glyphs": 26,
+      "mathErrors": 0,
+      "legacyVisible": false,
+      "verticalClips": [],
+      "verticalClipCount": 0
+    },
+    {
+      "surface": "diagnostic-root",
+      "width": 1280,
+      "viewport": 1280,
+      "pageWidth": 1280,
+      "renderers": 4,
+      "glyphs": 26,
+      "mathErrors": 0,
+      "legacyVisible": false,
+      "verticalClips": [],
+      "verticalClipCount": 0
+    },
+    {
+      "surface": "diagnostic-system",
+      "width": 360,
+      "viewport": 360,
+      "pageWidth": 360,
+      "renderers": 4,
+      "glyphs": 30,
+      "mathErrors": 0,
+      "legacyVisible": false,
+      "verticalClips": [
+        {
+          "text": "⎩",
+          "ancestor": "katex-display",
+          "overTop": -47.08,
+          "overBottom": 5.08
+        },
+        {
+          "text": "⎧",
+          "ancestor": "katex-display",
+          "overTop": 16.64,
+          "overBottom": -58.64
+        }
+      ],
+      "verticalClipCount": 2
+    },
+    {
+      "surface": "diagnostic-system",
+      "width": 768,
+      "viewport": 768,
+      "pageWidth": 768,
+      "renderers": 4,
+      "glyphs": 30,
+      "mathErrors": 0,
+      "legacyVisible": false,
+      "verticalClips": [
+        {
+          "text": "⎩",
+          "ancestor": "katex-display",
+          "overTop": -52.42,
+          "overBottom": 5.42
+        },
+        {
+          "text": "⎧",
+          "ancestor": "katex-display",
+          "overTop": 18.38,
+          "overBottom": -65.37
+        }
+      ],
+      "verticalClipCount": 2
+    },
+    {
+      "surface": "diagnostic-system",
+      "width": 1280,
+      "viewport": 1280,
+      "pageWidth": 1280,
+      "renderers": 4,
+      "glyphs": 30,
+      "mathErrors": 0,
+      "legacyVisible": false,
+      "verticalClips": [
+        {
+          "text": "⎩",
+          "ancestor": "katex-display",
+          "overTop": -62.11,
+          "overBottom": 6.11
+        },
+        {
+          "text": "⎧",
+          "ancestor": "katex-display",
+          "overTop": 22.86,
+          "overBottom": -78.86
+        }
+      ],
+      "verticalClipCount": 2
+    },
+    {
+      "surface": "diagnostic-wide",
+      "width": 360,
+      "viewport": 360,
+      "pageWidth": 360,
+      "renderers": 4,
+      "glyphs": 101,
+      "mathErrors": 0,
+      "legacyVisible": false,
+      "verticalClips": [],
+      "verticalClipCount": 0
+    },
+    {
+      "surface": "diagnostic-wide",
+      "width": 768,
+      "viewport": 768,
+      "pageWidth": 768,
+      "renderers": 4,
+      "glyphs": 101,
+      "mathErrors": 0,
+      "legacyVisible": false,
+      "verticalClips": [
+        {
+          "text": "20",
+          "ancestor": "katex-display",
+          "overTop": -133.52,
+          "overBottom": 2.52
+        },
+        {
+          "text": "21",
+          "ancestor": "katex-display",
+          "overTop": -133.52,
+          "overBottom": 2.52
+        },
+        {
+          "text": "22",
+          "ancestor": "katex-display",
+          "overTop": -133.52,
+          "overBottom": 2.52
+        }
+      ],
+      "verticalClipCount": 3
+    },
+    {
+      "surface": "diagnostic-wide",
+      "width": 1280,
+      "viewport": 1280,
+      "pageWidth": 1280,
+      "renderers": 4,
+      "glyphs": 101,
+      "mathErrors": 0,
+      "legacyVisible": false,
+      "verticalClips": [
+        {
+          "text": "16",
+          "ancestor": "katex-display",
+          "overTop": -98.34,
+          "overBottom": 3.34
+        },
+        {
+          "text": "17",
+          "ancestor": "katex-display",
+          "overTop": -98.34,
+          "overBottom": 3.34
+        },
+        {
+          "text": "18",
+          "ancestor": "katex-display",
+          "overTop": -98.34,
+          "overBottom": 3.34
+        },
+        {
+          "text": "19",
+          "ancestor": "katex-display",
+          "overTop": -98.34,
+          "overBottom": 3.34
+        },
+        {
+          "text": "20",
+          "ancestor": "katex-display",
+          "overTop": -98.34,
+          "overBottom": 3.34
+        },
+        {
+          "text": "21",
+          "ancestor": "katex-display",
+          "overTop": -98.34,
+          "overBottom": 3.34
+        },
+        {
+          "text": "22",
+          "ancestor": "katex-display",
+          "overTop": -98.34,
+          "overBottom": 3.34
+        }
+      ],
+      "verticalClipCount": 7
+    },
+    {
+      "surface": "exam-live",
+      "width": 360,
+      "viewport": 360,
+      "pageWidth": 360,
+      "renderers": 4,
+      "glyphs": 30,
+      "mathErrors": 0,
+      "legacyVisible": false,
+      "verticalClips": [
+        {
+          "text": "π",
+          "ancestor": "katex-display",
+          "overTop": 4.02,
+          "overBottom": -53.02
+        }
+      ],
+      "verticalClipCount": 1
+    },
+    {
+      "surface": "exam-live",
+      "width": 768,
+      "viewport": 768,
+      "pageWidth": 768,
+      "renderers": 4,
+      "glyphs": 30,
+      "mathErrors": 0,
+      "legacyVisible": false,
+      "verticalClips": [
+        {
+          "text": "2",
+          "ancestor": "katex-display",
+          "overTop": -53.52,
+          "overBottom": 2.52
+        },
+        {
+          "text": "π",
+          "ancestor": "katex-display",
+          "overTop": 4.59,
+          "overBottom": -59.59
+        }
+      ],
+      "verticalClipCount": 2
+    },
+    {
+      "surface": "exam-live",
+      "width": 1280,
+      "viewport": 1280,
+      "pageWidth": 1280,
+      "renderers": 4,
+      "glyphs": 30,
+      "mathErrors": 0,
+      "legacyVisible": false,
+      "verticalClips": [
+        {
+          "text": "2",
+          "ancestor": "katex-display",
+          "overTop": -64.59,
+          "overBottom": 2.59
+        },
+        {
+          "text": "π",
+          "ancestor": "katex-display",
+          "overTop": 5.72,
+          "overBottom": -71.72
+        }
+      ],
+      "verticalClipCount": 2
+    },
+    {
+      "surface": "admin-preview",
+      "width": 360,
+      "viewport": 360,
+      "pageWidth": 360,
+      "renderers": 4,
+      "glyphs": 124,
+      "mathErrors": 0,
+      "legacyVisible": false,
+      "verticalClips": [],
+      "verticalClipCount": 0
+    },
+    {
+      "surface": "admin-preview",
+      "width": 768,
+      "viewport": 768,
+      "pageWidth": 768,
+      "renderers": 4,
+      "glyphs": 124,
+      "mathErrors": 0,
+      "legacyVisible": false,
+      "verticalClips": [],
+      "verticalClipCount": 0
+    },
+    {
+      "surface": "admin-preview",
+      "width": 1280,
+      "viewport": 1280,
+      "pageWidth": 1280,
+      "renderers": 4,
+      "glyphs": 124,
+      "mathErrors": 0,
+      "legacyVisible": false,
+      "verticalClips": [],
+      "verticalClipCount": 0
+    },
+    {
+      "surface": "teacher-draft",
+      "width": 360,
+      "viewport": 360,
+      "pageWidth": 360,
+      "renderers": 4,
+      "glyphs": 124,
+      "mathErrors": 0,
+      "legacyVisible": false,
+      "verticalClips": [],
+      "verticalClipCount": 0
+    },
+    {
+      "surface": "teacher-draft",
+      "width": 768,
+      "viewport": 768,
+      "pageWidth": 768,
+      "renderers": 4,
+      "glyphs": 124,
+      "mathErrors": 0,
+      "legacyVisible": false,
+      "verticalClips": [],
+      "verticalClipCount": 0
+    },
+    {
+      "surface": "teacher-draft",
+      "width": 1280,
+      "viewport": 1280,
+      "pageWidth": 1280,
+      "renderers": 4,
+      "glyphs": 124,
+      "mathErrors": 0,
+      "legacyVisible": false,
+      "verticalClips": [],
+      "verticalClipCount": 0
+    },
+    {
+      "surface": "teacher-report",
+      "width": 360,
+      "viewport": 360,
+      "pageWidth": 360,
+      "renderers": 8,
+      "glyphs": 131,
+      "mathErrors": 0,
+      "legacyVisible": false,
+      "verticalClips": [
+        {
+          "text": "π",
+          "ancestor": "katex-display",
+          "overTop": 3.36,
+          "overBottom": -36.36
+        },
+        {
+          "text": "⎩",
+          "ancestor": "katex-display",
+          "overTop": -31.06,
+          "overBottom": 2.06
+        },
+        {
+          "text": "⎧",
+          "ancestor": "katex-display",
+          "overTop": 11.42,
+          "overBottom": -40.42
+        }
+      ],
+      "verticalClipCount": 3
+    },
+    {
+      "surface": "teacher-report",
+      "width": 768,
+      "viewport": 768,
+      "pageWidth": 768,
+      "renderers": 8,
+      "glyphs": 131,
+      "mathErrors": 0,
+      "legacyVisible": false,
+      "verticalClips": [
+        {
+          "text": "π",
+          "ancestor": "katex-display",
+          "overTop": 3.91,
+          "overBottom": -41.91
+        },
+        {
+          "text": "⎩",
+          "ancestor": "katex-display",
+          "overTop": -36.39,
+          "overBottom": 3.39
+        },
+        {
+          "text": "⎧",
+          "ancestor": "katex-display",
+          "overTop": 13.17,
+          "overBottom": -46.17
+        }
+      ],
+      "verticalClipCount": 3
+    },
+    {
+      "surface": "teacher-report",
+      "width": 1280,
+      "viewport": 1280,
+      "pageWidth": 1280,
+      "renderers": 8,
+      "glyphs": 131,
+      "mathErrors": 0,
+      "legacyVisible": false,
+      "verticalClips": [
+        {
+          "text": "π",
+          "ancestor": "katex-display",
+          "overTop": 3.91,
+          "overBottom": -41.91
+        },
+        {
+          "text": "⎩",
+          "ancestor": "katex-display",
+          "overTop": -36.39,
+          "overBottom": 3.39
+        },
+        {
+          "text": "⎧",
+          "ancestor": "katex-display",
+          "overTop": 13.17,
+          "overBottom": -46.17
+        }
+      ],
+      "verticalClipCount": 3
+    },
+    {
+      "surface": "diagnostic-report",
+      "width": 360,
+      "viewport": 360,
+      "pageWidth": 360,
+      "renderers": 12,
+      "glyphs": 79,
+      "mathErrors": 0,
+      "legacyVisible": false,
+      "verticalClips": [
+        {
+          "text": "π",
+          "ancestor": "katex-display",
+          "overTop": 3.7,
+          "overBottom": -76.7
+        }
+      ],
+      "verticalClipCount": 1
+    },
+    {
+      "surface": "diagnostic-report",
+      "width": 768,
+      "viewport": 768,
+      "pageWidth": 768,
+      "renderers": 12,
+      "glyphs": 79,
+      "mathErrors": 0,
+      "legacyVisible": false,
+      "verticalClips": [
+        {
+          "text": "π",
+          "ancestor": "katex-display",
+          "overTop": 4.47,
+          "overBottom": -48.47
+        }
+      ],
+      "verticalClipCount": 1
+    },
+    {
+      "surface": "diagnostic-report",
+      "width": 1280,
+      "viewport": 1280,
+      "pageWidth": 1280,
+      "renderers": 12,
+      "glyphs": 79,
+      "mathErrors": 0,
+      "legacyVisible": false,
+      "verticalClips": [
+        {
+          "text": "π",
+          "ancestor": "katex-display",
+          "overTop": 4.47,
+          "overBottom": -48.47
+        }
+      ],
+      "verticalClipCount": 1
+    }
+  ],
+  "pageErrors": [],
+  "unhandledAPI": []
+}

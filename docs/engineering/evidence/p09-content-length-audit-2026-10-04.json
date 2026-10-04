@@ -1,0 +1,1194 @@
+{
+  "checked_at": "2026-10-04",
+  "scope": "stage active bank; canonical question and option projection per visible raw option index; TeX source lengths are triage, not visible text length or confirmed defects",
+  "mutations": false,
+  "total": 37264,
+  "active": 34267,
+  "question_gt250": 1414,
+  "question_gt500": 92,
+  "question_gt1000": 5,
+  "question_max": 1399,
+  "tasks_option_gt120": 194,
+  "tasks_option_gt250": 55,
+  "option_max": 1754,
+  "qa_fixture_phrase_rows": 0,
+  "length_cue_review_count": 12,
+  "review_queue": [
+    {
+      "id": "G5_TB_68_1675",
+      "question_length": 1399,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_1_1_1_1",
+      "question_length": 1265,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G5_TB_69_1681",
+      "question_length": 1195,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G9_TB_6_72",
+      "question_length": 1154,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G5_TB_58_1380",
+      "question_length": 1068,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_§2_2",
+      "question_length": 997,
+      "option_max": 178,
+      "option_min": 50,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G5_TB_68_1672",
+      "question_length": 912,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G5_TB_69_1692",
+      "question_length": 801,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_8_4_6",
+      "question_length": 774,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "DIFF_G6_S25_02_C_03",
+      "question_length": 767,
+      "option_max": 15,
+      "option_min": 14,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G6_TB_124–125_1047.5",
+      "question_length": 722,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "DIFF_G7_S03_01_C_02",
+      "question_length": 719,
+      "option_max": 7,
+      "option_min": 3,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G6_TB_124–125_1047.6",
+      "question_length": 710,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G6_TB_124–125_1047.2",
+      "question_length": 703,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G6_TB_35_1303",
+      "question_length": 703,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_10_4*_4",
+      "question_length": 701,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G9_TB_5_2",
+      "question_length": 698,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G6_TB_124–125_1051.3",
+      "question_length": 688,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G6_TB_124–125_1051.1",
+      "question_length": 687,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G6_TB_124–125_1051.2",
+      "question_length": 687,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G6_TB_124–125_1051.4",
+      "question_length": 684,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_10_4*_3",
+      "question_length": 682,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G9_TB_5_67",
+      "question_length": 682,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "DIFF_G6_S07_02_C_03",
+      "question_length": 679,
+      "option_max": 5,
+      "option_min": 4,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_22_3_22_3_3",
+      "question_length": 669,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_22_3_22_3_2",
+      "question_length": 668,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "DIFF_G7_S03_01_C_01",
+      "question_length": 667,
+      "option_max": 5,
+      "option_min": 5,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "DIFF_G6_S25_02_C_02",
+      "question_length": 657,
+      "option_max": 5,
+      "option_min": 5,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "GEN_G6_S47_04_C_01",
+      "question_length": 655,
+      "option_max": 8,
+      "option_min": 4,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G5_TB_30_503",
+      "question_length": 647,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_22_3_22_3_1",
+      "question_length": 639,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G9_TB_37_483_1.2",
+      "question_length": 639,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G9_TB_37_483_1.3",
+      "question_length": 639,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G6_TB_81–83_678.1",
+      "question_length": 634,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G9_TB_37_483_1.1",
+      "question_length": 625,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "DIFF_G6_S10_01_C_01",
+      "question_length": 623,
+      "option_max": 11,
+      "option_min": 9,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G6_TB_124–125_1048.3",
+      "question_length": 598,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G6_TB_124–125_1048.4",
+      "question_length": 598,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_22_4_1",
+      "question_length": 597,
+      "option_max": 33,
+      "option_min": 15,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G6_TB_124–125_1048.1",
+      "question_length": 597,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G6_TB_124–125_1048.2",
+      "question_length": 597,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G6_TB_124–125_1046.1",
+      "question_length": 594,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G6_TB_124–125_1048.5",
+      "question_length": 594,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G6_TB_124–125_1048.6",
+      "question_length": 594,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_1_3_1_11_2",
+      "question_length": 591,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G6_TB_124–125_1046.3",
+      "question_length": 591,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_1_3_1_11_1",
+      "question_length": 590,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G6_TB_124–125_1046.2",
+      "question_length": 588,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_1_3_1_11_3",
+      "question_length": 584,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G7_ALG_31_20",
+      "question_length": 583,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "GEN_G6_S38_01_C_01",
+      "question_length": 578,
+      "option_max": 6,
+      "option_min": 6,
+      "option_count": 3,
+      "length_cue_review": false
+    },
+    {
+      "id": "DIFF_G7_S03_01_C_03",
+      "question_length": 574,
+      "option_max": 10,
+      "option_min": 8,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_8_4_5",
+      "question_length": 571,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "ds_llm_5b8a471a3d2b",
+      "question_length": 570,
+      "option_max": 6,
+      "option_min": 5,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_23_1_23_1_1",
+      "question_length": 563,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G5_TB_6_198.3",
+      "question_length": 561,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G5_TB_6_198.2",
+      "question_length": 558,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "DIFF_G6_S10_01_C_02",
+      "question_length": 557,
+      "option_max": 11,
+      "option_min": 10,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "DIFF_G7_S05_02_C_01",
+      "question_length": 553,
+      "option_max": 9,
+      "option_min": 8,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G5_TB_6_198.1",
+      "question_length": 553,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_4_1_3",
+      "question_length": 552,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "DIFF_G6_S37_02_C_02",
+      "question_length": 547,
+      "option_max": 15,
+      "option_min": 14,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_?_267_а",
+      "question_length": 546,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "DIFF_G6_S47_01_C_01",
+      "question_length": 540,
+      "option_max": 6,
+      "option_min": 6,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "DIFF_G5_S09_01_C_01",
+      "question_length": 540,
+      "option_max": 5,
+      "option_min": 5,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_?_268_а",
+      "question_length": 540,
+      "option_max": 3,
+      "option_min": 3,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "DIFF_G6_S07_01_C_03",
+      "question_length": 534,
+      "option_max": 5,
+      "option_min": 5,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_?_265",
+      "question_length": 533,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_23_1_1_3",
+      "question_length": 532,
+      "option_max": 60,
+      "option_min": 3,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_8_4_4",
+      "question_length": 532,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "DIFF_G5_S07_01_C_02",
+      "question_length": 531,
+      "option_max": 19,
+      "option_min": 18,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "GEN_G6_S36_02_C_02",
+      "question_length": 530,
+      "option_max": 4,
+      "option_min": 4,
+      "option_count": 1,
+      "length_cue_review": false
+    },
+    {
+      "id": "GEN_G6_S36_04_C_03",
+      "question_length": 529,
+      "option_max": 4,
+      "option_min": 4,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G5_TB_30_502",
+      "question_length": 529,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_23_1_1_6",
+      "question_length": 527,
+      "option_max": 118,
+      "option_min": 3,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G5_TB_35_615",
+      "question_length": 524,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G5_TB_6_85.1",
+      "question_length": 523,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "ds_llm_0a5197c2a03a",
+      "question_length": 522,
+      "option_max": 12,
+      "option_min": 8,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "DIFF_G5_S44_01_C_03",
+      "question_length": 521,
+      "option_max": 17,
+      "option_min": 4,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "DIFF_G5_S44_02_C_03",
+      "question_length": 518,
+      "option_max": 17,
+      "option_min": 4,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_9_7*_9_51",
+      "question_length": 518,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "GEN_G6_S46_01_C_02",
+      "question_length": 516,
+      "option_max": 5,
+      "option_min": 5,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "GEN_G5_S15_01_09",
+      "question_length": 514,
+      "option_max": 22,
+      "option_min": 19,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "DIFF_G6_S15_03_C_02",
+      "question_length": 513,
+      "option_max": 5,
+      "option_min": 4,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G5_TB_11_438.1",
+      "question_length": 512,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G5_TB_6_85.3",
+      "question_length": 511,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "GEN_G6_S46_01_C_01",
+      "question_length": 510,
+      "option_max": 4,
+      "option_min": 4,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G5_TB_38_1521",
+      "question_length": 509,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G5_TB_6_85.2",
+      "question_length": 505,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "GEN_G5_S05_02_10",
+      "question_length": 503,
+      "option_max": 5,
+      "option_min": 3,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_10_5*_10_23*",
+      "question_length": 503,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G5_TB_11_438.2",
+      "question_length": 503,
+      "option_max": 0,
+      "option_min": 0,
+      "option_count": 0,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_5_2_1_2",
+      "question_length": 378,
+      "option_max": 347,
+      "option_min": 94,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_5_2_1_1",
+      "question_length": 324,
+      "option_max": 285,
+      "option_min": 103,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_5_3_5_3_1",
+      "question_length": 283,
+      "option_max": 293,
+      "option_min": 157,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G9_TB_ДГ5_636_2",
+      "question_length": 257,
+      "option_max": 258,
+      "option_min": 86,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_§3_3",
+      "question_length": 244,
+      "option_max": 252,
+      "option_min": 103,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G9_TB_31_636_1",
+      "question_length": 232,
+      "option_max": 458,
+      "option_min": 377,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_6_3_6_3_1",
+      "question_length": 204,
+      "option_max": 302,
+      "option_min": 124,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_§24_2_4",
+      "question_length": 201,
+      "option_max": 483,
+      "option_min": 73,
+      "option_count": 4,
+      "length_cue_review": true
+    },
+    {
+      "id": "G11_TB_2_6",
+      "question_length": 175,
+      "option_max": 465,
+      "option_min": 193,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_§3_2",
+      "question_length": 175,
+      "option_max": 284,
+      "option_min": 56,
+      "option_count": 4,
+      "length_cue_review": true
+    },
+    {
+      "id": "ds_llm_7c36694c8cba",
+      "question_length": 172,
+      "option_max": 321,
+      "option_min": 94,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G9_TB_31_629",
+      "question_length": 169,
+      "option_max": 262,
+      "option_min": 118,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_2_2",
+      "question_length": 168,
+      "option_max": 376,
+      "option_min": 197,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_22_5_3",
+      "question_length": 153,
+      "option_max": 482,
+      "option_min": 86,
+      "option_count": 4,
+      "length_cue_review": true
+    },
+    {
+      "id": "G9_TB_ЗПТ_883",
+      "question_length": 151,
+      "option_max": 289,
+      "option_min": 115,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_5_3_10",
+      "question_length": 140,
+      "option_max": 420,
+      "option_min": 110,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_5_2_17_4",
+      "question_length": 131,
+      "option_max": 309,
+      "option_min": 277,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G9_TB_ЗПТ_888",
+      "question_length": 124,
+      "option_max": 254,
+      "option_min": 141,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_22_5_5",
+      "question_length": 123,
+      "option_max": 298,
+      "option_min": 169,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_5_2_17_2",
+      "question_length": 122,
+      "option_max": 283,
+      "option_min": 188,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_2_1",
+      "question_length": 119,
+      "option_max": 350,
+      "option_min": 59,
+      "option_count": 4,
+      "length_cue_review": true
+    },
+    {
+      "id": "ds_llm_613af5ca35a6",
+      "question_length": 117,
+      "option_max": 262,
+      "option_min": 140,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_22_1_2",
+      "question_length": 115,
+      "option_max": 423,
+      "option_min": 401,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_§9_3_4",
+      "question_length": 115,
+      "option_max": 276,
+      "option_min": 98,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_§9_3_3",
+      "question_length": 105,
+      "option_max": 288,
+      "option_min": 76,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_§9_3_2",
+      "question_length": 103,
+      "option_max": 341,
+      "option_min": 67,
+      "option_count": 4,
+      "length_cue_review": true
+    },
+    {
+      "id": "G11_TB_§9_3_6",
+      "question_length": 103,
+      "option_max": 281,
+      "option_min": 118,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "ds_llm_c1ebc4ce40c7",
+      "question_length": 103,
+      "option_max": 269,
+      "option_min": 94,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_22_2_4",
+      "question_length": 95,
+      "option_max": 305,
+      "option_min": 207,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_§11_3_1",
+      "question_length": 90,
+      "option_max": 317,
+      "option_min": 33,
+      "option_count": 4,
+      "length_cue_review": true
+    },
+    {
+      "id": "G11_TB_22_2_3",
+      "question_length": 88,
+      "option_max": 336,
+      "option_min": 219,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_§26_11_2",
+      "question_length": 85,
+      "option_max": 262,
+      "option_min": 84,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G9_TB_УПК_811_1",
+      "question_length": 84,
+      "option_max": 300,
+      "option_min": 43,
+      "option_count": 4,
+      "length_cue_review": true
+    },
+    {
+      "id": "G11_TB_22_2_1",
+      "question_length": 83,
+      "option_max": 294,
+      "option_min": 56,
+      "option_count": 4,
+      "length_cue_review": true
+    },
+    {
+      "id": "G11_TB_21_1_1_21_1_1_4",
+      "question_length": 82,
+      "option_max": 268,
+      "option_min": 201,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "ds_llm_1931248be21b",
+      "question_length": 77,
+      "option_max": 303,
+      "option_min": 100,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_22_3_22_3_4",
+      "question_length": 76,
+      "option_max": 356,
+      "option_min": 122,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_6_3_6_3_3",
+      "question_length": 72,
+      "option_max": 271,
+      "option_min": 205,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_§11_2_3",
+      "question_length": 70,
+      "option_max": 336,
+      "option_min": 143,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_5_3_6_3",
+      "question_length": 69,
+      "option_max": 1754,
+      "option_min": 26,
+      "option_count": 4,
+      "length_cue_review": true
+    },
+    {
+      "id": "G11_TB_5_3_6_4",
+      "question_length": 68,
+      "option_max": 1264,
+      "option_min": 529,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_§11_1_3",
+      "question_length": 68,
+      "option_max": 544,
+      "option_min": 95,
+      "option_count": 4,
+      "length_cue_review": true
+    },
+    {
+      "id": "G11_TB_21_1_1_21_1_1_2",
+      "question_length": 68,
+      "option_max": 278,
+      "option_min": 260,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_§26_11_1",
+      "question_length": 67,
+      "option_max": 252,
+      "option_min": 87,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_§11_2_2",
+      "question_length": 66,
+      "option_max": 289,
+      "option_min": 116,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_§5_5_63_a",
+      "question_length": 64,
+      "option_max": 284,
+      "option_min": 156,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_§16_4",
+      "question_length": 62,
+      "option_max": 379,
+      "option_min": 150,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_§19_16_5",
+      "question_length": 61,
+      "option_max": 344,
+      "option_min": 100,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_21_1_1_21_1_1_1",
+      "question_length": 61,
+      "option_max": 301,
+      "option_min": 232,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_2_9_3",
+      "question_length": 60,
+      "option_max": 526,
+      "option_min": 216,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_2_9_2",
+      "question_length": 60,
+      "option_max": 366,
+      "option_min": 242,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_§11_1_1",
+      "question_length": 60,
+      "option_max": 341,
+      "option_min": 85,
+      "option_count": 4,
+      "length_cue_review": true
+    },
+    {
+      "id": "G11_TB_§11_4_2",
+      "question_length": 57,
+      "option_max": 339,
+      "option_min": 40,
+      "option_count": 4,
+      "length_cue_review": true
+    },
+    {
+      "id": "G11_TB_1_4_3",
+      "question_length": 48,
+      "option_max": 320,
+      "option_min": 103,
+      "option_count": 4,
+      "length_cue_review": false
+    },
+    {
+      "id": "G11_TB_6_1_5",
+      "question_length": 42,
+      "option_max": 268,
+      "option_min": 144,
+      "option_count": 4,
+      "length_cue_review": false
+    }
+  ]
+}

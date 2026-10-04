@@ -53,5 +53,6 @@
     "preview_git_checkout_head": "e0e8c665be0523750fafc86e840689afbbdc7d59",
     "preview_git_checkout_dirty_count": 0,
     "mutations": false
-  }
+  },
+  "superseded_by_frontend_sha": "cfd80b326767bb9366ea35f9a7c0219e1819acea"
 }

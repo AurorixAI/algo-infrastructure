@@ -1,5 +1,8 @@
 # P09 frontend: проверенный кандидат, stage пока прежний
 
+**Заменён уточнённым кандидатом:** [cfd80b3 с переносами и отступами](2026-10-04-formula-hybrid-candidate.md).
+Ни один из двух кандидатов в этой работе на stage не публиковался.
+
 4 октября 2026. Исправление сохранено в согласованной `CEO`:
 [`b389ee87d824a88e502eeb81f7230334307cbeca`](https://github.com/AurorixAI/algo-front/commit/b389ee87d824a88e502eeb81f7230334307cbeca).
 [Машиночитаемые bindings и проверки](2026-10-04-formula-candidate.json).

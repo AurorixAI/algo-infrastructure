@@ -1,0 +1,36 @@
+{
+  "date": "2026-10-04",
+  "status": "local_browser_and_GitHub_CI_accepted_pushed_CEO_stage_not_deployed",
+  "frontend_sha": "cfd80b326767bb9366ea35f9a7c0219e1819acea",
+  "frontend_tree": "31dd7fc178d66d622f3f3826d539c0eb8225837a",
+  "supersedes_frontend_sha": "b389ee87d824a88e502eeb81f7230334307cbeca",
+  "source_archive_sha256": "6dad6b84bd4d4ee9eb59795d12eb8cd2c202456a75d7031b46412b54246876bf",
+  "local_standalone_build_id": "5LZzScnOfB8jq8wQH7X2j",
+  "checks": {
+    "display_tests": 9,
+    "workflow_guards": 8,
+    "typecheck": "passed",
+    "production_build": "passed",
+    "browser_states": 30,
+    "glyph_clips": 0,
+    "row_overlaps": 0,
+    "raw_tex": 0,
+    "document_body_overflow": 0,
+    "sum_wraps_without_horizontal_scroll": true,
+    "matrix_renders_48_fractions_and_scrolls": true
+  },
+  "stage_mutations": false,
+  "content_mutations": false,
+  "schema_mutations": false,
+  "limits": [
+    "Browser HTTP fixtures are synthetic; backend/RBAC/model acceptance is separate.",
+    "Source archive and local standalone bundle are not an immutable release image."
+  ],
+  "source_CI": {
+    "run_id": 37211669477,
+    "url": "https://github.com/AurorixAI/algo-front/actions/runs/37211669477",
+    "conclusion": "success",
+    "deploy": "skipped",
+    "evidence": "evidence/p09-hybrid-git-ci-2026-10-04.json"
+  }
+}

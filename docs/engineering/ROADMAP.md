@@ -6,13 +6,13 @@
 
 **К чему идём:** исправленный банк выдачи → согласованный уровень и навыки → понятный профессиональный отчёт и учебный старт → надёжный ежедневный сценарий учителя/админа/экзаменов → пилот с внешней оценкой → расширенный production.
 
-**Текущий приоритет — N00: зафиксировать принятые изменения в CEO, привязать текущий stage к Git и подключить проектные навыки. После N00 следующий этап — N01.** Сначала сохранить исходные задания/связанные попытки, затем разобрать все шесть находок T01–T06. Исправления из P07/P08 пока не применены. Успешная остановка конкретной попытки на 30 не закрывает найденные дефекты отчёта.
+**N00 завершён: принятые изменения сохранены в CEO, происхождение текущего stage сверено, CI прошёл, проектные навыки подключены. Следующий этап — N01.** Сначала сохранить исходные задания/связанные попытки, затем разобрать все шесть находок T01–T06. Исправления из P07/P08 пока не применены. Успешная остановка конкретной попытки на 30 не закрывает найденные дефекты отчёта.
 
 Сведения P02–P08 относятся к проверкам 02–03.10.2026. Тогда объединялся план; это не новая проверка сегодняшнего runtime. Текущая фаза N00 от 04.10.2026 включает Git-фиксацию, сверку происхождения stage, CI и проектные навыки; её фактические результаты отражаются отдельно в release record.
 
 ## N00. Git, происхождение stage и правила разработки
 
-**Приоритет:** P0. **Статус:** в работе 04.10.2026.
+**Приоритет:** P0. **Статус:** выполнено в согласованном объёме 04.10.2026.
 
 - Сверить все изменённые репозитории с работающим stage; сохранить полные commit SHA и соответствие runtime/source hashes.
 - Коммитить и пушить только согласованную CEO; запускать её CI без автоматического деплоя. develop/main не продвигать в этой задаче.
@@ -20,7 +20,7 @@
 - Сохранить в Git основной план, обезличенное выполненное/ограничения и проектные навыки; секреты, дампы и персональные материалы остаются вне Git.
 - Отдельно различать legacy overlay, совпадающий с зафиксированным кодом, и новый image, действительно собранный из Git-коммита.
 
-Приёмка: remote CEO содержит все принятые изменения; CI имеет явный результат; текущий runtime сопоставлен с зафиксированным кодом; навыки доступны в workspace. Полный multi-repository promotion и combined rollback остаются дальнейшим gate, если ещё не выполнены.
+Приёмка выполнена: пять application CEO и infrastructure опубликованы; шесть workflow baseline прошли, deploy CEO пропущен; 255 backend и 106 frontend source/public hashes совпали с committed files; навыки доступны в workspace. Stage/production identities и банк не менялись. [Git checkpoint и точные доказательства](../releases/2026-10-04-git-checkpoint.md). Полный multi-repository promotion и combined rollback остаются gate N07.
 
 ## Что уже сделано и повторно не открываем
 
@@ -34,6 +34,8 @@
 - [x] **D08 — Аудиты отчёта и конкретной попытки.** P07: 16 находок и 39 браузерных состояний. P08: штатная остановка на 30, 30 математических разборов и 50 проверок чувствительности; установлена потеря четырёх Deep Scan маршрутов. Аудиты завершены, выявленные исправления пока запланированы. [Доказательство](evidence/p08-specific-attempt-verification-2026-10-03.md).
 
 **Границы закрытия:** A1 принят владельцем, A2 принят в проверенном stage-контуре; A3/A5 прошли базовую приёмку, но расширенная матрица открыта. A4/H1/H2/H3 и полные B/C/D остаются частичными. Код и тесты отдельных функций не означают принятие всего продукта. Наборы тестов разных версий и повторные прогоны не суммируем.
+
+- [x] **D09 — Git и инженерный процесс.** Принятый код, тесты, план и навыки сохранены в CEO; GitHub CI прошёл, происхождение legacy stage сопоставлено с Git. Новый Git image build и полный promotion/rollback ещё не выполнены. [Доказательство](../releases/2026-10-04-git-checkpoint.md).
 
 ## Порядок дальнейшей работы
 
@@ -186,11 +188,13 @@ N01 → N02 → N03 → N04 → N05 → N07 → N08 → N09 → N10 → N11 → 
 
 **Результат:** Релиз можно воспроизвести, проверить и откатить без потери результатов.
 
+**Выполнено 04.10:** принятые изменения опубликованы в CEO пяти приложений и infrastructure; GitHub CI baseline прошёл без deploy. Content suite — 375 passed без skipped/deselected; прежние пять исключений сняты. Это приёмка исходников конкретных SHA, а не новой immutable сборки или полного rollback. [Git checkpoint](../releases/2026-10-04-git-checkpoint.md).
+
 **Работа:**
 
 - Завершить расширенный fixture из 10 задач и online-exam visual coverage; закрепить image/source/schema/fixture в одном manifest.
 - Проверить combined rollback/backup restore на изолированной копии, порядок миграций и старые образы; production не использовать как полигон.
-- Подготовить и выполнить разрешённый remote CI, расширенную RBAC/конкурентную PostgreSQL матрицу. Перепроверить актуальность пяти старых content-исключений: P06 suite уже прошла без исключений.
+- Выполнить расширенную RBAC/конкурентную PostgreSQL матрицу. Для следующих pushed SHA требовать успешный CI и отдельную приёмку точных продвигаемых images; прежние пять content-исключений не переносить как открытый долг.
 - Разобрать legacy analytics model/table drift на копии; подключить request ID forwarding, alerts и runbooks failed report/stuck invite.
 - T-LATEX-01 выполнить как отдельную сверку служебных аттестаций/хешей без правок решённых примеров.
 
@@ -500,13 +504,13 @@ P08 дополняет R15 реальной потерей маршрутов о
 
 ### A4. Целостность релиза и соответствие контуров
 
-**Приоритет:** P0. **Статус:** Stage release/core acceptance пройдены; полный release/rollback/CI gate открыт.
+**Приоритет:** P0. **Статус:** Stage core acceptance и CEO CI пройдены; immutable image promotion и полный rollback gate открыты.
 
 **Уже сделано и проверено по коду/артефактам:**
 
 - На stage исторические release labels/source hashes всех пяти сервисов, схема q8r9s0t1u2v3, общий токен, preview-адреса и постоянное хранилище рисунков.
 - Последний дамп восстановлен: все 16 таблиц точно совпали с архивом; 45/45 файлов активного банка доступны.
-- Локально подготовлены CI --no-deps и nginx reload; YAML/shell проверены.
+- Локально подготовлены CI --no-deps и nginx reload; YAML/shell проверены. 04.10 эти workflow и preview-compose опубликованы в CEO; GitHub CI baseline пяти приложений и infrastructure прошёл без deploy. [Git checkpoint](../releases/2026-10-04-git-checkpoint.md).
 - Подготовлен проверенный A2 Linux image/source manifest и сохранены прежние образы/auth/diagnostic dumps. Он не включает более поздние P0.2 исправления.
 - Auth empty upgrade исправлен: baseline ограничен исходными таблицами, review migration учитывает уже существующие колонки/FK. Реальный PostgreSQL empty/repeat/checkpoint rollback/re-upgrade drill сохранил sentinel rows.
 - P0.3: общий архив текущих A2 + P0.2 исходников подготовлен; 1 668 файлов сверены по SHA-256, env исключены. Content включён из неизменённого base commit. Архив использован для сборки и проверки Linux images; результаты ниже.
@@ -518,7 +522,7 @@ P08 дополняет R15 реальной потерей маршрутов о
 
 **Осталось или не подтверждено:**
 
-- CI/preview-compose не опубликованы в Git; удалённые Actions этой версии не запускались.
+- Новые images ещё не собраны и не продвинуты из pushed exact Git SHA. Совпадение committed source hashes с legacy stage overlays подтверждено отдельно; оно не заменяет приёмку immutable images, миграций и общего promotion manifest.
 - Базовая приёмка опубликованного candidate пройдена; fixture из 10 задач и online-exam visual coverage ещё открыты.
 - Auth rollback проверен на изолированной копии; полный rollback релиза/всех сервисов и отдельный release migration job ещё требуют проверки.
 - Production намеренно оставлен прежним; его отличие от develop-stage сейчас ожидаемо. Равенство проверять при продвижении того же релиза, а не обновлять production ради формальной parity.
@@ -848,7 +852,7 @@ P08 дополняет R15 реальной потерей маршрутов о
 
 **Осталось или не подтверждено:**
 
-- Надёжность всего банка не доказана одной миграцией/дампом или старым exact_bank_check. P06 content suite прошла 375 тестов без пропусков; старые исключения в CI/workflow проверить отдельно в N07.
+- Надёжность всего банка не доказана одной миграцией/дампом или старым exact_bank_check. P06 content suite прошла 375 тестов без пропусков; 04.10 полный GitHub CI CEO также прошёл 375 тестов без прежних пяти исключений. Этот исторический CI-долг закрыт; содержательная проверка банка остаётся отдельной задачей.
 - Many-to-many task_skills/confidence/source ещё не реализован в 16 таблицах актуального content-банка.
 - 1 380 активных задач без skill_id — намеренное состояние, подтверждённое владельцем. Это не дефект для автоматического исправления.
 
@@ -958,23 +962,22 @@ P08 дополняет R15 реальной потерей маршрутов о
 
 ### H1. Матрица тестов и качество проверок
 
-**Приоритет:** P0/P1. **Статус:** Exact images и stage core проверены; CI/нагрузка/широкая матрица открыты.
+**Приоритет:** P0/P1. **Статус:** Исторические exact images, stage core и CEO CI проверены; нагрузка и расширенная матрица открыты.
 
 **Уже сделано и проверено по коду/артефактам:**
 
-- Текущие backend-наборы: auth 251, diagnostic 161, exam 227 — 639 passed. Content ранее 363 passed/5 deselected; исключения не считаются прошедшими.
+- Историческая P0.3 приёмка: auth 251, diagnostic 161, exam 227 — 639 passed; content 363 passed/5 deselected. Эти результаты не описывают сегодняшнюю CI suite и не суммируются с повторными прогонами.
 - A2: 13 Chrome checks, реальные PostgreSQL/Redis, atomic/replay/expiry/outbox/worker restart. P0.2: 431 cross-service HTTP checks, 12 viewport + 3 role browser checks, 9 selector tests, 4 просмотренные PDF-страницы.
 - Auth migration drill на PostgreSQL: empty → head → repeat → checkpoint rollback → head; записи сохранились. Платные модели выключены, fixtures синтетические.
-- В CI auth/diagnostic подготовлены обязательные PostgreSQL/Redis окружения и migration DB, во frontend — selector job; YAML и deploy shell всех 5 сервисов валидны.
+- В CI auth/diagnostic обязательны PostgreSQL/Redis окружения и migration DB, во frontend — selector job. Workflow пяти приложений и infrastructure опубликованы в CEO и прошли GitHub CI baseline 04.10 без deploy: auth 251, diagnostic 193, content 375, exam 227; frontend 9 selector tests, TypeScript и production build. Content suite прошла без skipped/deselected и прежних пяти исключений. [Точные SHA и CI evidence](../releases/2026-10-04-git-checkpoint.md).
 - Те же 639 backend/431 HTTP/15 Chrome и четыре PDF-страницы прошли на exact Linux images. На опубликованном stage отдельно прошли 431 HTTP, 13 lifecycle, три actual role и пять expiry/privacy checks; повторные прогоны не суммируются.
 
 - P04: 166 diagnostic tests на exact Linux image с изолированными PostgreSQL/Redis; пять новых stopping regressions. Real stage response trace, persisted stop_reason/SE/coverage/report flags и запрет дополнительного ответа сверены отдельно.
 
 **Осталось или не подтверждено:**
 
-- CI изменения не опубликованы; удалённые jobs не запускались. Полная browser/load/visual матрица продукта остаётся открытой.
+- Полная browser/load/visual/RBAC матрица продукта остаётся открытой. Успешный CEO CI baseline не заменяет её или проверки следующего immutable image.
 - Exam unit/API suite использует SQLite/mock auth; отдельная P0.2 матрица использует реальный HTTP и PostgreSQL. Полная проверка PostgreSQL конкуренции exam — отдельный этап.
-- Историческая P0.3 suite исключала пять content-проверок. В P06 content suite прошла 375 тестов без пропусков; в N07 проверить актуальные workflow и исключения, не переносить старый долг автоматически. Служебные warnings оценивать отдельно.
 - T-LATEX-01 (P1, служебный учёт): 14 question и 11 answer active-пар аттестаций отличаются от текущих значений. Сверить записи отдельно, не считать это дефектом математических примеров и не менять выбор question_latex.
 
 **Следующее действие:** Выполнять остаточные критерии в N05, N07, N08, N09, N11 по единой очереди выше; подробный объём и приёмка указаны в этих этапах.
@@ -983,7 +986,7 @@ P08 дополняет R15 реальной потерей маршрутов о
 
 - [ ] Повторяемая матрица unit → real service integration → API contract → browser → visual → migration/load; P0 не закрывается только наличием тестового файла.
 
-**Доказательства:** [123 passed](EVIDENCE_INDEX.md); [209 passed](EVIDENCE_INDEX.md); [SQLite и mocked auth](https://github.com/AurorixAI/exam-service/blob/CEO/tests/conftest.py#L1); [CI exclusions](https://github.com/AurorixAI/content-service/blob/CEO/.github/workflows/deploy.yml#L45); [Итоговая P0.2 приёмка с границами](EVIDENCE_INDEX.md); [5 workflow проверены](EVIDENCE_INDEX.md); [P0.3: exact images, опубликованный stage и границы приёмки](EVIDENCE_INDEX.md).
+**Доказательства:** [123 passed](EVIDENCE_INDEX.md); [209 passed](EVIDENCE_INDEX.md); [SQLite и mocked auth](https://github.com/AurorixAI/exam-service/blob/CEO/tests/conftest.py#L1); [GitHub CI CEO, полный content suite](../releases/evidence/git-ci-2026-10-04.json); [Итоговая P0.2 приёмка с границами](EVIDENCE_INDEX.md); [5 workflow проверены](EVIDENCE_INDEX.md); [P0.3: exact images, опубликованный stage и границы приёмки](EVIDENCE_INDEX.md).
 
 [P04: runtime и остановка](EVIDENCE_INDEX.md).
 
@@ -1025,11 +1028,11 @@ P08 дополняет R15 реальной потерей маршрутов о
 - Локальный P0.2 пройден, A2 Linux images подготовлены. Сверка после проверки: IDs 29 контейнеров, production nginx и stage bank fingerprint прежние.
 - Общий кандидат опубликован только на stage с явного разрешения; базовые lifecycle/RBAC/layout и image/runtime/content границы подтверждены. Production не опубликован.
 
-- P04 исправил runtime cap 25→42. Завершение попытки отделено от достижения точности; калибровка, load/rollback/CI и полный gate остаются открытыми.
+- P04 исправил runtime cap 25→42. Завершение попытки отделено от достижения точности; калибровка, нагрузка, combined rollback и приёмка нового immutable image остаются открытыми. CEO CI baseline принят отдельно 04.10.
 
 **Осталось или не подтверждено:**
 
-- Gate открыт: stage core acceptance пройдена; расширенный fixture, remote CI, P1 core flows/load и combined rollback ещё необходимы. Решённые LaTeX-примеры не переоткрываются.
+- Gate открыт: stage core acceptance и CEO CI baseline пройдены; расширенный fixture, P1 core flows/load, приёмка точного нового image и combined rollback ещё необходимы. Решённые LaTeX-примеры не переоткрываются.
 - Для production нужен отдельный завершённый gate и явное разрешение. Stage-приёмка не означает готовность полного продукта.
 
 **Следующее действие:** Выполнять остаточные критерии в N10, N11 по единой очереди выше; подробный объём и приёмка указаны в этих этапах.

@@ -1,0 +1,287 @@
+{
+  "captured_date": "2026-10-04",
+  "timezone": "Asia/Tashkent",
+  "scope": "Exact application HEAD commits and infrastructure configuration baseline; later documentation record commits have their own Actions run. No deployment.",
+  "runs": [
+    {
+      "repo": "algo-front",
+      "sha": "8c2e72acbee22bb81b0fe407a3ca1dafbfaa0357",
+      "runs": [
+        {
+          "id": 37189458645,
+          "name": "Deploy",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/AurorixAI/algo-front/actions/runs/37189458645",
+          "jobs": [
+            {
+              "id": 111398423247,
+              "name": "build",
+              "status": "completed",
+              "conclusion": "success",
+              "failed_steps": []
+            },
+            {
+              "id": 111398724930,
+              "name": "deploy",
+              "status": "completed",
+              "conclusion": "skipped",
+              "failed_steps": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repo": "auth-service",
+      "sha": "9675cbe769e42dcad82fa05a088abf3c826d70a3",
+      "runs": [
+        {
+          "id": 37189460771,
+          "name": "Deploy",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/AurorixAI/auth-services/actions/runs/37189460771",
+          "jobs": [
+            {
+              "id": 111398429496,
+              "name": "test",
+              "status": "completed",
+              "conclusion": "success",
+              "failed_steps": []
+            },
+            {
+              "id": 111398547631,
+              "name": "deploy",
+              "status": "completed",
+              "conclusion": "skipped",
+              "failed_steps": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repo": "diagnostic-service",
+      "sha": "b93a9a923fb17989f07b7dd8703196a894b29b99",
+      "runs": [
+        {
+          "id": 37189881515,
+          "name": "Deploy",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/AurorixAI/diagnostics-service/actions/runs/37189881515",
+          "jobs": [
+            {
+              "id": 111399665957,
+              "name": "test",
+              "status": "completed",
+              "conclusion": "success",
+              "failed_steps": []
+            },
+            {
+              "id": 111399793617,
+              "name": "deploy",
+              "status": "completed",
+              "conclusion": "skipped",
+              "failed_steps": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repo": "content-service",
+      "sha": "b71108365f40e8644c1864296cf21046553b2b95",
+      "runs": [
+        {
+          "id": 37189679266,
+          "name": "Deploy",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/AurorixAI/content-service/actions/runs/37189679266",
+          "jobs": [
+            {
+              "id": 111399074164,
+              "name": "test",
+              "status": "completed",
+              "conclusion": "success",
+              "failed_steps": []
+            },
+            {
+              "id": 111399219030,
+              "name": "deploy",
+              "status": "completed",
+              "conclusion": "skipped",
+              "failed_steps": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repo": "exam-service",
+      "sha": "c0ca477e53171ec0863592052c80b927ef93d380",
+      "runs": [
+        {
+          "id": 37189466409,
+          "name": "Deploy",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/AurorixAI/exam-service/actions/runs/37189466409",
+          "jobs": [
+            {
+              "id": 111398446309,
+              "name": "test",
+              "status": "completed",
+              "conclusion": "success",
+              "failed_steps": []
+            },
+            {
+              "id": 111398575785,
+              "name": "deploy",
+              "status": "completed",
+              "conclusion": "skipped",
+              "failed_steps": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repo": "algo-infrastructure",
+      "sha": "ac8db0d1ab4f9087afcf585159ad47c67b8c6271",
+      "runs": [
+        {
+          "id": 37189588417,
+          "name": "CI",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/AurorixAI/algo-infrastructure/actions/runs/37189588417",
+          "jobs": [
+            {
+              "id": 111398808706,
+              "name": "Keep internal callback contract explicit",
+              "status": "completed",
+              "conclusion": "success",
+              "failed_steps": []
+            },
+            {
+              "id": 111398808776,
+              "name": "Validate nginx configs",
+              "status": "completed",
+              "conclusion": "success",
+              "failed_steps": []
+            },
+            {
+              "id": 111398808809,
+              "name": "Shell script syntax",
+              "status": "completed",
+              "conclusion": "success",
+              "failed_steps": []
+            },
+            {
+              "id": 111398808843,
+              "name": "Validate compose files",
+              "status": "completed",
+              "conclusion": "success",
+              "failed_steps": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "test_counts": [
+    {
+      "repo": "algo-front",
+      "sha": "8c2e72acbee22bb81b0fe407a3ca1dafbfaa0357",
+      "run_url": "https://github.com/AurorixAI/algo-front/actions/runs/37189458645",
+      "job": "build",
+      "counts": [
+        "Ran 8 tests in 0.079s",
+        "# tests 9",
+        "# pass 9",
+        "# fail 0",
+        "# skipped 0"
+      ]
+    },
+    {
+      "repo": "auth-service",
+      "sha": "9675cbe769e42dcad82fa05a088abf3c826d70a3",
+      "run_url": "https://github.com/AurorixAI/auth-services/actions/runs/37189460771",
+      "job": "test",
+      "counts": [
+        "Ran 8 tests in 0.055s",
+        "251 passed, 3 warnings in 8.40s"
+      ]
+    },
+    {
+      "repo": "diagnostic-service",
+      "sha": "b93a9a923fb17989f07b7dd8703196a894b29b99",
+      "run_url": "https://github.com/AurorixAI/diagnostics-service/actions/runs/37189881515",
+      "job": "test",
+      "counts": [
+        "Ran 8 tests in 0.063s",
+        "193 passed, 1 warning in 6.08s"
+      ]
+    },
+    {
+      "repo": "content-service",
+      "sha": "b71108365f40e8644c1864296cf21046553b2b95",
+      "run_url": "https://github.com/AurorixAI/content-service/actions/runs/37189679266",
+      "job": "test",
+      "counts": [
+        "Ran 8 tests in 0.068s",
+        "375 passed, 1 warning in 9.87s"
+      ]
+    },
+    {
+      "repo": "exam-service",
+      "sha": "c0ca477e53171ec0863592052c80b927ef93d380",
+      "run_url": "https://github.com/AurorixAI/exam-service/actions/runs/37189466409",
+      "job": "test",
+      "counts": [
+        "Ran 8 tests in 0.066s",
+        "227 passed, 290 warnings in 6.35s"
+      ]
+    },
+    {
+      "repo": "algo-infrastructure",
+      "sha": "ac8db0d1ab4f9087afcf585159ad47c67b8c6271",
+      "run_url": "https://github.com/AurorixAI/algo-infrastructure/actions/runs/37189588417",
+      "job": "Keep internal callback contract explicit",
+      "counts": []
+    },
+    {
+      "repo": "algo-infrastructure",
+      "sha": "ac8db0d1ab4f9087afcf585159ad47c67b8c6271",
+      "run_url": "https://github.com/AurorixAI/algo-infrastructure/actions/runs/37189588417",
+      "job": "Validate nginx configs",
+      "counts": []
+    },
+    {
+      "repo": "algo-infrastructure",
+      "sha": "ac8db0d1ab4f9087afcf585159ad47c67b8c6271",
+      "run_url": "https://github.com/AurorixAI/algo-infrastructure/actions/runs/37189588417",
+      "job": "Shell script syntax",
+      "counts": [
+        "Ran 10 tests in 0.610s"
+      ]
+    },
+    {
+      "repo": "algo-infrastructure",
+      "sha": "ac8db0d1ab4f9087afcf585159ad47c67b8c6271",
+      "run_url": "https://github.com/AurorixAI/algo-infrastructure/actions/runs/37189588417",
+      "job": "Validate compose files",
+      "counts": []
+    }
+  ],
+  "rollup": {
+    "backend_passed": 1046,
+    "frontend_selector_passed": 9,
+    "deploy_guard_passed": 40,
+    "infrastructure_tests_passed": 10,
+    "content_deselected": 0
+  }
+}

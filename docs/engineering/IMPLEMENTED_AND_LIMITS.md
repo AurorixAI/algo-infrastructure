@@ -10,6 +10,7 @@
 - Безошибочной попытке больше не назначается ложный коррекционный план из-за накопленной Alpha. Исправлено обрезание подписи итогового уровня.
 - question_latex — заполненный канонический источник в UI/PDF/отчёте; намеренные деактивации и неподтверждённые рисунки сохранены.
 - Роли, текущий доступ к группе, отозванные права и history routing проверены; stage logging меньше раскрывает диагностические capability-коды.
+- Принятые исходники, тесты, workflow/preview-compose и навыки опубликованы в CEO. GitHub CI baseline пяти приложений и infrastructure прошёл без deploy; полный content suite — 375 passed без прежних пяти исключений. Точные SHA и результаты сохранены в [Git checkpoint](../releases/2026-10-04-git-checkpoint.md).
 
 Это улучшения устойчивости, полноты сохранения и внутренней логики. Процент роста качества или доказанную точность на школьниках этим измерением не назначаем.
 
@@ -21,12 +22,12 @@
 - Шесть конкретных задач T01–T06. Подтверждённое расхождение, неоднозначность постановки и ошибочное объяснение — разные виды дефектов; не менять ключ без доказательства.
 - LLM-ветка реализована, runtime ключ отсутствует. Качественный fallback обязателен; ключ не исправляет вычисленные данные отчёта.
 - Эмпирическая калибровка a/b/c и шкалы на внешнем критерии, качество банка и длительность на реальных учениках.
-- Remote CI, expanded fixture/roles/load, полный combined rollback/restore и production gate; статус уточняется release record.
+- Immutable image build/promotion из pushed Git SHA, expanded fixture/roles/load, полный combined rollback/restore и production gate. CEO CI baseline принят; каждый следующий commit и продвигаемый image требуют своей приёмки.
 
 ## Доказательства и честное происхождение
 
 [P06 приёмка](evidence/p06-diagnostic-acceptance-2026-10-03.md), [P07 аудит](evidence/p07-diagnostic-report-audit-2026-10-03.md), [P08 конкретная попытка](evidence/p08-specific-attempt-verification-2026-10-03.md). [Реестр исходных доказательств](EVIDENCE_INDEX.md).
 
-Существующие stage images были собраны из frozen archives/overlays. Совпадение их runtime hashes с новым Git-коммитом подтверждает состав, а не меняет историю сборки. После пуша commit/image/source/config bindings сохраняются в version-controlled release record. Новые релизы готовятся из pushed exact GitSHA.
+Существующие stage images были собраны из frozen archives/overlays. Совпадение их runtime hashes с новым Git-коммитом подтверждает состав, а не меняет историю сборки. Commit/image/source/config bindings сохранены в [version-controlled release record](../releases/2026-10-04-stage-git-binding.json). Новые релизы готовятся из pushed exact GitSHA.
 
-Предыдущая опубликованная exact-image приёмка: diagnostic193/content375, P03 auth251/exam227, frontend9 selector tests. Повторные наборы не суммируются. Текущий independent audit повторяет source hashes, compile, pure probes и frontend typecheck; новый remote CI — отдельный результат конкретного commit.
+Предыдущая опубликованная exact-image приёмка: diagnostic193/content375, P03 auth251/exam227, frontend9 selector tests. Independent audit 04.10 повторил source hashes, compile, pure probes и frontend typecheck; [GitHub CI baseline](../releases/evidence/git-ci-2026-10-04.json) — отдельный результат конкретных pushed SHA. Повторные наборы не суммируются, а CI исходников не выдаётся за проверку новой release image.

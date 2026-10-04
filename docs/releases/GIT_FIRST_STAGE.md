@@ -24,6 +24,19 @@ commit доступен на соответствующей origin-ветке, �
 Concurrency не отменяет выполняющийся релиз. Health/version checks не заменяют
 проверку миграций, банка и приёмку в браузере.
 
+## Подтверждённый CEO checkpoint 4 октября
+
+Пять application workflow и infrastructure прошли GitHub CI baseline на pushed
+CEO SHA; deploy приложениям пропущен по условию ветки. Content прошёл полную
+suite: 375 passed без skipped/deselected; прежние пять исключений сняты.
+[Checkpoint с точными SHA](2026-10-04-git-checkpoint.md) и
+[CI evidence](evidence/git-ci-2026-10-04.json) фиксируют этот объём отдельно от
+исторической P03/P06 приёмки. Для следующего commit дождаться его собственного CI.
+
+Текущие legacy stage images и committed source hashes связаны в
+[release record](2026-10-04-stage-git-binding.json). Новую Git-сборку, promotion
+проверенного immutable image и combined rollback этот checkpoint не подтверждает.
+
 ## Зафиксировать уже работающий кандидат без перезапусков
 
 1. Сверить текущие source files/политику с manifest P03/P04/P06/P06R/P06F/P06UI,
@@ -80,8 +93,9 @@ output directory отклоняется; частично неудачный out
    services закрепить существующие immutable images; не пересобирать всё ради
    одного изменения. Проверки должны использовать точные продвигаемые images.
 3. Выполнить необходимый набор unit/integration/lifecycle/браузерных/PDF проверок,
-   включая изолированные PostgreSQL/Redis и migration drill на копии. CI известные
-   результаты полного content-service suite и незакрытые приёмочные пункты видимы в release gate.
+   включая изолированные PostgreSQL/Redis и migration drill на копии. Успешный
+   CEO CI baseline фиксируется отдельно; новый image проверяется в точном
+   продвигаемом составе. Незакрытые пункты expanded acceptance видимы в release gate.
 4. Diagnostic/content запускают `migration_runner` при старте image. Проверить
    Alembic history **и реальную shape**, совместимость с прошлым кодом, подготовить
    приватные stage backups и checkpoint. Code rollback не откатывает БД.
@@ -128,9 +142,10 @@ restore/downgrade требует отдельного конкретного р�
 - Автоматическая сборка/публикация immutable images в registry и единый ручной
   multi-repository stage promotion job из manifest (подготовка здесь не выдаётся
   за уже работающий такой deploy).
-- Versioned safe release record текущих legacy overlays и matched runtime hashes.
+- Приёмочный manifest следующего релиза с точными проверенными images,
+  schema/data checkpoints и совместимостью предыдущего кода для rollback.
 - Банк, исправления отчёта и расширенная приёмка согласно engineering roadmap.
-- Content CI 4 октября проверен без прежних пяти exclusions: 375 passed на текущем source, с KaTeX и без сети/платных моделей. Выполнение GitHub Actions на pushed SHA подтверждать отдельно.
+- Расширенная PostgreSQL/RBAC/конкурентная, browser/load/visual матрица продукта.
 
 Правило: Git commit → push CEO → exact-source build → проверка immutable images
 и данных → stage → приёмка → release record. Следующие этапы не заменяют предыдущие.

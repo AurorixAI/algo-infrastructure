@@ -1,0 +1,76 @@
+{
+  "recorded_date": "2026-10-04",
+  "timezone": "Asia/Tashkent",
+  "scope": "Current content source mounted readonly onto local dependency test image, without network or existing databases; not a newly built release image",
+  "dependency_image": "algo-content-test:latex-self-review",
+  "dependency_image_id": "sha256:120458a12ad45b0aa68b88dea4fa0e6d4a93b041c72d3f52e6d9712c218002c8",
+  "focused_previous_exclusions": {
+    "passed": 5,
+    "failed": 0
+  },
+  "full_maintained_suite": {
+    "passed": 375,
+    "failed": 0,
+    "skipped": 0,
+    "deselected": 0,
+    "warnings": 2,
+    "seconds": 6.42
+  },
+  "isolation": {
+    "network": "none",
+    "filesystem": "read-only current source binds; tmpfs /tmp",
+    "model_keys": "empty",
+    "server_database_access": false
+  },
+  "initial_layout_failure": {
+    "passed": 362,
+    "failed": 13,
+    "reason": "whole-repo mount under /workspace left absolute /workspace/node_modules/katex unavailable; resolved by source-dir binds under /app retaining image node_modules",
+    "source_logic_modified": false
+  },
+  "restored_tests": [
+    {
+      "test": "test_stored_distractors_valid_rejects_subset_of_answer",
+      "reason": "Incomplete single-root distractors are recognised as collisions/subsets of the complete multi-root answer by strict assignment/compound gate"
+    },
+    {
+      "test": "test_inequality_distractors_not_false_peer_collision",
+      "reason": "Strict inequality comparisons preserve operand and relation differences; different distractors do not collapse into one Boolean truth value"
+    },
+    {
+      "test": "test_numeric_inequality_equivalent",
+      "reason": "Numeric inequality equivalence compares both operands and operator instead of truth value"
+    },
+    {
+      "test": "test_sign_region_inequality",
+      "reason": "Sign-region prose has explicit parser/comparison and inequality fallback"
+    },
+    {
+      "test": "test_finds_repetition_header",
+      "reason": "Repetition markers collected before generic theme markers; same-offset deduplication preserves repetition kind"
+    }
+  ],
+  "workflow_change": "Removed only five stale deselections and their obsolete known-failing comment; npm ci and testpath isolation retained",
+  "release_tooling_recheck": {
+    "real_git_tests_passed": 7,
+    "safe_env_example_regression_added": true,
+    "auth_front_index_private_env_files": 0,
+    "real_six_repo_preparation": "Deferred until clean commits are pushed; test utility intentionally rejects dirty/unpushed sources"
+  },
+  "current_source_sha256": {
+    "src/pipeline/distractor_collision.py": "f0094387ad9b64e268c310fb3767a458f17f47efc16d7be212cc8febaa7890d1",
+    "src/pipeline/distractor_gate.py": "4ea236d5f441fb0b2d98b0f1b7c279b297887df6060056f9da522991fe1db0e9",
+    "src/pipeline/answer_verify.py": "76a06812f5ac12bab59058e07d2098ce98b1f9c6a48bda7e46d4fb7f6640aaaf",
+    "src/pipeline/theme_stream/detector.py": "0dd70de6ac6c64134d679ca3382ba3d578e32dcdd796d0737cfd029e548ea654",
+    "tests/test_distractor_gate.py": "71ff9b4f2245ea4ae3530cd7298307a99debc90ae8866e209ad618e5b5d5f09c",
+    "tests/test_sympy_gate_fixes.py": "378326478efd1f183f50c902142ce50b628fb11d0eef58a64f5ab489c1c43fd0",
+    "tests/test_theme_stream.py": "3a03404a0253e5ea129adf6ac36a4d0bb942687ebdb378871fcd4f34fc5b7b0e",
+    "tests/test_backfill_latex_safety.py": "b1a6401000464023da929ba42a6aa3ef5bc4922140def789d8dcf578ceda389a",
+    ".github/workflows/deploy.yml": "f84cd0ddb260b4a1fe237b611191ecd18b1286e0860cb0e4de4ab71d7166adb7"
+  },
+  "not_verified": [
+    "GitHub Actions execution on newly pushed SHA",
+    "Exact future Linux release image",
+    "Production deployment"
+  ]
+}

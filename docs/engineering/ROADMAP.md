@@ -56,6 +56,7 @@ N00U → N01 → N02 → N03 → N04 → N05 → N07 → N08 → N09 → N10 →
 
 - [x] Причина и адресная CSS-правка.
 - [x] Браузерный regression harness и workflow добавлены в кандидат.
+- [x] Frontend CEO `b389ee87` прошёл GitHub CI с 27 browser states на standalone build; deploy skipped. [Release record](../releases/2026-10-04-formula-candidate.md).
 - [ ] Публикация через Git и приёмка на stage.
 
 ### N01. Исправить шесть находок и разобрать длинное содержание

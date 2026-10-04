@@ -21,7 +21,37 @@
   "stage_mutations": false,
   "limits": [
     "Local build output is not an immutable release image.",
-    "Browser fixtures intercept synthetic API responses; backend/RBAC/model acceptance is separate.",
-    "GitHub CI for this SHA is recorded separately when complete."
-  ]
+    "Browser fixtures intercept synthetic API responses; backend/RBAC/model acceptance is separate."
+  ],
+  "github_ci": {
+    "algo-front": {
+      "sha": "b389ee87d824a88e502eeb81f7230334307cbeca",
+      "runs": [
+        {
+          "id": 37209300008,
+          "url": "https://github.com/AurorixAI/algo-front/actions/runs/37209300008",
+          "conclusion": "success"
+        }
+      ]
+    },
+    "algo-infrastructure": {
+      "sha": "3290a672feed8f29c0315c9f27f4ee36d4960a42",
+      "runs": [
+        {
+          "id": 37209522411,
+          "url": "https://github.com/AurorixAI/algo-infrastructure/actions/runs/37209522411",
+          "conclusion": "success"
+        }
+      ]
+    }
+  },
+  "stage_preflight": {
+    "checked_at": "2026-10-04",
+    "preview_frontend_image": "sha256:c38c00081f4918f90d893ff69362fa0d8d40f522ffdba72282d7e365cae506aa",
+    "production_frontend_image": "sha256:bf5ffbcf321513972584938f7aaf721e44aa67ff6b24ee65690e1f396aa371d6",
+    "both_running": true,
+    "preview_git_checkout_head": "e0e8c665be0523750fafc86e840689afbbdc7d59",
+    "preview_git_checkout_dirty_count": 0,
+    "mutations": false
+  }
 }

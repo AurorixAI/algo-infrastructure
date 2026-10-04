@@ -1,0 +1,74 @@
+[
+  {
+    "repo": "algo-front",
+    "sha": "b389ee87d824a88e502eeb81f7230334307cbeca",
+    "runs": [
+      {
+        "id": 37209300008,
+        "name": "Deploy",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/AurorixAI/algo-front/actions/runs/37209300008",
+        "jobs": [
+          {
+            "id": 111457013828,
+            "name": "build",
+            "status": "completed",
+            "conclusion": "success",
+            "failed_steps": []
+          },
+          {
+            "id": 111457522359,
+            "name": "deploy",
+            "status": "completed",
+            "conclusion": "skipped",
+            "failed_steps": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "repo": "algo-infrastructure",
+    "sha": "3290a672feed8f29c0315c9f27f4ee36d4960a42",
+    "runs": [
+      {
+        "id": 37209522411,
+        "name": "CI",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/AurorixAI/algo-infrastructure/actions/runs/37209522411",
+        "jobs": [
+          {
+            "id": 111457662503,
+            "name": "Shell script syntax",
+            "status": "completed",
+            "conclusion": "success",
+            "failed_steps": []
+          },
+          {
+            "id": 111457662616,
+            "name": "Validate nginx configs",
+            "status": "completed",
+            "conclusion": "success",
+            "failed_steps": []
+          },
+          {
+            "id": 111457662683,
+            "name": "Keep internal callback contract explicit",
+            "status": "completed",
+            "conclusion": "success",
+            "failed_steps": []
+          },
+          {
+            "id": 111457662705,
+            "name": "Validate compose files",
+            "status": "completed",
+            "conclusion": "success",
+            "failed_steps": []
+          }
+        ]
+      }
+    ]
+  }
+]

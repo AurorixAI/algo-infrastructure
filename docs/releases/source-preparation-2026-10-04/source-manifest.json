@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "prepared_at_utc": "2026-10-04T08:54:05.743402+00:00",
+  "target": {
+    "domain": "stage.algolab.me",
+    "compose_project": "algo-preview"
+  },
+  "status": "prepared_git_sources_only",
+  "sources": {
+    "algo-front": {
+      "commit_sha": "8c2e72acbee22bb81b0fe407a3ca1dafbfaa0357",
+      "git_tree": "f66b49c8252fa840646695145b75aaae2e851bcf",
+      "source_ref": "CEO",
+      "observed_origin_CEO_sha": "8c2e72acbee22bb81b0fe407a3ca1dafbfaa0357",
+      "pushed_commit_verified": true,
+      "tracked_file_count": 161,
+      "archive": "algo-front-8c2e72acbee22bb81b0fe407a3ca1dafbfaa0357.tar",
+      "archive_sha256": "3c1d747306e4c1aee4deac9c333de8f0d524ce17da1a7a0199188e68db1c4afc",
+      "archive_bytes": 3328000
+    },
+    "auth-service": {
+      "commit_sha": "9675cbe769e42dcad82fa05a088abf3c826d70a3",
+      "git_tree": "5670208dd3541679a957a5b270af26caba8de61c",
+      "source_ref": "CEO",
+      "observed_origin_CEO_sha": "9675cbe769e42dcad82fa05a088abf3c826d70a3",
+      "pushed_commit_verified": true,
+      "tracked_file_count": 81,
+      "archive": "auth-service-9675cbe769e42dcad82fa05a088abf3c826d70a3.tar",
+      "archive_sha256": "ba43d3abad60d62e2372ef5acacf4b5a864f88a758b015922696c82a34fb910d",
+      "archive_bytes": 1136640
+    },
+    "diagnostic-service": {
+      "commit_sha": "b93a9a923fb17989f07b7dd8703196a894b29b99",
+      "git_tree": "9189d7411373eaa3993000a5918d4b4eb618bbe3",
+      "source_ref": "CEO",
+      "observed_origin_CEO_sha": "b93a9a923fb17989f07b7dd8703196a894b29b99",
+      "pushed_commit_verified": true,
+      "tracked_file_count": 117,
+      "archive": "diagnostic-service-b93a9a923fb17989f07b7dd8703196a894b29b99.tar",
+      "archive_sha256": "5ee2aec7271701a17ee5b942b8c8d8f4e53ae2e1849e1157f9551208b4db03fc",
+      "archive_bytes": 1320960
+    },
+    "exam-service": {
+      "commit_sha": "c0ca477e53171ec0863592052c80b927ef93d380",
+      "git_tree": "8e7150d917ae449c240fdda13f97bfccfab58004",
+      "source_ref": "CEO",
+      "observed_origin_CEO_sha": "c0ca477e53171ec0863592052c80b927ef93d380",
+      "pushed_commit_verified": true,
+      "tracked_file_count": 85,
+      "archive": "exam-service-c0ca477e53171ec0863592052c80b927ef93d380.tar",
+      "archive_sha256": "e1747035a42109c1f9c053ba94e91ca903b4fa2b23a264c094a0603351db9a15",
+      "archive_bytes": 901120
+    },
+    "content-service": {
+      "commit_sha": "b71108365f40e8644c1864296cf21046553b2b95",
+      "git_tree": "af6da6dc508f3764e2071444ca2b39e0e3aa30ca",
+      "source_ref": "CEO",
+      "observed_origin_CEO_sha": "b71108365f40e8644c1864296cf21046553b2b95",
+      "pushed_commit_verified": true,
+      "tracked_file_count": 1215,
+      "archive": "content-service-b71108365f40e8644c1864296cf21046553b2b95.tar",
+      "archive_sha256": "d85b3b444ddccfca948620bc629165128c23da16269bd5f1575ed859728fa962",
+      "archive_bytes": 20469760
+    },
+    "algo-infrastructure": {
+      "commit_sha": "fe76852e39cb580dcaee9e1b71c2fb9ce2443294",
+      "git_tree": "eafb9906668fc1704b8de5d07881dc3b0efd67ad",
+      "source_ref": "CEO",
+      "observed_origin_CEO_sha": "fe76852e39cb580dcaee9e1b71c2fb9ce2443294",
+      "pushed_commit_verified": true,
+      "tracked_file_count": 53,
+      "archive": "algo-infrastructure-fe76852e39cb580dcaee9e1b71c2fb9ce2443294.tar",
+      "archive_sha256": "8df3256952bb06946f485f43b2c231d49a41ac191e8f7d70eb8f417b71dcab7a",
+      "archive_bytes": 757760
+    }
+  },
+  "requires_before_stage_switch": [
+    "CI and release tests for these exact commits/images",
+    "built image ID or registry digest and dependency identity",
+    "recorded migration heads and code/schema compatibility",
+    "stage-only DB backups, content/figure fingerprint and previous images",
+    "reviewed exact image override and operator authorization",
+    "post-switch readiness, revision and browser acceptance"
+  ],
+  "deployment_performed": false,
+  "secrets_included": false
+}

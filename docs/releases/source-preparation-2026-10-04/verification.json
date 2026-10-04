@@ -1,0 +1,54 @@
+{
+  "manifest": "source-manifest.json",
+  "archives": [
+    {
+      "repo": "algo-front",
+      "commit": "8c2e72acbee22bb81b0fe407a3ca1dafbfaa0357",
+      "archive_bytes": 3328000,
+      "files": 251,
+      "checksum_verified": true,
+      "private_env_files": 0
+    },
+    {
+      "repo": "auth-service",
+      "commit": "9675cbe769e42dcad82fa05a088abf3c826d70a3",
+      "archive_bytes": 1136640,
+      "files": 94,
+      "checksum_verified": true,
+      "private_env_files": 0
+    },
+    {
+      "repo": "diagnostic-service",
+      "commit": "b93a9a923fb17989f07b7dd8703196a894b29b99",
+      "archive_bytes": 1320960,
+      "files": 141,
+      "checksum_verified": true,
+      "private_env_files": 0
+    },
+    {
+      "repo": "exam-service",
+      "commit": "c0ca477e53171ec0863592052c80b927ef93d380",
+      "archive_bytes": 901120,
+      "files": 100,
+      "checksum_verified": true,
+      "private_env_files": 0
+    },
+    {
+      "repo": "content-service",
+      "commit": "b71108365f40e8644c1864296cf21046553b2b95",
+      "archive_bytes": 20469760,
+      "files": 1247,
+      "checksum_verified": true,
+      "private_env_files": 0
+    },
+    {
+      "repo": "algo-infrastructure",
+      "commit": "fe76852e39cb580dcaee9e1b71c2fb9ce2443294",
+      "archive_bytes": 757760,
+      "files": 74,
+      "checksum_verified": true,
+      "private_env_files": 0
+    }
+  ],
+  "deployment_performed": false
+}

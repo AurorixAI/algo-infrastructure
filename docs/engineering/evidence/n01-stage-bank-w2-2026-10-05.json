@@ -1,0 +1,66 @@
+{
+  "content_sha": "469f879a658f756b299453a09111968619c9239c",
+  "orchestrator_sha": "ef610210c03c807a242b58ef68194797d372943f",
+  "archive_sha256": "24e88411172a6b6c11852c0c9ef85db29e171389be2507d86fb5405137fd331d",
+  "execution_image_id": "sha256:3d43f48c3609501f19eac94189b4e2190056ee252b3d56075b2660f656f6a7f9",
+  "student_data_included": false,
+  "before_stage": {
+    "count": 37264,
+    "active": 34267,
+    "md5": "fa8ab88d33626e94b8457388d03f47cb"
+  },
+  "after_stage": {
+    "count": 37264,
+    "active": 34267,
+    "md5": "bbd5a0501a77f1ba3720baf7a5684212"
+  },
+  "before_other_tasks": {
+    "count": 37253,
+    "active": 34256,
+    "md5": "383a11edb8e5d9f3c65267f6da2833e7"
+  },
+  "after_other_tasks": {
+    "count": 37253,
+    "active": 34256,
+    "md5": "383a11edb8e5d9f3c65267f6da2833e7"
+  },
+  "before_production": {
+    "count": 35252,
+    "active": 35240,
+    "md5": "64ef95c327a78cf07271f2e674583beb"
+  },
+  "after_production": {
+    "count": 35252,
+    "active": 35240,
+    "md5": "64ef95c327a78cf07271f2e674583beb"
+  },
+  "checks_passed": true,
+  "containers_unchanged": true,
+  "updated_ids": [
+    "G11_TB_10_4*_3",
+    "G11_TB_10_4*_4",
+    "G11_TB_8_4_4",
+    "G11_TB_8_4_5",
+    "G11_TB_8_4_6",
+    "G11_TB_§2_2",
+    "G6_TB_124–125_1046.2",
+    "G6_TB_124–125_1047.6",
+    "G9_TB_31_636_1",
+    "G9_TB_ДГ5_636_2",
+    "GEN_G6_S38_01_C_01"
+  ],
+  "repeat_no_writes": true,
+  "live_consumers": {
+    "batch": "n01-source-repair-2026-10-05-w2",
+    "offline": false,
+    "student_data_included": false,
+    "sessions_created": 0,
+    "tasks": 11,
+    "graded_choices": 88,
+    "display_runs": 132,
+    "report_errors": 33,
+    "content_sha": "469f879a658f756b299453a09111968619c9239c",
+    "verifier_sha": "ef610210c03c807a242b58ef68194797d372943f",
+    "live_stage": true
+  }
+}

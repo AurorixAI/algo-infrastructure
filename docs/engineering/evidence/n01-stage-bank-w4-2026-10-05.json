@@ -1,0 +1,158 @@
+{
+  "content_sha": "dd4e48a2f3842aa3db409eb681cd30ef7509c81b",
+  "archive_sha256": "ccd051cb732d88fda7d77d919272edff9c826865b15a12a0ceb2487a17270651",
+  "execution_image_id": "sha256:3d43f48c3609501f19eac94189b4e2190056ee252b3d56075b2660f656f6a7f9",
+  "student_data_included": false,
+  "before_stage": {
+    "count": 37264,
+    "active": 34267,
+    "md5": "7e204c2e3e67d49a3fa254d8a3470486"
+  },
+  "after_stage": {
+    "count": 37264,
+    "active": 34267,
+    "md5": "6dcdadd7c12326bc83e8ef53efcd9949"
+  },
+  "before_other_tasks": {
+    "count": 37224,
+    "active": 34227,
+    "md5": "80aa634d479d5f11195bfdb7e1e6d712"
+  },
+  "after_other_tasks": {
+    "count": 37224,
+    "active": 34227,
+    "md5": "80aa634d479d5f11195bfdb7e1e6d712"
+  },
+  "before_production": {
+    "count": 35252,
+    "active": 35240,
+    "md5": "64ef95c327a78cf07271f2e674583beb"
+  },
+  "after_production": {
+    "count": 35252,
+    "active": 35240,
+    "md5": "64ef95c327a78cf07271f2e674583beb"
+  },
+  "before_exam_snapshots": {
+    "matched_tasks": 0,
+    "incomplete_tasks": 0,
+    "variants_md5": "47c35241ac14ee8e63a12bd1739b70fe"
+  },
+  "after_exam_snapshots": {
+    "matched_tasks": 0,
+    "incomplete_tasks": 0,
+    "variants_md5": "47c35241ac14ee8e63a12bd1739b70fe"
+  },
+  "checks_passed": true,
+  "orchestrator_sha": "e40cd8fdbad50f5349d1170b786a18d3bb1c55e6",
+  "containers_unchanged": true,
+  "updated_ids": [
+    "DIFF_G5_S07_01_C_02",
+    "DIFF_G5_S09_01_C_01",
+    "DIFF_G5_S44_01_C_03",
+    "DIFF_G5_S44_02_C_03",
+    "DIFF_G7_S03_01_C_01",
+    "DIFF_G7_S03_01_C_03",
+    "DIFF_G7_S05_02_C_01",
+    "G5_TB_11_438.1",
+    "G5_TB_30_502",
+    "G5_TB_30_503",
+    "G5_TB_35_615",
+    "G5_TB_38_1521",
+    "G5_TB_68_1672",
+    "G5_TB_68_1675",
+    "G5_TB_69_1681",
+    "G5_TB_6_198.1",
+    "G5_TB_6_198.2",
+    "G5_TB_6_198.3",
+    "G5_TB_6_85.1",
+    "G5_TB_6_85.2",
+    "G5_TB_6_85.3",
+    "G6_TB_124–125_1046.1",
+    "G6_TB_124–125_1046.3",
+    "G6_TB_124–125_1047.2",
+    "G6_TB_124–125_1047.5",
+    "G6_TB_124–125_1048.1",
+    "G6_TB_124–125_1048.2",
+    "G6_TB_124–125_1048.3",
+    "G6_TB_124–125_1048.4",
+    "G6_TB_124–125_1048.5",
+    "G6_TB_124–125_1048.6",
+    "G6_TB_124–125_1051.1",
+    "G6_TB_124–125_1051.2",
+    "G6_TB_124–125_1051.3",
+    "G6_TB_124–125_1051.4",
+    "G9_TB_37_483_1.1",
+    "G9_TB_37_483_1.2",
+    "G9_TB_37_483_1.3",
+    "G9_TB_5_2",
+    "G9_TB_5_67"
+  ],
+  "repeat_no_writes": true,
+  "live_consumers": {
+    "batch": "n01-source-repair-2026-10-05-w4",
+    "offline": false,
+    "student_data_included": false,
+    "sessions_created": 0,
+    "tasks": 40,
+    "graded_choices": 320,
+    "display_runs": 480,
+    "report_errors": 120,
+    "content_sha": "dd4e48a2f3842aa3db409eb681cd30ef7509c81b",
+    "infra_sha": "e40cd8fdbad50f5349d1170b786a18d3bb1c55e6"
+  },
+  "ci": {
+    "content-service": [
+      {
+        "id": 37299291054,
+        "head_sha": "dd4e48a2f3842aa3db409eb681cd30ef7509c81b",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/AurorixAI/content-service/actions/runs/37299291054",
+        "jobs": [
+          {
+            "name": "test",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "deploy",
+            "status": "completed",
+            "conclusion": "skipped"
+          }
+        ]
+      }
+    ],
+    "algo-infrastructure": [
+      {
+        "id": 37299289702,
+        "head_sha": "e40cd8fdbad50f5349d1170b786a18d3bb1c55e6",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/AurorixAI/algo-infrastructure/actions/runs/37299289702",
+        "jobs": [
+          {
+            "name": "Keep internal callback contract explicit",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Validate compose files",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Validate nginx configs",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Shell script syntax",
+            "status": "completed",
+            "conclusion": "success"
+          }
+        ]
+      }
+    ]
+  }
+}

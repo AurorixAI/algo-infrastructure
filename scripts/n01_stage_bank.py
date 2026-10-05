@@ -137,6 +137,33 @@ def exam_snapshot_summary(task_ids):
         input='BEGIN READ ONLY;\n'+sql+'\nCOMMIT;\n'))
 
 
+def active_diagnostic_summary(task_ids):
+    # RedisStateManager.load refreshes TTL; use SCAN/GET directly so this
+    # preflight is read-only and never exports session keys or pupil fields.
+    source = '''import json
+from src.core.redis_client import get_redis_client
+selected = set('''+json.dumps(task_ids)+''')
+client = get_redis_client()
+active = current = used = 0
+for key in client.scan_iter(match="diag:session:*", count=100):
+    if key.count(":") != 2:
+        continue
+    raw = client.get(key)
+    if raw is None:
+        continue
+    state = json.loads(raw)
+    if state.get("phase") == "completed":
+        continue
+    active += 1
+    current += state.get("current_task_id") in selected
+    used += bool(selected.intersection(state.get("used_task_ids", [])))
+print(json.dumps({"active_sessions": active, "matched_current_tasks": current,
+                  "matched_used_tasks": used}))
+'''
+    return json.loads(command(['docker','exec','-i','algo-preview-diagnostic','python','-'],
+                              input=source))
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--content-sha', required=True)
@@ -172,6 +199,9 @@ def main():
     before_other = bank_summary('preview', task_ids)
     before_exam_snapshots = exam_snapshot_summary(task_ids)
     assert before_exam_snapshots['incomplete_tasks'] == 0, 'historical exam snapshot is incomplete'
+    before_active_diagnostics = active_diagnostic_summary(task_ids)
+    assert before_active_diagnostics['matched_current_tasks'] == 0, 'target task is currently issued'
+    assert before_active_diagnostics['matched_used_tasks'] == 0, 'target task occurs in an active diagnostic'
     quoted = ','.join("'" + v.replace("'", "''") + "'" for v in task_ids if v != 'G11_TB_6_6_6_43_c')
     # T06 keeps its key; all other first-wave tasks must have no saved diagnostic
     # answers before modifying their wording/key/choice contract.
@@ -188,6 +218,7 @@ def main():
               'student_data_included': False, 'before_stage': before_stage,
               'before_other_tasks': before_other, 'before_production': before_prod,
               'before_exam_snapshots': before_exam_snapshots,
+              'before_active_diagnostics': before_active_diagnostics,
               'before_containers': before_state}
     (release / 'preflight.json').write_text(json.dumps(record, indent=2) + '\n')
     fd = os.open(secret_file, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)

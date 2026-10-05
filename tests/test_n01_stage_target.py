@@ -1,8 +1,13 @@
 """A wrong stage identity must fail before any bank mutation is possible."""
 import copy
+import contextlib
+import io
+import json
+import sys
+import types
 import unittest
 from unittest.mock import patch
-from scripts.n01_stage_bank import stage_database_url, exam_snapshot_summary, SCOPES
+from scripts.n01_stage_bank import stage_database_url, exam_snapshot_summary, active_diagnostic_summary, SCOPES
 
 
 class StageTargetTests(unittest.TestCase):
@@ -62,6 +67,35 @@ class StageTargetTests(unittest.TestCase):
         self.assertFalse(previous.intersection(wave5))
         self.assertNotIn('G11_TB_§9_3_6', wave5)
         self.assertNotIn('ds_llm_7c36694c8cba', wave5)
+
+    def test_active_issued_task_guard_reads_only_and_returns_aggregates(self):
+        states = {
+            'diag:session:a': {'phase':'warmup','current_task_id':'target','used_task_ids':[]},
+            'diag:session:b': {'phase':'navigation','current_task_id':'other','used_task_ids':['target']},
+            'diag:session:c': {'phase':'completed','current_task_id':'target','used_task_ids':['target']},
+            'diag:session:a:answer-lock': 'non-json lock token',
+            'diag:session:expired': None,
+        }
+        class ReadOnlyRedis:
+            def scan_iter(self, **kwargs):
+                self.kwargs = kwargs
+                return iter(states)
+            def get(self, key):
+                value = states[key]
+                return None if value is None else json.dumps(value)
+        fake = ReadOnlyRedis()
+        module = types.ModuleType('src.core.redis_client')
+        module.get_redis_client = lambda:fake
+        def run(argv, *, input):
+            self.assertEqual(argv,['docker','exec','-i','algo-preview-diagnostic','python','-'])
+            stdout = io.StringIO()
+            with patch.dict(sys.modules, {'src.core.redis_client':module}), contextlib.redirect_stdout(stdout):
+                exec(input,{})
+            return stdout.getvalue()
+        with patch('scripts.n01_stage_bank.command',side_effect=run):
+            result = active_diagnostic_summary(['target'])
+        self.assertEqual(result,{'active_sessions':2,'matched_current_tasks':1,'matched_used_tasks':1})
+        self.assertEqual(fake.kwargs,{'match':'diag:session:*','count':100})
 
 
 if __name__ == '__main__': unittest.main()

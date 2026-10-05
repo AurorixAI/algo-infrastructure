@@ -3,7 +3,7 @@
   "content_sha": "13666ad3dc432314f9369a91307098f24987d66f",
   "content_tests": 550,
   "content_test_image_id": "sha256:e1d63367ddfab3aaf9b0328b92000532695948ba4d5c81bdaad0046272bbd198",
-  "infrastructure_tests": 18,
+  "infrastructure_tests": 19,
   "stage_schema_drill": {
     "changed_rows": 22,
     "unchanged_rows": 131,

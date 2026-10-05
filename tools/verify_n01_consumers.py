@@ -19,6 +19,7 @@ def verify(workspace: Path, manifest_path: Path, source_path: Path | None) -> di
     from src.domain.session_service import SessionService
     from src.domain.session_state import SessionState
     from src.clients import content_client
+    from src.repositories.knowledge_repo import TaskRepository
 
     manifest = json.loads(manifest_path.read_text())
     if source_path:
@@ -26,9 +27,9 @@ def verify(workspace: Path, manifest_path: Path, source_path: Path | None) -> di
     else:
         originals = {}
         for entry in manifest['repairs']:
-            response = content_client.get('/api/v1/content/tasks/' + entry['id'])
-            response.raise_for_status()
-            row = response.json()
+            task = TaskRepository().get_by_id(entry['id'])
+            assert task is not None, (entry['id'], 'task GET returned 404')
+            row = vars(task)
             assert row['is_active'] is True
             for key, value in entry['changes'].items():
                 if key in row:

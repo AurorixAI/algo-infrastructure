@@ -1,0 +1,86 @@
+{
+  "content_sha": "13666ad3dc432314f9369a91307098f24987d66f",
+  "archive_sha256": "9147cc341ed4f5629a724b3f082f8300166224b310f032c60ec307b742a6357e",
+  "execution_image_id": "sha256:3d43f48c3609501f19eac94189b4e2190056ee252b3d56075b2660f656f6a7f9",
+  "student_data_included": false,
+  "before_stage": {
+    "count": 37264,
+    "active": 34267,
+    "md5": "6dcdadd7c12326bc83e8ef53efcd9949"
+  },
+  "after_stage": {
+    "count": 37264,
+    "active": 34267,
+    "md5": "58725336e88cc28958c84e377bd52916"
+  },
+  "before_other_tasks": {
+    "count": 37242,
+    "active": 34245,
+    "md5": "1186a5a976c96143d755be0d5074a748"
+  },
+  "after_other_tasks": {
+    "count": 37242,
+    "active": 34245,
+    "md5": "1186a5a976c96143d755be0d5074a748"
+  },
+  "before_production": {
+    "count": 35252,
+    "active": 35240,
+    "md5": "64ef95c327a78cf07271f2e674583beb"
+  },
+  "after_production": {
+    "count": 35252,
+    "active": 35240,
+    "md5": "64ef95c327a78cf07271f2e674583beb"
+  },
+  "before_exam_snapshots": {
+    "matched_tasks": 0,
+    "incomplete_tasks": 0,
+    "variants_md5": "47c35241ac14ee8e63a12bd1739b70fe"
+  },
+  "after_exam_snapshots": {
+    "matched_tasks": 0,
+    "incomplete_tasks": 0,
+    "variants_md5": "47c35241ac14ee8e63a12bd1739b70fe"
+  },
+  "before_active_diagnostics": {
+    "active_sessions": 0,
+    "matched_current_tasks": 0,
+    "matched_used_tasks": 0
+  },
+  "orchestrator_sha": "51f87e6db6644463ddad05d5d9e9f0babd3693bb",
+  "bank_write_checks_passed": true,
+  "containers_unchanged": true,
+  "updated_ids": [
+    "G11_TB_1_3_1_11_1",
+    "G11_TB_1_3_1_11_2",
+    "G11_TB_1_3_1_11_3",
+    "G11_TB_22_3_22_3_1",
+    "G11_TB_22_3_22_3_2",
+    "G11_TB_22_3_22_3_3",
+    "G11_TB_22_4_1",
+    "G11_TB_23_1_23_1_1",
+    "G11_TB_4_1_3",
+    "G11_TB_5_2_17_2",
+    "G11_TB_5_2_17_4",
+    "G11_TB_5_2_1_1",
+    "G11_TB_5_2_1_2",
+    "G11_TB_5_3_6_3",
+    "G11_TB_5_3_6_4",
+    "G11_TB_?_265",
+    "G11_TB_?_267_а",
+    "G11_TB_?_268_а",
+    "G5_TB_58_1380",
+    "G6_TB_35_1303",
+    "ds_llm_0a5197c2a03a",
+    "ds_llm_5b8a471a3d2b"
+  ],
+  "repeat_no_writes": true,
+  "live_application_acceptance_passed": false,
+  "application_images_changed": false,
+  "status": "bank_applied_application_acceptance_pending",
+  "blocking_defect": "Unencoded question mark in existing task ID causes HTTP 404 in legacy consumers",
+  "accepted_unique_ids": 80,
+  "written_pending_acceptance_ids": 22,
+  "remaining_content_review_ids": 51
+}

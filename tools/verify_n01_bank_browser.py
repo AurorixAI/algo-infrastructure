@@ -20,6 +20,8 @@ def main():
     p.add_argument('--frontend-sha',required=True)
     p.add_argument('--output',required=True,type=Path)
     p.add_argument('--label',default='bank',help='Label for the local evidence files')
+    p.add_argument('--wrap-answer-task-id',action='append',default=[],
+                   help='Require this task to fit without horizontal scrolling')
     args=p.parse_args()
     repo=args.workspace/'algo-front'
     sha=subprocess.check_output(['git','-C',str(repo),'rev-parse','HEAD'],text=True).strip()
@@ -28,6 +30,7 @@ def main():
     source=subprocess.check_output(['git','-C',str(repo),'show',sha+':tests/math-layout.browser.cjs'],text=True)
     rows=json.loads(args.fixtures.read_text())
     assert rows and all('question_latex' in r and len(r['answer_options'])==4 for r in rows)
+    assert set(args.wrap_answer_task_id)<={r['id'] for r in rows}
     tasks=[{'task_id':r['id'],'question_text':'LEGACY_SOURCE_MUST_NOT_DISPLAY',
             'question_latex':r['question_latex'],'skill_name':'Educational rendering check',
             'difficulty':'medium','answer_type':'choice','options':r['answer_options'],
@@ -40,11 +43,16 @@ def main():
     old="['diagnostic-integral','diagnostic-root','diagnostic-system','diagnostic-wide','diagnostic-matrix'][selected]"
     assert old in source
     source=source.replace(old,"('diagnostic-'+tasks[selected].task_id)")
+    text_only_surfaces=['diagnostic-'+t['task_id'] for t in tasks
+                        if not any('$' in value or '\\' in value
+                                   for value in [t['question_latex'],*t['options_latex']])]
     start=source.index("  if(label!=='before'){");end=source.index('\n }finally',start)
-    source=source[:start]+'''  assert.equal(result.checks.length,tasks.length*3+15);
+    wrap_surfaces=['diagnostic-'+i for i in args.wrap_answer_task_id]
+    source=source[:start]+'  const textOnlySurfaces='+json.dumps(text_only_surfaces)+';\n'+'  const wrapSurfaces='+json.dumps(wrap_surfaces)+';\n'+'''  assert.equal(result.checks.length,tasks.length*3+15);
   assert.equal(result.pageErrors.length,0,JSON.stringify(result.pageErrors));
   assert.equal(result.unhandledAPI.length,0,JSON.stringify(result.unhandledAPI));
-  assert.ok(result.checks.every(c=>c.mathErrors===0&&!c.legacyVisible&&c.renderers>0&&c.glyphs>0&&c.pageWidth<=c.viewport+1&&c.bodyWidth<=c.viewport+1&&c.verticalClipCount===0&&c.rowOverlapCount===0&&!c.rawTeXVisible),'Bank geometry/overflow regression failed');
+  assert.ok(result.checks.filter(c=>wrapSurfaces.includes(c.surface)).every(c=>c.horizontalScrollers===0),'Numeric answer sequences should wrap between values');
+  assert.ok(result.checks.every(c=>c.mathErrors===0&&!c.legacyVisible&&c.renderers>0&&(textOnlySurfaces.includes(c.surface)?c.glyphs===0:c.glyphs>0)&&c.pageWidth<=c.viewport+1&&c.bodyWidth<=c.viewport+1&&c.verticalClipCount===0&&c.rowOverlapCount===0&&!c.rawTeXVisible),'Bank geometry/overflow regression failed');
 '''+source[end:]
     source=source.replace('p09-${label}-math-surfaces-2026-10-04.json','n01-${label}-math-surfaces-2026-10-05.json')
     args.output.mkdir(parents=True,exist_ok=True)

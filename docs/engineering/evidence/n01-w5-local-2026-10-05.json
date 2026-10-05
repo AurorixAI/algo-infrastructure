@@ -1,0 +1,39 @@
+{
+  "batch": "n01-source-repair-2026-10-05-w5",
+  "content_sha": "13666ad3dc432314f9369a91307098f24987d66f",
+  "content_tests": 550,
+  "content_test_image_id": "sha256:e1d63367ddfab3aaf9b0328b92000532695948ba4d5c81bdaad0046272bbd198",
+  "infrastructure_tests": 18,
+  "stage_schema_drill": {
+    "changed_rows": 22,
+    "unchanged_rows": 131,
+    "repeat_idempotent": true,
+    "rollback_exact": true,
+    "book_links_unchanged": true,
+    "irt_and_active_flags_unchanged": true,
+    "student_data_included": false
+  },
+  "diagnostic": {
+    "batch": "n01-source-repair-2026-10-05-w5",
+    "offline": true,
+    "student_data_included": false,
+    "sessions_created": 0,
+    "tasks": 22,
+    "graded_choices": 176,
+    "display_runs": 264,
+    "report_errors": 66
+  },
+  "exam": {
+    "batch": "n01-source-repair-2026-10-05-w5",
+    "tasks": 22,
+    "grading_checks": 176,
+    "report_errors": 66,
+    "offline": true,
+    "student_data_included": false,
+    "sessions_created": 0
+  },
+  "chrome_states": 81,
+  "stage_bank_applied": false,
+  "stage_frontend_applied": false,
+  "student_data_included": false
+}

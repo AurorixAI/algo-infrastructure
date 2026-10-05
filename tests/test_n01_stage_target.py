@@ -54,5 +54,14 @@ class StageTargetTests(unittest.TestCase):
         previous = set(v for key, values in SCOPES.items() if not key.endswith('w4.json') for v in values)
         self.assertFalse(previous.intersection(wave4))
 
+    def test_wave_five_scope_is_bounded_and_disjoint_without_historical_answer_ids(self):
+        wave5 = SCOPES['data/content_repairs/n01-2026-10-05-w5.json']
+        self.assertEqual(len(wave5), 22)
+        self.assertEqual(len(set(wave5)), 22)
+        previous = set(v for key, values in SCOPES.items() if not key.endswith('w5.json') for v in values)
+        self.assertFalse(previous.intersection(wave5))
+        self.assertNotIn('G11_TB_§9_3_6', wave5)
+        self.assertNotIn('ds_llm_7c36694c8cba', wave5)
+
 
 if __name__ == '__main__': unittest.main()

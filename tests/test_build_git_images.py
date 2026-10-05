@@ -5,10 +5,18 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from scripts.build_git_images import read_inputs
+from scripts.build_git_images import frontend_build_args, read_inputs
 
 
 class BuildInputTests(unittest.TestCase):
+    def test_frontend_origins_do_not_double_api_prefix_or_point_at_production(self):
+        args = frontend_build_args()
+        values = dict(arg.split('=', 1) for arg in args if arg != '--build-arg')
+        for name in ('AUTH', 'EXAM', 'DIAG'):
+            origin = values[f'NEXT_PUBLIC_{name}_API_URL']
+            self.assertEqual(origin + '/api/v1', 'https://stage.algolab.me/api/v1')
+        self.assertEqual(values['CONTENT_API_URL'], 'http://algo-preview-content:8004')
+
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)

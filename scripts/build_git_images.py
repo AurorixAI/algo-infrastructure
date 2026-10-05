@@ -18,6 +18,14 @@ SERVICES = {'diagnostic-service': 'diagnostic-service', 'exam-service': 'exam-se
 TARGET = {'domain': 'stage.algolab.me', 'compose_project': 'algo-preview'}
 
 
+def frontend_build_args() -> list[str]:
+    # api.ts appends /api/v1 itself; these values must be origins.
+    args = []
+    for name in ('AUTH', 'EXAM', 'DIAG'):
+        args += ['--build-arg', f'NEXT_PUBLIC_{name}_API_URL=https://stage.algolab.me']
+    return args + ['--build-arg', 'CONTENT_API_URL=http://algo-preview-content:8004']
+
+
 def read_inputs(root: Path, selected: list[str]) -> dict:
     if not selected or len(set(selected)) != len(selected) or set(selected) - SERVICES.keys():
         raise ValueError('Select unique diagnostic-service, exam-service or frontend targets')
@@ -73,8 +81,7 @@ def build(root: Path, selected: list[str]) -> dict:
                    '--label', 'org.opencontainers.image.revision=' + sha,
                    '--label', 'io.algolab.source.archive.sha256=' + digest]
         if service == 'frontend':
-            for name, path in [('AUTH', '/api/v1'), ('EXAM', '/api/v1'), ('DIAG', '/api/v1')]:
-                command += ['--build-arg', f'NEXT_PUBLIC_{name}_API_URL=https://stage.algolab.me{path}']
+            command += frontend_build_args()
         command.append(str(context))
         with (root / f'build-{service}.log').open('w') as log:
             subprocess.run(command, stdout=log, stderr=subprocess.STDOUT, check=True)

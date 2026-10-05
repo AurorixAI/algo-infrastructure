@@ -19,6 +19,7 @@ def main():
     p.add_argument('--fixtures',required=True,type=Path)
     p.add_argument('--frontend-sha',required=True)
     p.add_argument('--output',required=True,type=Path)
+    p.add_argument('--label',default='bank',help='Label for the local evidence files')
     args=p.parse_args()
     repo=args.workspace/'algo-front'
     sha=subprocess.check_output(['git','-C',str(repo),'rev-parse','HEAD'],text=True).strip()
@@ -50,7 +51,7 @@ def main():
     with socket.socket() as check:check.bind(('127.0.0.1',3311))
     script=args.output/'bank-fixture-browser.cjs';script.write_text(source)
     runtime=Path(os.environ['N01_NODE_RUNTIME'])
-    env={**os.environ,'QA_BASE':'http://127.0.0.1:3311','QA_LABEL':'bank-w3',
+    env={**os.environ,'QA_BASE':'http://127.0.0.1:3311','QA_LABEL':args.label,
          'QA_OUTPUT':str(args.output),'QA_REVISION':sha}
     with (args.output/'frontend.log').open('w') as log:
         server=subprocess.Popen([str(runtime),str(repo/'node_modules/next/dist/bin/next'),'dev','-H','127.0.0.1','-p','3311'],cwd=repo,stdout=log,stderr=log,env=env)

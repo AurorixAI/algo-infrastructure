@@ -49,6 +49,22 @@ SCOPES = {
         'GEN_G6_S47_04_C_01',
         'G11_TB_8_4_5',
     ],
+    'data/content_repairs/n01-2026-10-05-w4.json': [
+        'DIFF_G5_S07_01_C_02','DIFF_G5_S09_01_C_01','DIFF_G5_S44_01_C_03',
+        'DIFF_G5_S44_02_C_03','DIFF_G7_S03_01_C_01','DIFF_G7_S03_01_C_03',
+        'DIFF_G7_S05_02_C_01','G5_TB_11_438.1','G5_TB_30_502','G5_TB_30_503',
+        'G5_TB_35_615','G5_TB_38_1521','G5_TB_68_1672','G5_TB_68_1675',
+        'G5_TB_69_1681','G5_TB_6_198.1','G5_TB_6_198.2','G5_TB_6_198.3',
+        'G5_TB_6_85.1','G5_TB_6_85.2','G5_TB_6_85.3',
+        'G6_TB_124–125_1046.1','G6_TB_124–125_1046.3',
+        'G6_TB_124–125_1047.2','G6_TB_124–125_1047.5',
+        'G6_TB_124–125_1048.1','G6_TB_124–125_1048.2','G6_TB_124–125_1048.3',
+        'G6_TB_124–125_1048.4','G6_TB_124–125_1048.5','G6_TB_124–125_1048.6',
+        'G6_TB_124–125_1051.1','G6_TB_124–125_1051.2',
+        'G6_TB_124–125_1051.3','G6_TB_124–125_1051.4',
+        'G9_TB_37_483_1.1','G9_TB_37_483_1.2','G9_TB_37_483_1.3',
+        'G9_TB_5_2','G9_TB_5_67',
+    ],
 }
 
 
@@ -88,6 +104,30 @@ def stage_database_url(stage, db):
     return url
 
 
+def exam_snapshot_summary(task_ids):
+    """Only aggregate educational snapshots; never return pupil/exam records.
+
+    Online grading and existing reports read generated_exams.variants, not the
+    live bank. A matched snapshot must contain its own condition and key.
+    """
+    quoted = ','.join("'" + value.replace("'", "''") + "'" for value in task_ids)
+    sql = f"""WITH snapshots AS (
+      SELECT task FROM generated_exams e
+      CROSS JOIN LATERAL jsonb_array_elements(COALESCE(e.variants,'[]'::jsonb)) variant
+      CROSS JOIN LATERAL jsonb_array_elements(COALESCE(variant->'tasks','[]'::jsonb)) task
+      WHERE COALESCE(task->>'task_id',task->>'id') IN ({quoted})
+    ) SELECT json_build_object(
+      'matched_tasks',(SELECT count(*) FROM snapshots),
+      'incomplete_tasks',(SELECT count(*) FROM snapshots WHERE
+        COALESCE(task->>'correct_answer','')='' OR
+        COALESCE(NULLIF(task->>'question_latex',''),task->>'question_text','')=''),
+      'variants_md5',(SELECT md5(COALESCE(string_agg(md5(id||variants::text),'' ORDER BY id),''))
+                      FROM generated_exams));"""
+    return json.loads(command(['docker','exec','-i','algo-preview-exam-db',
+        'psql','-X','-qAt','-v','ON_ERROR_STOP=1','-U','algo','-d','algo_exam'],
+        input='BEGIN READ ONLY;\n'+sql+'\nCOMMIT;\n'))
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--content-sha', required=True)
@@ -121,6 +161,8 @@ def main():
     before_prod = bank_summary('staging')
     before_stage = bank_summary('preview')
     before_other = bank_summary('preview', task_ids)
+    before_exam_snapshots = exam_snapshot_summary(task_ids)
+    assert before_exam_snapshots['incomplete_tasks'] == 0, 'historical exam snapshot is incomplete'
     quoted = ','.join("'" + v.replace("'", "''") + "'" for v in task_ids if v != 'G11_TB_6_6_6_43_c')
     # T06 keeps its key; all other first-wave tasks must have no saved diagnostic
     # answers before modifying their wording/key/choice contract.
@@ -136,6 +178,7 @@ def main():
               'execution_image_id': stage['Image'], 'release_path': str(release),
               'student_data_included': False, 'before_stage': before_stage,
               'before_other_tasks': before_other, 'before_production': before_prod,
+              'before_exam_snapshots': before_exam_snapshots,
               'before_containers': before_state}
     (release / 'preflight.json').write_text(json.dumps(record, indent=2) + '\n')
     fd = os.open(secret_file, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
@@ -158,11 +201,13 @@ def main():
     finally:
         secret_file.unlink()
     record.update(after_stage=bank_summary('preview'), after_other_tasks=bank_summary('preview', task_ids),
-                  after_production=bank_summary('staging'), after_containers=state())
+                  after_production=bank_summary('staging'), after_containers=state(),
+                  after_exam_snapshots=exam_snapshot_summary(task_ids))
     (release / 'result.json').write_text(json.dumps(record, indent=2) + '\n')
     assert record['after_other_tasks'] == before_other, 'unrelated stage bank writes observed'
     assert record['after_production'] == before_prod, 'production bank changed'
     assert record['after_containers'] == before_state, 'runtime identity/config changed'
+    assert record['after_exam_snapshots'] == before_exam_snapshots, 'saved exam snapshots changed'
     assert record['after_stage']['count'] == before_stage['count']
     assert record['after_stage']['active'] == before_stage['active']
     record['checks_passed'] = True

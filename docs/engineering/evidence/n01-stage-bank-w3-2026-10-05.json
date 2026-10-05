@@ -1,0 +1,79 @@
+{
+  "content_sha": "803da1ef5f6f362934e6caf023393c4a437488de",
+  "orchestrator_sha": "b991700122835fdd396044f8c2b15ff06e3054de",
+  "archive_sha256": "4a7a74d9f841cf2ca7ba5e6492a1b1eae207a999fc2ccbdc22bb69030b78b272",
+  "execution_image_id": "sha256:3d43f48c3609501f19eac94189b4e2190056ee252b3d56075b2660f656f6a7f9",
+  "student_data_included": false,
+  "before_stage": {
+    "count": 37264,
+    "active": 34267,
+    "md5": "bbd5a0501a77f1ba3720baf7a5684212"
+  },
+  "after_stage": {
+    "count": 37264,
+    "active": 34267,
+    "md5": "7e204c2e3e67d49a3fa254d8a3470486"
+  },
+  "before_other_tasks": {
+    "count": 37240,
+    "active": 34243,
+    "md5": "6b13ef11321dc6064018df6244184c49"
+  },
+  "after_other_tasks": {
+    "count": 37240,
+    "active": 34243,
+    "md5": "6b13ef11321dc6064018df6244184c49"
+  },
+  "before_production": {
+    "count": 35252,
+    "active": 35240,
+    "md5": "64ef95c327a78cf07271f2e674583beb"
+  },
+  "after_production": {
+    "count": 35252,
+    "active": 35240,
+    "md5": "64ef95c327a78cf07271f2e674583beb"
+  },
+  "checks_passed": true,
+  "containers_unchanged": true,
+  "updated_ids": [
+    "DIFF_G6_S07_01_C_03",
+    "DIFF_G6_S07_02_C_03",
+    "DIFF_G6_S10_01_C_01",
+    "DIFF_G6_S10_01_C_02",
+    "DIFF_G6_S15_03_C_02",
+    "DIFF_G6_S25_02_C_02",
+    "DIFF_G6_S25_02_C_03",
+    "DIFF_G6_S37_02_C_02",
+    "DIFF_G6_S47_01_C_01",
+    "DIFF_G7_S03_01_C_02",
+    "G11_TB_1_1_1_1",
+    "G11_TB_8_4_5",
+    "G5_TB_11_438.2",
+    "G5_TB_69_1692",
+    "G6_TB_81–83_678.1",
+    "G7_ALG_31_20",
+    "G9_TB_6_72",
+    "GEN_G5_S05_02_10",
+    "GEN_G5_S15_01_09",
+    "GEN_G6_S36_02_C_02",
+    "GEN_G6_S36_04_C_03",
+    "GEN_G6_S46_01_C_01",
+    "GEN_G6_S46_01_C_02",
+    "GEN_G6_S47_04_C_01"
+  ],
+  "repeat_no_writes": true,
+  "live_consumers": {
+    "batch": "n01-source-repair-2026-10-05-w3",
+    "offline": false,
+    "student_data_included": false,
+    "sessions_created": 0,
+    "tasks": 24,
+    "graded_choices": 192,
+    "display_runs": 288,
+    "report_errors": 72,
+    "content_sha": "803da1ef5f6f362934e6caf023393c4a437488de",
+    "verifier_sha": "b991700122835fdd396044f8c2b15ff06e3054de",
+    "live_stage": true
+  }
+}

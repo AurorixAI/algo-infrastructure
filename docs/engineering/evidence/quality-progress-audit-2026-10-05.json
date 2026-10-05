@@ -1,0 +1,217 @@
+{
+  "audited_date": "2026-10-05",
+  "source_period": "2026-10-03",
+  "method": "P05 baseline and P06 candidate paired by profile/grade/seed; 3 profiles x 7 grades x 30 seeds",
+  "before": {
+    "runs": 630,
+    "early": 0,
+    "mean_questions": 42,
+    "median_questions": 42.0,
+    "agreement_correct": 609,
+    "agreement_percent": 96.66666666666667,
+    "mean_se": 0.34508714285714287,
+    "theta_rmse": 0.29524308537257477
+  },
+  "after": {
+    "runs": 630,
+    "early": 410,
+    "mean_questions": 35.68571428571428,
+    "median_questions": 36.0,
+    "agreement_correct": 603,
+    "agreement_percent": 95.71428571428571,
+    "mean_se": 0.37106984126984127,
+    "theta_rmse": 0.3015975575140036
+  },
+  "question_reduction_percent": 15.034013605442183,
+  "agreement_change_percentage_points": -0.9523809523809632,
+  "by_profile": {
+    "gaps": {
+      "before": {
+        "runs": 210,
+        "early": 0,
+        "mean_questions": 42,
+        "median_questions": 42.0,
+        "agreement_correct": 210,
+        "agreement_percent": 100.0,
+        "mean_se": 0.3643009523809524,
+        "theta_rmse": 0.33376174636008443
+      },
+      "after": {
+        "runs": 210,
+        "early": 155,
+        "mean_questions": 35.58571428571429,
+        "median_questions": 35.0,
+        "agreement_correct": 210,
+        "agreement_percent": 100.0,
+        "mean_se": 0.3944580952380952,
+        "theta_rmse": 0.34993936012101406
+      }
+    },
+    "middle": {
+      "before": {
+        "runs": 210,
+        "early": 0,
+        "mean_questions": 42,
+        "median_questions": 42.0,
+        "agreement_correct": 202,
+        "agreement_percent": 96.19047619047619,
+        "mean_se": 0.3252357142857143,
+        "theta_rmse": 0.2514199617979372
+      },
+      "after": {
+        "runs": 210,
+        "early": 144,
+        "mean_questions": 34.17142857142857,
+        "median_questions": 33.0,
+        "agreement_correct": 199,
+        "agreement_percent": 94.76190476190476,
+        "mean_se": 0.3650966666666667,
+        "theta_rmse": 0.266475701206195
+      }
+    },
+    "strong": {
+      "before": {
+        "runs": 210,
+        "early": 0,
+        "mean_questions": 42,
+        "median_questions": 42.0,
+        "agreement_correct": 197,
+        "agreement_percent": 93.80952380952381,
+        "mean_se": 0.3457247619047619,
+        "theta_rmse": 0.2947821871435634
+      },
+      "after": {
+        "runs": 210,
+        "early": 111,
+        "mean_questions": 37.3,
+        "median_questions": 40.0,
+        "agreement_correct": 194,
+        "agreement_percent": 92.38095238095238,
+        "mean_se": 0.3536547619047619,
+        "theta_rmse": 0.28180916415191326
+      }
+    }
+  },
+  "source_files": {
+    "artifacts/p05-profile-simulation-2026-10-03.json": "14986afede6dbe14058e774d30c2a3cf7923c07ba63fc65db62dc2385ba5a562",
+    "artifacts/p06-profile-simulation-2026-10-03.json": "82505fb907a2471dc0ccd11ab1f8f484b43ecfb7c815c7274fdb7e853f4776dc"
+  },
+  "limits": [
+    "Synthetic outcomes from configured IRT parameters, not pupils or external accuracy.",
+    "Multiple algorithm changes, not an isolated stopping-threshold experiment.",
+    "Same profile/grade/seed and RNG method; different adaptive questions and realized outcomes.",
+    "P06 output lacks bank hash; runner used P05 metadata and preserved bank evidence.",
+    "No comparable historic overall readiness score; no percent growth of total product quality."
+  ],
+  "stage_readonly_verification": {
+    "checked_at": "2026-10-05T03:01:16.303588+00:00",
+    "read_only": true,
+    "services": {
+      "frontend": {
+        "container_identity_matches_04_oct": true,
+        "image_matches_04_oct": true,
+        "running": true,
+        "health": null,
+        "image_id": "sha256:c38c00081f4918f90d893ff69362fa0d8d40f522ffdba72282d7e365cae506aa",
+        "release": {
+          "RELEASE_SHA": "91d4b14662e62c264a3590dfac1d03f66db17a9f85547cf66c9920e121d1595c",
+          "RELEASE_REF": "p06ui-report-layout-2026-10-03",
+          "RELEASED_AT": "2026-10-03T14:33:06.732170+00:00"
+        }
+      },
+      "auth": {
+        "container_identity_matches_04_oct": true,
+        "image_matches_04_oct": true,
+        "running": true,
+        "health": "healthy",
+        "image_id": "sha256:e55333f2d76be919713c981fca4f8d93d29f67e089a3f279ca8aacc8b8588485",
+        "release": {
+          "RELEASE_SHA": "e6c171cd1ecaa2942a7ed34fb1daeff053bac72796110656edd7e07994e2cdc3",
+          "RELEASE_REF": "p03-tested-source-2026-10-03",
+          "RELEASED_AT": "2026-10-03T05:52:23.767511+00:00"
+        },
+        "source_hash_check": {
+          "checked": 54,
+          "mismatches": []
+        }
+      },
+      "diagnostic": {
+        "container_identity_matches_04_oct": true,
+        "image_matches_04_oct": true,
+        "running": true,
+        "health": "healthy",
+        "image_id": "sha256:379fe17ee9c5619b65fb491e8dab221048bf818657fc871853dbefd9ee893c3c",
+        "release": {
+          "RELEASE_SHA": "a39b504c2cd65f81a5181a4e64c7b82c8a28769b2a75db744de5fc1e8cfa51a4",
+          "RELEASE_REF": "p06f-adaptive-diagnostic-2026-10-03",
+          "RELEASED_AT": "2026-10-03T14:08:10.105207+00:00"
+        },
+        "source_hash_check": {
+          "checked": 55,
+          "mismatches": []
+        }
+      },
+      "content": {
+        "container_identity_matches_04_oct": true,
+        "image_matches_04_oct": true,
+        "running": true,
+        "health": "healthy",
+        "image_id": "sha256:3d43f48c3609501f19eac94189b4e2190056ee252b3d56075b2660f656f6a7f9",
+        "release": {
+          "RELEASE_SHA": "c3816365cd337b5e5c7ade39b80c06e533468713ebb2096445f51cac46d466fc",
+          "RELEASE_REF": "p06-adaptive-diagnostic-2026-10-03",
+          "RELEASED_AT": "2026-10-03T13:39:46.626389+00:00"
+        },
+        "source_hash_check": {
+          "checked": 90,
+          "mismatches": []
+        }
+      },
+      "exam": {
+        "container_identity_matches_04_oct": true,
+        "image_matches_04_oct": true,
+        "running": true,
+        "health": "healthy",
+        "image_id": "sha256:b70921379788caf38f26afa94d1c03e39af4d4c26ed91e0ce1370fa222cb2d9d",
+        "release": {
+          "RELEASE_SHA": "2f3fb8490e9ce0850815fb02b92669865a5275377b08edf3e3b87e898a6596a8",
+          "RELEASE_REF": "p03-tested-source-2026-10-03",
+          "RELEASED_AT": "2026-10-03T05:52:23.767511+00:00"
+        },
+        "source_hash_check": {
+          "checked": 56,
+          "mismatches": []
+        }
+      }
+    },
+    "schema_heads": {
+      "auth": "q7r8s9t0u1v",
+      "diagnostic": "008_durable_auth_sync",
+      "content": "q8r9s0t1u2v3",
+      "exam": "015_repair_derivative_distractor"
+    },
+    "bank": "37264|34267|81a6a9b51f4e10e8a5d4366548a89bb3",
+    "cat_policy": {
+      "warmup_items": 5,
+      "min_items": 12,
+      "max_items": 42,
+      "se_threshold": 0.3,
+      "classification_min_items": 20,
+      "classification_se_threshold": 0.4,
+      "classification_confidence_threshold": 0.9,
+      "min_section_coverage": 5,
+      "deep_scan_importance_threshold": 8,
+      "deep_scan_max_items": 6
+    },
+    "bank_matches_04_oct": true
+  },
+  "readiness": {
+    "stage": 40,
+    "candidate": 45
+  },
+  "broad_category_definition": {
+    "above": "theta >= 1",
+    "at": "-0.5 <= theta < 1",
+    "below": "theta < -0.5"
+  }
+}

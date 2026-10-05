@@ -83,6 +83,7 @@ SSH-записей, рестартов или изменений БД инстр
 output directory отклоняется; частично неудачный output не использовать.
 
 Подготовленный source manifest — **ещё не release manifest и не готовый deploy**.
+Для diagnostic/exam/frontend доступен `scripts/build_git_images.py --inputs <prepared-directory> --service <name>`: он сверяет архивы и успешный exact-SHA `ci-gates.json`, строит Linux/amd64 images с revision/archive labels и сохраняет immutable image IDs. Он не переключает контейнеры; статус результата остаётся `images_built_acceptance_pending`. Перед запуском на сервере копируются именно подготовленные Git-архивы и checksum; оператор выполняет собственную приёмку этих images и следующие gates.
 До переключения:
 
 1. Проверить архивные hashes; распаковать в новый пустой build directory. Собирать

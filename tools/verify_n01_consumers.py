@@ -1,7 +1,7 @@
 """Exercise authored bank repairs through the real diagnostic/report consumers.
 
-Offline only: the content transport is replaced with educational candidate
-rows. No pupil data, network, paid LLM calls or database writes are involved.
+Offline mode uses educational candidate rows; live mode reads internal task
+GETs. Neither mode creates sessions, reads pupil records or calls a paid LLM.
 """
 import argparse
 import json
@@ -11,7 +11,7 @@ from types import SimpleNamespace
 from unittest.mock import patch
 
 
-def verify(workspace: Path, manifest_path: Path, source_path: Path) -> dict:
+def verify(workspace: Path, manifest_path: Path, source_path: Path | None) -> dict:
     sys.path.insert(0, str(workspace / 'diagnostic-service'))
     from src.domain.answer_evaluator import AnswerEvaluator
     from src.domain.task_display import build_diag_answer_options, diag_answer_type_for_display
@@ -21,7 +21,19 @@ def verify(workspace: Path, manifest_path: Path, source_path: Path) -> dict:
     from src.clients import content_client
 
     manifest = json.loads(manifest_path.read_text())
-    originals = {r['id']: r for r in json.loads(source_path.read_text())['content']['tasks']}
+    if source_path:
+        originals = {r['id']: r for r in json.loads(source_path.read_text())['content']['tasks']}
+    else:
+        originals = {}
+        for entry in manifest['repairs']:
+            response = content_client.get('/api/v1/content/tasks/' + entry['id'])
+            response.raise_for_status()
+            row = response.json()
+            assert row['is_active'] is True
+            for key, value in entry['changes'].items():
+                if key in row:
+                    assert row[key] == value, (entry['id'], key)
+            originals[entry['id']] = row
     evaluator = AnswerEvaluator()
     counts = {'tasks': 0, 'graded_choices': 0, 'display_runs': 0, 'report_errors': 0}
     for entry in manifest['repairs']:
@@ -36,8 +48,10 @@ def verify(workspace: Path, manifest_path: Path, source_path: Path) -> dict:
             assert diag_answer_type_for_display(task, values) == 'mcq'
             # Exercise the real outgoing schema; key / dmeta cannot leak into it.
             state = SessionState(session_id=f'n01:{seed}', student_id='offline-n01', grade_level=10)
+            state.current_skill_id = row['skill_id']
             outgoing = SessionService._task_to_out(None, task, state).model_dump()
             assert outgoing['question_latex'] == row['question_latex']
+            assert outgoing['skill_id'] == row['skill_id']
             assert len(outgoing['answer_options']) == 4
             assert 'correct_answer' not in outgoing and 'distractor_meta' not in outgoing
             counts['display_runs'] += 1
@@ -63,14 +77,17 @@ def verify(workspace: Path, manifest_path: Path, source_path: Path) -> dict:
             assert error['distractor_explanation_latex'] == distractor['error_logic_latex']
             counts['report_errors'] += 1
         counts['tasks'] += 1
-    return {'batch': manifest['batch'], 'offline': True, 'student_data_included': False, **counts}
+    return {'batch': manifest['batch'], 'offline': bool(source_path), 'student_data_included': False,
+            'sessions_created': 0, **counts}
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--workspace', required=True, type=Path)
     parser.add_argument('--manifest', required=True, type=Path)
-    parser.add_argument('--source', required=True, type=Path)
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument('--source', type=Path)
+    mode.add_argument('--live', action='store_true', help='read current internal API; no pupil/session writes')
     parser.add_argument('--output', type=Path)
     args = parser.parse_args()
     result = verify(args.workspace, args.manifest, args.source)

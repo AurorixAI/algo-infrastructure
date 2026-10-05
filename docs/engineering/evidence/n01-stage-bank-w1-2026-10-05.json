@@ -1,0 +1,57 @@
+{
+  "content_sha": "94ec698389c0fa443e1a20016fb8f71b944179ca",
+  "orchestrator_sha": "d699ae297d2c12e68b024c57deb45d8baf03f750",
+  "archive_sha256": "c40590bb622d1d015082cc9a4ed48c7ce9b2203bc8619a2bed6fc32deba79ab6",
+  "execution_image_id": "sha256:3d43f48c3609501f19eac94189b4e2190056ee252b3d56075b2660f656f6a7f9",
+  "student_data_included": false,
+  "before_stage": {
+    "count": 37264,
+    "active": 34267,
+    "md5": "91ebaf57a983a5fbf0fbfed1d38d7cf9"
+  },
+  "after_stage": {
+    "count": 37264,
+    "active": 34267,
+    "md5": "fa8ab88d33626e94b8457388d03f47cb"
+  },
+  "before_other_tasks": {
+    "count": 37258,
+    "active": 34261,
+    "md5": "392affbf3fe1bdb7fc53e11452802a14"
+  },
+  "after_other_tasks": {
+    "count": 37258,
+    "active": 34261,
+    "md5": "392affbf3fe1bdb7fc53e11452802a14"
+  },
+  "before_production": {
+    "count": 35252,
+    "active": 35240,
+    "md5": "64ef95c327a78cf07271f2e674583beb"
+  },
+  "after_production": {
+    "count": 35252,
+    "active": 35240,
+    "md5": "64ef95c327a78cf07271f2e674583beb"
+  },
+  "checks_passed": true,
+  "containers_unchanged": true,
+  "updated_ids": [
+    "G10_TB_1_6_7_g",
+    "G10_TB_3_9_9",
+    "G10_TB_6_1_1",
+    "G10_TB_6_2_16",
+    "G10_TB_§42_42_7_3",
+    "G11_TB_6_6_6_43_c"
+  ],
+  "repeat_no_writes": true,
+  "live_consumers": {
+    "live_stage": true,
+    "student_data_included": false,
+    "sessions_created": 0,
+    "live_tasks": 6,
+    "graded_choices": 48,
+    "outgoing_tasks": 6,
+    "report_errors": 18
+  }
+}

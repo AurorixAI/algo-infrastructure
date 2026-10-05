@@ -41,3 +41,11 @@
 ## Выпуск
 
 До успешного Git/CI и записи release record это проверенный кандидат, не уже обновлённый stage. Изменение банка выполняется отдельным инструментом из exact pushed Git archive; application-контейнеры и ветки develop/main для этой записи не обновляются. Фактический выпуск фиксируется ниже после проверки.
+
+### Первая группа выпущена на stage
+
+05.10.2026 11:58 (+05): исправления применены из content CEO `94ec698389c0fa443e1a20016fb8f71b944179ca`; оркестратор — infrastructure CEO `d699ae297d2c12e68b024c57deb45d8baf03f750`. [Content CI](https://github.com/AurorixAI/content-service/actions/runs/37274485558), [infrastructure CI](https://github.com/AurorixAI/algo-infrastructure/actions/runs/37274498816) прошли; application deploy CEO штатно пропущен.
+
+На stage изменены те же шесть ID. Количество 37 264 / активных 34 267 сохранилось; полный fingerprint остальных заданий, production-банка и identities/config всех application/DB-контейнеров совпали. Повтор выполнил ноль записей. Работающий stage content API и diagnostic-код прошли 48 оценок вариантов, 6 исходящих схем ученику и 18 записей журнала ошибок; новых попыток и LLM-вызовов не было. Application images и код сервисов этим data release не обновлялись. Локальный test-image `sha256:4bd65df834af58f62416453d0d339d14cc98dcdf44406cbac9b5e812c732c86b` не является новым stage application image.
+
+[Обезличенный release record](n01-stage-bank-w1-2026-10-05.json). Приватный откат хранится на сервере в release directory, не в банке и не в Git. T01–T06 закрыты в этом объёме; содержательная очередь 147 и N02–N05 остаются открытыми.

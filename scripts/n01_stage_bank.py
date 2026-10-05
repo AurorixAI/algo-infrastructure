@@ -16,7 +16,14 @@ from urllib.parse import urlsplit
 
 TASK_IDS = ['G10_TB_3_9_9', 'G10_TB_6_2_16', 'G10_TB_§42_42_7_3',
             'G10_TB_6_1_1', 'G10_TB_1_6_7_g', 'G11_TB_6_6_6_43_c']
-MANIFEST = 'data/content_repairs/n01-2026-10-05-w1.json'
+SCOPES = {
+    'data/content_repairs/n01-2026-10-05-w1.json': TASK_IDS,
+    'data/content_repairs/n01-2026-10-05-w2.json': [
+        'G6_TB_124–125_1046.2','G6_TB_124–125_1047.6','G11_TB_§2_2',
+        'G11_TB_8_4_4','G11_TB_8_4_5','G11_TB_8_4_6','G11_TB_10_4*_3',
+        'G11_TB_10_4*_4','G9_TB_31_636_1','G9_TB_ДГ5_636_2','GEN_G6_S38_01_C_01',
+    ],
+}
 
 
 def command(argv, **kwargs):
@@ -58,8 +65,10 @@ def stage_database_url(stage, db):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--content-sha', required=True)
+    parser.add_argument('--manifest',choices=SCOPES,default='data/content_repairs/n01-2026-10-05-w1.json')
     parser.add_argument('--execute', action='store_true')
     args = parser.parse_args()
+    task_ids = SCOPES[args.manifest]
     if not re.fullmatch('[0-9a-f]{40}', args.content_sha):
         raise ValueError('expected exact content Git SHA')
     root = Path.home() / 'algo'
@@ -77,16 +86,16 @@ def main():
     with archive.open('wb') as stream:
         subprocess.run(['git', '-C', str(repo), 'archive', '--format=tar', args.content_sha], stdout=stream, check=True)
     subprocess.run(['tar', '-xf', str(archive), '-C', str(source)], check=True)
-    manifest = json.loads((source / MANIFEST).read_text())
-    assert {e['id'] for e in manifest['repairs']} == set(TASK_IDS), 'unexpected repair scope'
+    manifest = json.loads((source / args.manifest).read_text())
+    assert {e['id'] for e in manifest['repairs']} == set(task_ids), 'unexpected repair scope'
     before_state = state()
     stage = json.loads(command(['docker', 'inspect', 'algo-preview-content']))[0]
     db = json.loads(command(['docker', 'inspect', 'algo-preview-content-db']))[0]
     url = stage_database_url(stage, db)
     before_prod = bank_summary('staging')
     before_stage = bank_summary('preview')
-    before_other = bank_summary('preview', TASK_IDS)
-    quoted = ','.join("'" + v.replace("'", "''") + "'" for v in TASK_IDS if v != 'G11_TB_6_6_6_43_c')
+    before_other = bank_summary('preview', task_ids)
+    quoted = ','.join("'" + v.replace("'", "''") + "'" for v in task_ids if v != 'G11_TB_6_6_6_43_c')
     # T06 keeps its key; all other first-wave tasks must have no saved diagnostic
     # answers before modifying their wording/key/choice contract.
     impact_sql = f'SELECT count(*) FROM diag_answers WHERE task_id IN ({quoted});'
@@ -97,7 +106,7 @@ def main():
     backup_folder = release / 'private'
     backup_folder.mkdir(mode=0o700)
     record = {'operation': 'in_place_owner_requested', 'target': 'stage.algolab.me',
-              'content_sha': args.content_sha, 'archive_sha256': hashlib.sha256(archive.read_bytes()).hexdigest(),
+              'content_sha': args.content_sha, 'manifest':args.manifest, 'archive_sha256': hashlib.sha256(archive.read_bytes()).hexdigest(),
               'execution_image_id': stage['Image'], 'release_path': str(release),
               'student_data_included': False, 'before_stage': before_stage,
               'before_other_tasks': before_other, 'before_production': before_prod,
@@ -113,7 +122,7 @@ def main():
             '--mount',f'type=bind,source={source},target=/repair,readonly',
             '--mount',f'type=bind,source={backup_folder},target=/backup',
             '-w','/repair','--entrypoint','python',stage['Image'],
-            '-m','tools.content_review.guarded_repair','--manifest',MANIFEST]
+            '-m','tools.content_review.guarded_repair','--manifest',args.manifest]
     try:
         record['dry_run'] = json.loads(command(base))
         if args.execute:
@@ -122,7 +131,7 @@ def main():
             assert not (backup_folder / 'unused-repeat.json').exists()
     finally:
         secret_file.unlink()
-    record.update(after_stage=bank_summary('preview'), after_other_tasks=bank_summary('preview', TASK_IDS),
+    record.update(after_stage=bank_summary('preview'), after_other_tasks=bank_summary('preview', task_ids),
                   after_production=bank_summary('staging'), after_containers=state())
     (release / 'result.json').write_text(json.dumps(record, indent=2) + '\n')
     assert record['after_other_tasks'] == before_other, 'unrelated stage bank writes observed'

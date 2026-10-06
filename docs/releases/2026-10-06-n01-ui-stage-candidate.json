@@ -1,0 +1,309 @@
+{
+  "status": "verified_candidate_awaiting_stage_authorization",
+  "target": {
+    "domain": "stage.algolab.me",
+    "compose_project": "algo-preview"
+  },
+  "selected_services": [
+    "diagnostic-service",
+    "exam-service",
+    "frontend"
+  ],
+  "preparation_infrastructure_sha": "0ffbe6987ee2161368f4e084d440b5bd368f74f1",
+  "source_manifest_sha256": "46d5ffdaf9c06a16142559e06257cdb86196217b865e1002b679a0b93a7bc8d7",
+  "server_candidate_directory": "/home/algo/algo/releases/n01-url-candidate-20261005",
+  "images": {
+    "diagnostic-service": {
+      "image_tag": "algolab-git-candidate-diagnostic-service:9c878051be07-eb0efeb757f2",
+      "image_id": "sha256:7c92e68a743835b0b8f14c7f39eeb7eecc5f0847850c110814ee3deefd85a77c",
+      "source_sha": "9c878051be0745e2f4e4f3abf444b32f8c006f3f",
+      "source_archive_sha256": "eb0efeb757f2b6462458c9ea3ff44de82726b16a777a5dd591b3f4340a77b3e3",
+      "platform": "linux/amd64"
+    },
+    "exam-service": {
+      "image_tag": "algolab-git-candidate-exam-service:88d91067a5d9-e56a800bb3c2",
+      "image_id": "sha256:d3a1b9f80db601193b2701b69e29474307907e8e7733895915752189fd5cf4ca",
+      "source_sha": "88d91067a5d95504931eb6ef8748c8ffea683fa8",
+      "source_archive_sha256": "e56a800bb3c2b2c0aa567d15766d053964f34fae059670dd6697670ecc587641",
+      "platform": "linux/amd64"
+    },
+    "frontend": {
+      "image_tag": "algolab-git-candidate-frontend:7474545b1042-dc17d7900a7e",
+      "image_id": "sha256:763e4e8761b52656e902a81cf268aafa2788f2dbf6a27d038a890b368d4ac2e0",
+      "source_sha": "7474545b104252182c917f1a7fbbdff5776d9e63",
+      "source_archive_sha256": "dc17d7900a7e9356f9f42e274dce53bb134221df1a4ba6e582a43e3dde38c59d",
+      "platform": "linux/amd64"
+    }
+  },
+  "previous_images": {
+    "diagnostic-service": {
+      "container": "algo-preview-diagnostic",
+      "previous_image_id": "sha256:379fe17ee9c5619b65fb491e8dab221048bf818657fc871853dbefd9ee893c3c",
+      "rollback_tag": "algolab-rollback-n01-url-diagnostic-service:20261005",
+      "config_sha256": "d5b223530c0f44cc88d5176196a8f29a83cdef9a2caffde7408f78e6d73ccc11"
+    },
+    "exam-service": {
+      "container": "algo-preview-exam",
+      "previous_image_id": "sha256:b70921379788caf38f26afa94d1c03e39af4d4c26ed91e0ce1370fa222cb2d9d",
+      "rollback_tag": "algolab-rollback-n01-url-exam-service:20261005",
+      "config_sha256": "6f5807c3c4d3ee60ddcae6c00d90c7889ead38b5982906f825d6ce5dbe2af558"
+    },
+    "frontend": {
+      "container": "algo-preview-frontend",
+      "previous_image_id": "sha256:c38c00081f4918f90d893ff69362fa0d8d40f522ffdba72282d7e365cae506aa",
+      "rollback_tag": "algolab-rollback-n01-url-frontend:20261005",
+      "config_sha256": "ace2aeb2db7b9d9be8705019061b74f77c95266b3a4eaf5f91bb618a24c2a24f"
+    }
+  },
+  "exact_image_tests": {
+    "diagnostic-service": {
+      "service": "diagnostic-service",
+      "image_id": "sha256:7c92e68a743835b0b8f14c7f39eeb7eecc5f0847850c110814ee3deefd85a77c",
+      "passed": 222,
+      "tests_from_exact_git_archive": true,
+      "application_source_unmounted": true,
+      "isolated_postgresql_redis": true,
+      "exit_code": 0,
+      "application_restarts": 0
+    },
+    "exam-service": {
+      "service": "exam-service",
+      "image_id": "sha256:d3a1b9f80db601193b2701b69e29474307907e8e7733895915752189fd5cf4ca",
+      "passed": 235,
+      "tests_from_exact_git_archive": true,
+      "application_source_unmounted": true,
+      "isolated_postgresql_redis": false,
+      "exit_code": 0,
+      "application_restarts": 0
+    }
+  },
+  "runtime_source_verification": {
+    "diagnostic-service": {
+      "matched_runtime_source_files": 57,
+      "source_and_migrations_match": true,
+      "dependency_identity": {
+        "python": "3.11.17",
+        "fastapi": "0.115.0",
+        "httpx": "0.27.2",
+        "sqlalchemy": "2.0.36",
+        "pydantic": "2.9.2",
+        "alembic": "1.13.3"
+      }
+    },
+    "exam-service": {
+      "matched_runtime_source_files": 58,
+      "source_and_migrations_match": true,
+      "dependency_identity": {
+        "python": "3.11.17",
+        "fastapi": "0.115.0",
+        "httpx": "0.27.2",
+        "sqlalchemy": "2.0.36",
+        "pydantic": "2.10.3",
+        "alembic": "1.14.0"
+      }
+    }
+  },
+  "candidate_http_against_stage_educational_bank": {
+    "diagnostic": {
+      "consumer": "diagnostic",
+      "tasks": 22,
+      "report_errors": 22,
+      "missing_task_preserved": true,
+      "sessions_created": 0,
+      "student_data_included": false,
+      "repository_and_http_unpatched": true
+    },
+    "bank_consumers": {
+      "batch": "n01-source-repair-2026-10-05-w5",
+      "offline": false,
+      "student_data_included": false,
+      "sessions_created": 0,
+      "tasks": 22,
+      "graded_choices": 176,
+      "display_runs": 264,
+      "report_errors": 66
+    },
+    "exam": {
+      "consumer": "exam",
+      "tasks": 22,
+      "report_errors": 0,
+      "missing_task_preserved": true,
+      "sessions_created": 0,
+      "student_data_included": false,
+      "repository_and_http_unpatched": true
+    },
+    "application_images_changed": false,
+    "student_data_included": false,
+    "candidate_images": {
+      "diagnostic-service": {
+        "image_tag": "algolab-git-candidate-diagnostic-service:9c878051be07-eb0efeb757f2",
+        "image_id": "sha256:7c92e68a743835b0b8f14c7f39eeb7eecc5f0847850c110814ee3deefd85a77c",
+        "source_sha": "9c878051be0745e2f4e4f3abf444b32f8c006f3f",
+        "source_archive_sha256": "eb0efeb757f2b6462458c9ea3ff44de82726b16a777a5dd591b3f4340a77b3e3",
+        "platform": "linux/amd64"
+      },
+      "exam-service": {
+        "image_tag": "algolab-git-candidate-exam-service:88d91067a5d9-e56a800bb3c2",
+        "image_id": "sha256:d3a1b9f80db601193b2701b69e29474307907e8e7733895915752189fd5cf4ca",
+        "source_sha": "88d91067a5d95504931eb6ef8748c8ffea683fa8",
+        "source_archive_sha256": "e56a800bb3c2b2c0aa567d15766d053964f34fae059670dd6697670ecc587641",
+        "platform": "linux/amd64"
+      },
+      "frontend": {
+        "image_tag": "algolab-git-candidate-frontend:7474545b1042-dc17d7900a7e",
+        "image_id": "sha256:763e4e8761b52656e902a81cf268aafa2788f2dbf6a27d038a890b368d4ac2e0",
+        "source_sha": "7474545b104252182c917f1a7fbbdff5776d9e63",
+        "source_archive_sha256": "dc17d7900a7e9356f9f42e274dce53bb134221df1a4ba6e582a43e3dde38c59d",
+        "platform": "linux/amd64"
+      }
+    }
+  },
+  "browser_exact_image": {
+    "bank_22": {
+      "states": 81,
+      "artifact_sha256": "23de9e82ca4ea964be3122c32bff4c33c1a0f87e2dab80d474dca07985e2d658",
+      "vertical_clips": 0,
+      "row_overlaps": 0,
+      "page_errors": 0,
+      "unhandled_api": 0,
+      "synthetic_actors_and_api": true
+    },
+    "core_formula_regression": {
+      "states": 30,
+      "artifact_sha256": "360ad9f6d455e37df14ea4d193cf10de8daae9102c6e12347987e4eed675841c",
+      "vertical_clips": 0,
+      "row_overlaps": 0,
+      "page_errors": 0,
+      "unhandled_api": 0,
+      "synthetic_actors_and_api": true
+    }
+  },
+  "schema_backups": {
+    "diagnostic-service": {
+      "backup_validated": true,
+      "backup_server_private_only": true,
+      "schema_head": "008_durable_auth_sync"
+    },
+    "exam-service": {
+      "backup_validated": true,
+      "backup_server_private_only": true,
+      "schema_head": "015_repair_derivative_distractor"
+    }
+  },
+  "schema_compatibility": {
+    "diagnostic-service": {
+      "schema_head": "008_durable_auth_sync",
+      "stage_ddl_without_pupil_rows": true,
+      "candidate_migration_passed": true,
+      "previous_image_migration_passed": true,
+      "schema_unchanged": true,
+      "schema_sha256": "9877c1dca7fbd9a24f6f4a5ae5422a1829b299ec3bf125875e04dd5e9e5cecb5",
+      "runtime_pythonpath_unmodified": true
+    },
+    "exam-service": {
+      "schema_head": "015_repair_derivative_distractor",
+      "stage_ddl_without_pupil_rows": true,
+      "candidate_migration_passed": true,
+      "previous_image_migration_passed": true,
+      "schema_unchanged": true,
+      "schema_sha256": "a0faa6f0310a128030c66df058116cab46419c2b2e7ede2c81730e656434328b",
+      "runtime_pythonpath_unmodified": true
+    }
+  },
+  "configuration": {
+    "selected_stage_services": [
+      "diagnostic-service",
+      "exam-service",
+      "frontend"
+    ],
+    "nonrelease_environment_changed_keys": {
+      "diagnostic-service": [],
+      "exam-service": [],
+      "frontend": []
+    },
+    "runtime_containers_unchanged": true,
+    "nginx_dynamic_preview_resolution_confirmed": true,
+    "nginx_reload_required": false,
+    "resolved_config_sha256": "738c709050dcdf8da2846bcfbd8df3a9ebbac7780fdd533026c927ae59c21fef",
+    "application_restarts": 0,
+    "cat_policy_unchanged": true,
+    "cat_literal_values_preserved": true
+  },
+  "ci": {
+    "diagnostic-service": {
+      "id": 37343956188,
+      "head_sha": "9c878051be0745e2f4e4f3abf444b32f8c006f3f",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/AurorixAI/diagnostics-service/actions/runs/37343956188",
+      "jobs": [
+        {
+          "name": "test",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "deploy",
+          "status": "completed",
+          "conclusion": "skipped"
+        }
+      ]
+    },
+    "exam-service": {
+      "id": 37343966284,
+      "head_sha": "88d91067a5d95504931eb6ef8748c8ffea683fa8",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/AurorixAI/exam-service/actions/runs/37343966284",
+      "jobs": [
+        {
+          "name": "test",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "deploy",
+          "status": "completed",
+          "conclusion": "skipped"
+        }
+      ]
+    },
+    "algo-front": {
+      "id": 37339791566,
+      "head_sha": "7474545b104252182c917f1a7fbbdff5776d9e63",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/AurorixAI/algo-front/actions/runs/37339791566",
+      "jobs": [
+        {
+          "name": "build",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "deploy",
+          "status": "completed",
+          "conclusion": "skipped"
+        }
+      ]
+    }
+  },
+  "stage_application_images_changed": false,
+  "deployment_performed": false,
+  "stage_bank_wave_5_already_written": true,
+  "stage_bank_fully_accepted": false,
+  "accepted_bank_ids": 80,
+  "bank_ids_written_pending_acceptance": 22,
+  "bank_ids_remaining_content_review": 51,
+  "student_data_included": false,
+  "paid_llm_calls": 0,
+  "test_containers_removed": true,
+  "backups_private_server_only": true,
+  "post_switch_acceptance_required": [
+    "exact running image/release/source bindings",
+    "health/readiness and unchanged CAT policy",
+    "22 real task GETs and diagnostic/report consumers",
+    "public stage browser diagnostic/exam/draft/report rendering",
+    "unchanged other bank rows, saved exams and production containers"
+  ]
+}

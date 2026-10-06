@@ -5,7 +5,7 @@
 ## Исходное состояние (замер 06.10)
 | | Прод (`algo-staging-*`, ветка `main`) | Stage (эталон) |
 |---|---|---|
-| Код | 06–09.09 (`~/algo/<repo>`) | CEO: content 0d8c032, auth 5234079, diagnostic b758bd0, exam a94016a, front 724c5df |
+| Код | 06–09.09 (`~/algo/<repo>`) | CEO: content f57952a, auth 5234079, diagnostic b758bd0, exam a94016a, front 724c5df |
 | content DB | 35 252 задачи, alembic `o6c7d8e9f0a1` | дамп `algo_content_2026100*_*.dump` (последний в `~/release_dumps/`), alembic `q8r9s0t1u2v3` |
 | diagnostic DB | `008`, 47 ответов / 39 задач / 4 сессии | `009` (снимки заданий) |
 | exam DB | `015`, 3 черновика | `015` |
@@ -19,10 +19,12 @@
 - **Новый compose прода** требует `INTERNAL_SERVICE_TOKEN` и `CORS_ORIGINS`. Новый content отвечает только с токеном, поэтому content выкладывается последним.
 
 ## Решения владельца до начала
-1. **Параметры диагностики на проде.** Сейчас на проде `MAX_ITEMS=25`, `WARMUP_ITEMS=3`. На stage — 42 и 5, плюс `MIN_ITEMS=12`, `MIN_SECTION_COVERAGE=5`, `CLASSIFICATION_*`. Рекомендация: как на stage, так это проверено.
+1. **Параметры диагностики на проде — РЕШЕНО 06.10: как на stage.**
+   - Значения: `MAX_ITEMS=42`, `WARMUP_ITEMS=5`, `MIN_ITEMS=12`, `MIN_SECTION_COVERAGE=5`, `CLASSIFICATION_*` = 20 / 0,40 / 0,90.
+   - Симуляция на 2 660 учениках: RMSE θ 0,43 → 0,37, верный уровень 80 → 84,5 %, покрытие всех разделов 62 → 100 %. Цена — в среднем на 11 заданий больше.
 2. **Окно работ** примерно на 1 час. Прод почти не используется (4 сессии), но ученики в это время не должны проходить работы.
 
-## Этап 0. Репетиция на копии (без прода) 🔒
+## Этап 0. Репетиция на копии (без прода) — ✅ ПРОЙДЕНА 06.10
 1. Поднять на Mac временный стек из образов CEO.
 2. Восстановить в него 4 прод-дампа `~/backups/prod_<дата>/`.
 3. Прогнать шаги 2–5 ниже.
@@ -35,8 +37,9 @@
 2. Убедиться, что `~/algo/<repo>` (prod checkouts) чистые и на `main` — этого требует CI.
 3. **`~/algo/.env.staging`:**
    - добавить новый `INTERNAL_SERVICE_TOKEN` (`openssl rand -hex 32`, НЕ равный stage);
-   - добавить `MIN_ITEMS`, `MIN_SECTION_COVERAGE`, `CLASSIFICATION_*`;
-   - выставить `MAX_ITEMS` и `WARMUP_ITEMS` по решению 1;
+   - добавить `MIN_ITEMS=12`, `MIN_SECTION_COVERAGE=5`. `CLASSIFICATION_*` не нужны: compose прода их не пробрасывает, а дефолты кода 20 / 0,40 / 0,90 совпадают с stage. Проверено на репетиции;
+   - выставить `MAX_ITEMS=42` и `WARMUP_ITEMS=5`;
+   - `AZURE_DEEPSEEK_*` и `VERTEX_*` на проде отсутствуют. Сейчас отчёты идут через Gemini; поведение не меняется, это отдельный пункт N06;
    - проверить `CORS_ORIGINS=https://algolab.me`.
    - Бэкап файла — до правки.
 4. **Compose прода.**
@@ -49,15 +52,18 @@
 2. **diagnostic-service.**
    - Миграция `009` применится при старте.
    - Сразу после этого: `docker exec algo-staging-diagnostic python -m scripts.backfill_task_snapshots` (dry-run), затем `--execute`.
-   - Снимки берутся из СТАРОГО банка, который ещё на месте. Ожидаемо 47 из 47 или почти.
+   - Снимки берутся из СТАРОГО банка, который ещё на месте. На репетиции получилось 47 из 47, ошибок 0.
 3. **exam-service.**
 4. **algo-front.** Сборка для `main` берёт `NEXT_PUBLIC_*` из `.env.staging`, то есть `https://algolab.me`.
 
 ## Этап 3. Замена банка задач (окно работ) 🔒
+0. **Перед заменой:**
+   - дамп diagnostic-БД со снимками — нужен для отката, потому что downgrade 009 удаляет снимки, а старого банка после замены уже нет;
+   - проверить, что у content есть тег `algolab-rollback-algo-staging-content-service:*`. Старый content (cace817) из исходников уже не собирается: SQLAlchemy 2.1 без пина.
 1. **Скрипт восстановления:** `restore_stage_content_20261006.sh`, адаптированный под прод.
    - Остановить `algo-staging-diagnostic`, `-exam`, `-content`.
    - Бэкап текущей базы.
-   - Восстановить эталонный дамп одной транзакцией (`--clean --if-exists --single-transaction --exit-on-error`).
+   - Восстановить эталонный дамп одной транзакцией (`--clean --if-exists --single-transaction --exit-on-error`). На репетиции это заняло 4 с, md5 совпал с эталоном.
    - Запустить сервисы. При ошибке транзакция откатывается, сервисы стартуют на старой базе.
 2. **content-service:** `git push origin CEO:main`, CI соберёт новый код под новую базу.
 3. **Черновики экзаменов (3 шт.):** их варианты — снимки старых задач. Предложить владельцу архивировать или пересоздать.
@@ -74,8 +80,15 @@
 
 ## Откат
 - **Код:** CI ставит `algolab-rollback-algo-staging-<svc>:<sha>` на прежний образ; переключить образ этим тегом.
-- **diagnostic:** сначала `alembic downgrade 008_durable_auth_sync`, затем старый образ.
-- **Банк:** восстановить бэкап, который скрипт этапа 3 сделал перед заменой.
+- **diagnostic:** сначала `alembic downgrade 008_durable_auth_sync`, затем старый образ. Если банк уже заменён — восстановить дамп diagnostic-БД из этапа 3, п. 0.
+- **Банк.** `pg_restore --clean` здесь НЕ работает: в старом дампе нет таблиц аттестаций, а их внешние ключи держат `tasks_master_pkey`. Порядок:
+  1. Остановить diag, exam и content.
+  2. `DROP DATABASE algo_content WITH (FORCE)`.
+  3. `CREATE DATABASE algo_content OWNER algo`.
+  4. `pg_restore --no-owner --no-privileges --single-transaction --exit-on-error` бэкапа.
+  5. Старый образ content запускать по rollback-тегу.
+
+  На репетиции это заняло 3 с, и старый content поднялся.
 - **nginx:** `~/algo/backups/staging.conf.before-content-close-*`.
 - **Конфиги:** бэкапы `.env.staging` и `staging.yml` из этапа 1.
 
@@ -84,3 +97,9 @@
 - Сменить пароли из истории `auth-service/.env.production`.
 - Вынести сборку образов с прод-хоста (GitHub Actions → GHCR); разделить nginx для прода и stage.
 - Выровнять схему content (живая база ↔ alembic).
+
+## Итоги репетиции 06.10
+- **Пройдено:** шаги 1–5. Backfill 47/47. Замена банка 4 с, md5 = эталон. Задача с `?` в ID отдаётся. Отчёты старых сессий берут условия из снимков (33/33). Экзамены online и print, PDF бланка и ключа — валидны.
+- **Откат:** проходит только по исправленной процедуре (DROP/CREATE DATABASE).
+- **Не проверялось:** фронт, nginx, реальный LLM, cookie-авторизация. Это проверяется в этапе 4 на проде.
+- **Черновики экзаменов на проде (3 шт.):** третий без `org_id` не виден учителю (легаси).

@@ -30,9 +30,13 @@ def verify(workspace: Path, consumer: str, manifest_path: Path) -> dict:
         if consumer == 'exam':
             assert row['task_id'] == row['id']
         if consumer == 'diagnostic':
+            from src.domain.task_display import build_diag_answer_options, diag_answer_type_for_display
+            from src.domain.task_evidence import capture_task
+            options, latex = build_diag_answer_options(task)
+            snapshot = capture_task(task, options, latex, diag_answer_type_for_display(task, options))
             answers = [SimpleNamespace(id=0, task_id=row['id'], skill_id=row['skill_id'],
                                        outcome=0., student_answer='http-contract-wrong',
-                                       eval_category='wrong')]
+                                       eval_category='wrong', task_snapshot=snapshot)]
             error = _build_error_patterns(answers, {})[0]
             assert error['task_id'] == row['id']
             assert error['question_latex'] == row['question_latex']

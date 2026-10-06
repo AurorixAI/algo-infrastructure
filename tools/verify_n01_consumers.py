@@ -63,11 +63,11 @@ def verify(workspace: Path, manifest_path: Path, source_path: Path | None) -> di
             for distractor in row['distractor_meta']:
                 assert evaluator.evaluate(task, distractor['value']) == (0., 'distractor'), (task.id, distractor['value'])
                 counts['graded_choices'] += 1
-        response = SimpleNamespace(status_code=200, json=lambda: row)
         answers = [SimpleNamespace(id=index, task_id=task.id, skill_id=row['skill_id'],
-                                   outcome=0., student_answer=d['value'], eval_category='distractor')
+                                   outcome=0., student_answer=d['value'], eval_category='distractor',
+                                   task_snapshot=state.current_task_snapshot)
                    for index, d in enumerate(row['distractor_meta'])]
-        with patch.object(content_client, 'get', return_value=response):
+        with patch.object(content_client, 'get_task', side_effect=AssertionError('Report must use issued snapshot')):
             errors = _build_error_patterns(answers, {})
         assert len(errors) == 3
         for error, distractor in zip(errors, row['distractor_meta']):

@@ -19,6 +19,12 @@
 #   its own internal-service-token auth on top. See nginx/conf.d/staging.conf.)
 # ==============================================================================
 
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
 name: algo-staging
 
 services:
@@ -28,6 +34,7 @@ services:
   auth-db:
     image: postgres:15-alpine
     container_name: algo-staging-auth-db
+    logging: *default-logging
     environment:
       POSTGRES_USER: algo
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
@@ -50,6 +57,7 @@ services:
   diagnostic-db:
     image: postgres:15-alpine
     container_name: algo-staging-diagnostic-db
+    logging: *default-logging
     environment:
       POSTGRES_USER: algo
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
@@ -70,6 +78,7 @@ services:
   exam-db:
     image: postgres:15-alpine
     container_name: algo-staging-exam-db
+    logging: *default-logging
     environment:
       POSTGRES_USER: algo
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
@@ -90,6 +99,7 @@ services:
   content-db:
     image: postgres:15-alpine
     container_name: algo-staging-content-db
+    logging: *default-logging
     environment:
       POSTGRES_USER: algo
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
@@ -112,6 +122,7 @@ services:
   auth-redis:
     image: redis:7-alpine
     container_name: algo-staging-auth-redis
+    logging: *default-logging
     command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
     volumes:
       - auth-redis-data:/data
@@ -127,6 +138,7 @@ services:
   diagnostic-redis:
     image: redis:7-alpine
     container_name: algo-staging-diagnostic-redis
+    logging: *default-logging
     command: redis-server --appendonly yes --maxmemory 128mb --maxmemory-policy allkeys-lru
     volumes:
       - diagnostic-redis-data:/data
@@ -142,6 +154,7 @@ services:
   exam-redis:
     image: redis:7-alpine
     container_name: algo-staging-exam-redis
+    logging: *default-logging
     command: redis-server --appendonly yes --maxmemory 128mb --maxmemory-policy allkeys-lru
     volumes:
       - exam-redis-data:/data
@@ -157,6 +170,7 @@ services:
   content-redis:
     image: redis:7-alpine
     container_name: algo-staging-content-redis
+    logging: *default-logging
     command: redis-server --appendonly yes --maxmemory 128mb --maxmemory-policy allkeys-lru
     volumes:
       - content-redis-data:/data
@@ -177,6 +191,7 @@ services:
       dockerfile: Dockerfile
       target: production
     container_name: algo-staging-auth
+    logging: *default-logging
     environment:
       - DATABASE_URL=postgresql+psycopg2://algo:${POSTGRES_PASSWORD:?required}@auth-db:5432/algo_auth
       - REDIS_URL=redis://auth-redis:6379/0
@@ -213,6 +228,7 @@ services:
       context: ../../diagnostics-service
       dockerfile: Dockerfile
     container_name: algo-staging-diagnostic
+    logging: *default-logging
     environment:
       DATABASE_URL: postgresql://algo:${POSTGRES_PASSWORD:?required}@diagnostic-db:5432/algo_diagnostic
       REDIS_URL: redis://diagnostic-redis:6379
@@ -260,6 +276,7 @@ services:
       context: ../../exam-service
       dockerfile: Dockerfile
     container_name: algo-staging-exam
+    logging: *default-logging
     environment:
       DATABASE_URL: postgresql://algo:${POSTGRES_PASSWORD:?required}@exam-db:5432/algo_exam
       REDIS_URL: redis://exam-redis:6379
@@ -302,6 +319,7 @@ services:
       context: ../../content-service
       dockerfile: Dockerfile
     container_name: algo-staging-content
+    logging: *default-logging
     environment:
       DATABASE_URL: postgresql://algo:${POSTGRES_PASSWORD:?required}@content-db:5432/algo_content
       REDIS_URL: redis://content-redis:6379
@@ -350,6 +368,7 @@ services:
         NEXT_PUBLIC_EXAM_API_URL: ${NEXT_PUBLIC_EXAM_API_URL:?NEXT_PUBLIC_EXAM_API_URL is required}
         NEXT_PUBLIC_DIAG_API_URL: ${NEXT_PUBLIC_DIAG_API_URL:?NEXT_PUBLIC_DIAG_API_URL is required}
     container_name: algo-staging-frontend
+    logging: *default-logging
     environment:
       - NODE_ENV=production
       - RELEASE_SHA=${RELEASE_SHA:-unknown}
@@ -373,6 +392,7 @@ services:
       context: ../../algo-landing
       dockerfile: Dockerfile
     container_name: algo-staging-landing
+    logging: *default-logging
     environment:
       - NODE_ENV=production
       - PORT=5000
@@ -387,6 +407,7 @@ services:
   nginx:
     image: nginx:1.27-alpine
     container_name: algo-staging-nginx
+    logging: *default-logging
     ports:
       - "80:80"
       - "443:443"

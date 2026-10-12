@@ -1,6 +1,8 @@
 # ALGO workspace
 
-Этот workspace содержит независимые Git-репозитории, а не один монорепозиторий. Основной актуальный план: `algo-infrastructure/docs/engineering/ROADMAP.md`; принятые результаты и ограничения: `algo-infrastructure/docs/engineering/IMPLEMENTED_AND_LIMITS.md`.
+Этот workspace содержит независимые Git-репозитории, а не один монорепозиторий. Принятые результаты и ограничения: `algo-infrastructure/docs/engineering/IMPLEMENTED_AND_LIMITS.md`.
+
+**Единый источник задач, статусов и метрик — `algo-infrastructure/docs/engineering/ROADMAP.md`; `content-service/tools/content_review/HANDOFF.md` — журнал контентной работы; в конце каждой сессии/волны обновить панель статусов, метрики и журнал изменений в ROADMAP.** Если пользователь просит продолжать: прочитать в ROADMAP раздел «Где мы сейчас», затем HANDOFF для деталей контентной работы.
 
 Для изменения пользовательского сценария или бизнес-логики использовать проектный навык `algo-feature-delivery`: потребность → затронутые контракты → последствия → проверяемый результат. Для диагностики, банка и отчёта дополнительно использовать `algo-diagnostic-evidence`; для коммита, публикации и отката — `algo-git-release`. Канонические навыки находятся в `algo-infrastructure/.agents/skills/`; ссылки в workspace `.agents/skills/` подключают их без отдельных копий.
 

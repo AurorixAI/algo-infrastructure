@@ -267,6 +267,13 @@ services:
       CLASSIFICATION_SE_THRESHOLD: ${CLASSIFICATION_SE_THRESHOLD:-0.40}
       CLASSIFICATION_CONFIDENCE_THRESHOLD: ${CLASSIFICATION_CONFIDENCE_THRESHOLD:-0.90}
       MIN_SECTION_COVERAGE: ${MIN_SECTION_COVERAGE:-5}
+      # Deep Scan variant A9 (DIAG-1, owner «да» 13.10): residual rule d2 >= 1.0 in every grade,
+      # hard-prerequisite trigger from grade 6. Roll back by setting DEEP_SCAN_TRIGGER_RULE=current and
+      # DEEP_SCAN_TRIGGER_MODE=importance in the server .env, then recreating the container.
+      DEEP_SCAN_TRIGGER_RULE: ${DEEP_SCAN_TRIGGER_RULE:-d2}
+      DEEP_SCAN_RESIDUAL_MIN: ${DEEP_SCAN_RESIDUAL_MIN:-1.0}
+      DEEP_SCAN_TRIGGER_MODE: ${DEEP_SCAN_TRIGGER_MODE:-hard_prereq}
+      DEEP_SCAN_HARD_PREREQ_MIN_GRADE: ${DEEP_SCAN_HARD_PREREQ_MIN_GRADE:-6}
     depends_on:
       diagnostic-db:
         condition: service_healthy

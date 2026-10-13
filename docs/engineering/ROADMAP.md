@@ -26,10 +26,10 @@
 | Часть | Где лежит | Статус |
 |---|---|---|
 | w35 — объяснения дистракторов, 28 заданий (CNT-10) | `content-service/data/content_repairs/n01-2026-10-12-w35-diag.json` (sha 072795bb…) | R3 APPROVE; **применено локально** (бэкап `backups/repairs/n01-w35-local.json`; local tasks md5 `ca79208a`, 34 653 активных); stage/prod — с пачкой: `tools/content_review/deploy_wave.sh <stage|prod> n01-w35 <manifest> --ack-protected` |
-| w36 — «цифра+\dfrac» как произведение, 94 задачи (CNT-11) | `content-service/data/content_repairs/n01-2026-10-13-w36-notation.json` (sha d4a534a7…) | на R3; после APPROVE — локально, затем с пачкой (`n01-w36`, `--ack-protected`) |
-| Бэк: адресная перегенерация отчётов + сравнение ответов `x^{3}≡x^3` | `diagnostic-service`, ветка `ops-regen-targeted` (1b6dfdc, 95d87e0, 7910443), worktree `diagnostic-service-n03a` | на ревью кода |
-| Фронт FE-2 — подсказка прокрутки формул, исправление перерисовки формул | `algo-front`, ветка `fe2-scroll-hint` (2fcc5b7, eafac9b), worktree `algo-front-n04` | на ревью кода |
-| Фронт FE-3/FE-4 — список «Класс», лобби печатного экзамена | `algo-front`, ветка `fe34-form-lobby`, worktree `algo-front-fe34` | доработка по ревью |
+| w36 — «цифра+\dfrac» как произведение, 124 задачи (CNT-11, класс закрыт) | `content-service/data/content_repairs/n01-2026-10-13-w36-notation.json` (sha 07a9f8be…) | повторный R3; после APPROVE — локально, затем с пачкой (`n01-w36`, `--ack-protected`) |
+| Бэк: адресная перегенерация отчётов + сравнение ответов `x^{3}≡x^3` | `diagnostic-service`, ветка `ops-regen-targeted` (1b6dfdc…45633da), worktree `diagnostic-service-n03a` | ✅ ревью APPROVE (3 раунда; 54 теста на PostgreSQL): бэкап обязателен (`--backup PATH|-`), прообраз снимка в `refresh_history`, `--restore-last`/`--restore-from`, флаги целостности, блокировка отчёта; RUNBOOK в docstring |
+| Фронт FE-2 — подсказка прокрутки формул, исправление перерисовки формул, защита от отправки ответа полосой прокрутки, однократный переход в экзамене | `algo-front`, ветка `fe2-scroll-hint` (2fcc5b7…2c68147), worktree `algo-front-n04` | повторное ревью; браузерный тест — шлюз CI |
+| Фронт FE-3/FE-4 — список «Класс», лобби печатного экзамена | `algo-front`, ветка `fe34-form-lobby` (6100026…25de814), worktree `algo-front-fe34` | ✅ ревью APPROVE (113 тестов) |
 | После выкладки контента | на сервере в контейнере диагностики: `python -m scripts.regenerate_reports --affected-by-tasks-file <ids> --refresh-task-content` (dry-run → `--execute`) | ждёт пачку |
 | Приёмка | stage: живой тест-проход (клики вариантов), отчёты 360/1280, перегенерированные отчёты; прод: просмотр | ждёт пачку |
 | Вне пачки (исследование) | DIAG-1 этап 3a, ветка `diag1-stage3`, worktree `diagnostic-service-diag1` | в работе |

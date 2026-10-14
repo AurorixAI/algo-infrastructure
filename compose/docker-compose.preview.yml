@@ -238,6 +238,7 @@ services:
       context: ../../preview-src/diagnostics-service
       dockerfile: Dockerfile
     container_name: algo-preview-diagnostic
+    init: true  # DIAG-6: reaps the sympy worker if a uvicorn worker is killed
     logging: *default-logging
     environment:
       DATABASE_URL: postgresql+psycopg2://algo:${POSTGRES_PASSWORD:?required}@diagnostic-db:5432/algo_diagnostic

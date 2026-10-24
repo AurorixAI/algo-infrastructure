@@ -155,6 +155,38 @@ sudo ./algo-infrastructure/scripts/server_prep.sh --restart-docker # + рест�
 (следующий деплой или `up -d --force-recreate`). Лимиты памяти из compose-файлов
 (`mem_limit`) тоже вступают в силу при пересоздании контейнера.
 
+## Уборка диска сервера
+
+Скрипт [`../scripts/server_housekeeping.sh`](../scripts/server_housekeeping.sh)
+(раз в неделю): `docker builder prune -af --filter until=168h` (только кэш сборок,
+**образы не удаляются** — откатные образы целы), удаление `~/release_dumps/*.sql.gz`
+старше 14 дней, кроме двух самых свежих по каждому префиксу (`prod_auth`,
+`prod_exam`, …; префикс — имя до `_YYYYMMDD`), `df -h /` до и после.
+Сначала посмотреть, что будет удалено:
+
+```bash
+~/algo/algo-infrastructure/scripts/server_housekeeping.sh --dry-run
+```
+
+Cron пользователя `algo` — воскресенье 04:00 по Ташкенту (на сервере TZ часто UTC:
+04:00 Asia/Tashkent = 23:00 UTC субботы; `CRON_TZ` поддерживается cron Debian/Ubuntu).
+**Не установлен автоматически**, ставится вручную (`crontab -e` под `algo`):
+
+```cron
+CRON_TZ=Asia/Tashkent
+0 4 * * 0 $HOME/algo/algo-infrastructure/scripts/server_housekeeping.sh >> $HOME/housekeeping.log 2>&1
+```
+
+Либо одной командой (не затирая существующий crontab):
+
+```bash
+( crontab -l 2>/dev/null; echo 'CRON_TZ=Asia/Tashkent'; echo '0 4 * * 0 $HOME/algo/algo-infrastructure/scripts/server_housekeeping.sh >> $HOME/housekeeping.log 2>&1' ) | crontab -
+```
+
+Замечание: `server_prep.sh` уже кладёт в `/etc/cron.d/algo-maintenance` ежедневный
+`docker image prune -f` (только неиспользуемые dangling-образы, теги откатов не
+затрагивает) и `docker builder prune -f --filter until=72h`.
+
 ## Git-first stage releases
 
 CEO runs checks without an automatic deployment. See the current [Git-first stage runbook](../docs/releases/GIT_FIRST_STAGE.md) for committed-source exports, legacy runtime provenance, immutable image checks and separate code/database rollback.

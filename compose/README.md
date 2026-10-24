@@ -158,10 +158,22 @@ sudo ./algo-infrastructure/scripts/server_prep.sh --restart-docker # + рест�
 ## Уборка диска сервера
 
 Скрипт [`../scripts/server_housekeeping.sh`](../scripts/server_housekeeping.sh)
-(раз в неделю): `docker builder prune -af --filter until=168h` (только кэш сборок,
-**образы не удаляются** — откатные образы целы), удаление `~/release_dumps/*.sql.gz`
-старше 14 дней, кроме двух самых свежих по каждому префиксу (`prod_auth`,
-`prod_exam`, …; префикс — имя до `_YYYYMMDD`), `df -h /` до и после.
+(раз в неделю):
+
+- `docker builder prune -af --filter until=168h` — только кэш сборок, **образы не
+  удаляются** (откатные образы целы);
+- удаляет файлы `*.sql.gz` и `*.dump`, лежащие прямо в `~/release_dumps`, старше 14
+  дней (по mtime). Всё остальное там (`.jsonl`, `.sh`, `.txt`, `.tar.gz`,
+  подкаталоги) не трогается никогда;
+- **страховка**: удаление дампов выполняется, только если свежий ночной бэкап прода
+  проверен — самый новый каталог в `/home/algo/backups/prod_nightly` (имя
+  `YYYYMMDD`, пишет `algo-backup-prod.sh`) не старше 2 дней, в нём есть
+  `SHA256SUMS` и не меньше 4 непустых `*.dump`. Иначе скрипт печатает
+  `WARNING: nightly backup missing/stale ... dump cleanup skipped`, дампы не
+  удаляет, кэш сборок всё равно чистит и завершается с кодом 0 (cron не шумит);
+- `df -h /` до и после. Настройки через окружение: `DUMP_DIR`, `NIGHTLY_DIR`,
+  `KEEP_DAYS`, `NIGHTLY_MAX_AGE_DAYS`, `NIGHTLY_MIN_DUMPS`, `BUILD_CACHE_AGE`.
+
 Сначала посмотреть, что будет удалено:
 
 ```bash

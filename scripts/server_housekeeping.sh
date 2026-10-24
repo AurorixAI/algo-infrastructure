@@ -3,9 +3,17 @@
 # rollback needs.
 #
 #   1. docker build cache older than 7 days   (docker builder prune -af --filter until=168h)
-#   2. release dumps  ~/release_dumps/*.sql.gz older than 14 days, EXCEPT the
-#      two newest dumps of every prefix (prod_auth, prod_exam, ...)
+#   2. release dumps: files directly in ~/release_dumps named *.sql.gz or *.dump
+#      with mtime older than 14 days are deleted -- but ONLY if the nightly prod
+#      backup is verified fresh (safety gate below). Everything else in that
+#      directory (.jsonl, .sh, .txt, .tar.gz, subdirectories, ...) is never touched.
 #   3. df -h / before and after
+#
+# Safety gate: the newest directory in NIGHTLY_DIR (YYYYMMDD names, written by
+# /usr/local/sbin/algo-backup-prod.sh) must be at most NIGHTLY_MAX_AGE_DAYS old
+# (by its name), contain SHA256SUMS and at least NIGHTLY_MIN_DUMPS non-empty
+# *.dump files. If not: WARNING, no dump is deleted, the build cache is still
+# pruned, exit 0 (cron must not spam).
 #
 # Never prunes images, containers, volumes or networks: rollback images
 # (algolab-*:<tag>) must survive. Only the build CACHE is pruned.
@@ -14,14 +22,12 @@
 #   --dry-run   print what would be deleted, delete nothing, run no prune.
 #
 # Environment (defaults suit the server; overrides exist for tests):
-#   DUMP_DIR     directory with dumps        (default: $HOME/release_dumps)
-#   KEEP_DAYS    age threshold in days       (default: 14)
-#   KEEP_NEWEST  newest dumps kept/prefix    (default: 2)
-#   BUILD_CACHE_AGE  docker filter           (default: 168h)
-#
-# Prefix of a dump = file name up to the first "_" or "-" followed by an
-# 8-digit date, e.g. prod_auth_20261010_0300.sql.gz -> "prod_auth". A file with
-# no such date has no prefix group and is never deleted.
+#   DUMP_DIR              directory with dumps   (default: $HOME/release_dumps)
+#   NIGHTLY_DIR           nightly prod backups   (default: /home/algo/backups/prod_nightly)
+#   KEEP_DAYS             age threshold, days    (default: 14)
+#   NIGHTLY_MAX_AGE_DAYS  max age of newest nightly dir (default: 2)
+#   NIGHTLY_MIN_DUMPS     required *.dump in it  (default: 4)
+#   BUILD_CACHE_AGE       docker filter          (default: 168h)
 set -euo pipefail
 
 DRY_RUN=0
@@ -34,8 +40,10 @@ for arg in "$@"; do
 done
 
 DUMP_DIR="${DUMP_DIR:-$HOME/release_dumps}"
+NIGHTLY_DIR="${NIGHTLY_DIR:-/home/algo/backups/prod_nightly}"
 KEEP_DAYS="${KEEP_DAYS:-14}"
-KEEP_NEWEST="${KEEP_NEWEST:-2}"
+NIGHTLY_MAX_AGE_DAYS="${NIGHTLY_MAX_AGE_DAYS:-2}"
+NIGHTLY_MIN_DUMPS="${NIGHTLY_MIN_DUMPS:-4}"
 BUILD_CACHE_AGE="${BUILD_CACHE_AGE:-168h}"
 
 log() { printf '[housekeeping] %s\n' "$*"; }
@@ -54,44 +62,52 @@ else
   log "WARNING: docker not found, build cache not pruned"
 fi
 
-# ── 2. old release dumps ─────────────────────────────────────────────────────
-# awk (not bash 4 arrays) so the same script runs on the server and in a macOS
-# test. Input: file names newest-first (mtime). Output per line: "keep|old<TAB>name".
-# "old" = not among the KEEP_NEWEST newest of its prefix; age is checked below.
+# ── 2. old release dumps (behind the nightly-backup gate) ───────────────────
+# Prints the reason and returns non-zero when the newest nightly backup is not
+# good enough to justify deleting old dumps.
+nightly_gate() {
+  local newest day cutoff n
+  newest="$(cd "$NIGHTLY_DIR" 2>/dev/null && ls -1 | grep -E '^[0-9]{8}$' | sort | tail -n 1)" || true
+  if [[ -z "$newest" || ! -d "$NIGHTLY_DIR/$newest" ]]; then
+    echo "no YYYYMMDD directory in $NIGHTLY_DIR"; return 1
+  fi
+  day="$newest"
+  # cutoff = today minus NIGHTLY_MAX_AGE_DAYS (GNU date, else BSD date)
+  cutoff="$(date -d "$NIGHTLY_MAX_AGE_DAYS days ago" +%Y%m%d 2>/dev/null || date -v-"${NIGHTLY_MAX_AGE_DAYS}"d +%Y%m%d)"
+  if [[ "$day" -lt "$cutoff" ]]; then
+    echo "newest nightly backup $day is older than $NIGHTLY_MAX_AGE_DAYS days (cutoff $cutoff)"; return 1
+  fi
+  if [[ ! -s "$NIGHTLY_DIR/$newest/SHA256SUMS" ]]; then
+    echo "$newest has no SHA256SUMS"; return 1
+  fi
+  n="$(find "$NIGHTLY_DIR/$newest" -maxdepth 1 -type f -name '*.dump' -size +0 | wc -l | tr -d ' ')"
+  if (( n < NIGHTLY_MIN_DUMPS )); then
+    echo "$newest has $n non-empty *.dump files, need $NIGHTLY_MIN_DUMPS"; return 1
+  fi
+  echo "newest nightly backup $newest OK ($n dumps, SHA256SUMS present)"
+}
+
 deleted=0
-if [[ -d "$DUMP_DIR" ]]; then
-  verdicts="$(cd "$DUMP_DIR" && { ls -1t -- *.sql.gz 2>/dev/null || true; } | awk -v keep="$KEEP_NEWEST" '
-    {
-      prefix = $0
-      if (!sub(/[_-][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9].*$/, "", prefix)) { print "nogroup\t" $0; next }
-      n[prefix]++
-      print ((n[prefix] <= keep) ? "newest\t" : "candidate\t") $0
-    }')"
-  while IFS=$'\t' read -r verdict name; do
-    [[ -n "${name:-}" ]] || continue
-    case "$verdict" in
-      nogroup) log "keep (no date in name, not grouped): $name" ;;
-      newest)  log "keep (one of the $KEEP_NEWEST newest of its prefix): $name" ;;
-      candidate)
-        path="$DUMP_DIR/$name"
-        # -mtime +N: strictly older than N full days. Portable (GNU and BSD find).
-        if [[ -n "$(find "$path" -maxdepth 0 -type f -mtime +"$KEEP_DAYS" -print)" ]]; then
-          if [[ "$DRY_RUN" == 1 ]]; then
-            log "would delete: $path"
-          else
-            rm -f -- "$path"
-            log "deleted: $path"
-          fi
-          deleted=$((deleted + 1))
-        else
-          log "keep (younger than $KEEP_DAYS days): $name"
-        fi ;;
-    esac
-  done <<< "$verdicts"
+if gate_msg="$(nightly_gate)"; then
+  log "gate passed: $gate_msg"
+  if [[ -d "$DUMP_DIR" ]]; then
+    while IFS= read -r path; do
+      [[ -n "$path" ]] || continue
+      if [[ "$DRY_RUN" == 1 ]]; then
+        log "would delete: $path"
+      else
+        rm -f -- "$path"
+        log "deleted: $path"
+      fi
+      deleted=$((deleted + 1))
+    done < <(find "$DUMP_DIR" -maxdepth 1 -type f \( -name '*.sql.gz' -o -name '*.dump' \) -mtime +"$KEEP_DAYS" -print | sort)
+  else
+    log "dump directory $DUMP_DIR does not exist, nothing to do"
+  fi
+  if [[ "$DRY_RUN" == 1 ]]; then log "dumps that would be deleted: $deleted"; else log "dumps deleted: $deleted"; fi
 else
-  log "dump directory $DUMP_DIR does not exist, nothing to do"
+  log "WARNING: nightly backup missing/stale ($gate_msg) -- dump cleanup skipped"
 fi
-if [[ "$DRY_RUN" == 1 ]]; then log "dumps that would be deleted: $deleted"; else log "dumps deleted: $deleted"; fi
 
 log "disk after:"
 df -h /

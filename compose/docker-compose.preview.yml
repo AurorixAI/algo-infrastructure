@@ -201,6 +201,7 @@ services:
     container_name: algo-preview-auth
     logging: *default-logging
     environment:
+      - FRONTEND_URL=https://stage.algolab.me
       - DIAGNOSTIC_BASE_URL=https://stage.algolab.me/d
       - DATABASE_URL=postgresql+psycopg2://algo:${POSTGRES_PASSWORD:?required}@auth-db:5432/algo_auth
       - REDIS_URL=redis://auth-redis:6379/0

@@ -193,6 +193,12 @@ services:
     container_name: algo-staging-auth
     logging: *default-logging
     environment:
+      - SMTP_HOST=smtp-relay.brevo.com
+      - SMTP_PORT=587
+      - SMTP_USER=${SMTP_USER:-}
+      - SMTP_PASSWORD=${SMTP_PASSWORD:-}
+      - SMTP_FROM=noreply@algolab.me
+      - FRONTEND_URL=https://algolab.me
       - DIAGNOSTIC_BASE_URL=https://algolab.me/d
       - DATABASE_URL=postgresql+psycopg2://algo:${POSTGRES_PASSWORD:?required}@auth-db:5432/algo_auth
       - REDIS_URL=redis://auth-redis:6379/0

@@ -379,6 +379,9 @@ services:
     logging: *default-logging
     environment:
       - NODE_ENV=production
+      # The figures proxy (src/app/api/v1/figures) reads task pictures from content-service
+      # over the internal network; without it every task figure on algolab.me answered 502.
+      - CONTENT_API_URL=http://algo-staging-content:8004
       - RELEASE_SHA=${RELEASE_SHA:-unknown}
       - RELEASE_REF=${RELEASE_REF:-unknown}
       - RELEASED_AT=${RELEASED_AT:-unknown}

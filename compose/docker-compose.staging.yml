@@ -329,6 +329,9 @@ services:
     container_name: algo-staging-content
     logging: *default-logging
     environment:
+      # Figure binaries live outside the image and the SQL dump (same as stage).
+      FIGURES_DIR: /data/figures
+      FIGURES_URL_PREFIX: /api/v1/figures
       DATABASE_URL: postgresql://algo:${POSTGRES_PASSWORD:?required}@content-db:5432/algo_content
       REDIS_URL: redis://content-redis:6379
       APP_ENV: staging
@@ -360,6 +363,8 @@ services:
       retries: 3
       start_period: 20s
     restart: unless-stopped
+    volumes:
+      - content-figures:/data/figures
     networks:
       - algo-internal
 
@@ -458,6 +463,7 @@ volumes:
   diagnostic-redis-data:
   exam-redis-data:
   content-redis-data:
+  content-figures:
 
 networks:
   algo-internal:

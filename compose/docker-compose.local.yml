@@ -134,6 +134,7 @@ services:
     container_name: algo-diagnostic
     profiles: ["full", "backend", "backend-nocontent", "diagnostic"]
     environment:
+      REPORT_NARRATIVE_ENABLED: ${REPORT_NARRATIVE_ENABLED:-true}
       DATABASE_URL: postgresql://algo:algo_password@diagnostic-db:5432/algo_diagnostic
       REDIS_URL: redis://diagnostic-redis:6379
       APP_ENV: ${APP_ENV:-development}
@@ -219,6 +220,7 @@ services:
     container_name: algo-exam
     profiles: ["full", "backend", "backend-nocontent", "exam"]
     environment:
+      REPORT_NARRATIVE_ENABLED: ${REPORT_NARRATIVE_ENABLED:-true}
       DATABASE_URL: postgresql://algo:algo_password@exam-db:5432/algo_exam
       REDIS_URL: redis://exam-redis:6379
       GEMINI_API_KEY: ${GEMINI_API_KEY:-}

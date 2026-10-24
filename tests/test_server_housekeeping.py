@@ -1,5 +1,6 @@
 """scripts/server_housekeeping.sh: dump cleanup behind the nightly-backup gate; never prunes images."""
 import datetime
+import hashlib
 import os
 from pathlib import Path
 import subprocess
@@ -35,13 +36,20 @@ class HousekeepingTests(unittest.TestCase):
         stamp = time.time() - age_days * DAY
         os.utime(path, (stamp, stamp))
 
-    def nightly_dir(self, days_ago=0, dumps=4, sums=True, empty_dump=False):
-        d = self.nightly / (datetime.date.today() - datetime.timedelta(days=days_ago)).strftime('%Y%m%d')
+    def nightly_dir(self, days_ago=0, dumps=4, sums=True, empty_dump=False, name=None, corrupt=False):
+        day = (datetime.date.today() - datetime.timedelta(days=days_ago)).strftime('%Y%m%d')
+        d = self.nightly / (name or day)
         d.mkdir()
+        lines = []
         for i in range(dumps):
-            (d / f'algo-staging-db{i}.dump').write_text('' if (empty_dump and i == 0) else 'data')
+            data = b'' if (empty_dump and i == 0) else f'data{i}'.encode()
+            (d / f'algo-staging-db{i}.dump').write_bytes(data)
+            lines.append(f'{hashlib.sha256(data).hexdigest()}  algo-staging-db{i}.dump\n')
         if sums:
-            (d / 'SHA256SUMS').write_text('abc  file\n')
+            (d / 'SHA256SUMS').write_text(''.join(lines))
+        if corrupt:   # a dump changed after the checksums were written
+            (d / 'algo-staging-db1.dump').write_bytes(b'tampered')
+        return d
 
     def fixture(self):
         self.dump('tails-prod-auth-20261017-1516.sql.gz', 20)      # old -> deleted
@@ -133,6 +141,73 @@ class HousekeepingTests(unittest.TestCase):
                 self.docker_log.unlink(missing_ok=True)
                 self.nightly_dir(days_ago=0, **kwargs)
                 self.assert_skipped()
+
+    def test_future_dated_nightly_skips_dump_cleanup(self):
+        self.fixture()
+        self.nightly_dir(days_ago=-1)
+        self.assertIn('in the future', self.assert_skipped().stdout)
+
+    def test_invalid_date_name_skips_dump_cleanup(self):
+        self.fixture()
+        far = (datetime.date.today().year + 0) * 10000 + 1345   # month 13, day 45
+        self.nightly_dir(name=str(far))
+        self.assertIn('not a valid calendar date', self.assert_skipped().stdout)
+
+    def test_symlinked_nightly_dir_does_not_count(self):
+        self.fixture()
+        real = self.nightly_dir(name='real_backup')
+        day = datetime.date.today().strftime('%Y%m%d')
+        (self.nightly / day).symlink_to(real)
+        self.assertIn('symlink', self.assert_skipped().stdout)
+
+    def test_checksum_mismatch_skips_dump_cleanup(self):
+        self.fixture()
+        self.nightly_dir(corrupt=True)
+        self.assertIn('does not verify', self.assert_skipped().stdout)
+
+    # ── independent steps ───────────────────────────────────────────────────
+    def test_docker_failure_still_cleans_dumps(self):
+        self.fixture()
+        before = self.names()
+        self.nightly_dir()
+        (self.bin / 'docker').write_text('#!/bin/sh\nexit 1\n')
+        result = self.run_script()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('WARNING: docker builder prune failed', result.stdout)
+        self.assertEqual(self.names(), before - self.OLD)
+        self.assertIn('disk after', result.stdout)
+
+    def test_rm_failure_continues_with_the_rest(self):
+        self.fixture()
+        before = self.names()
+        self.nightly_dir()
+        fake = self.bin / 'rm'   # fails for one file, delegates for the others
+        fake.write_text('#!/bin/sh\ncase "$*" in *exactly-edge*) exit 1;; esac\nexec /bin/rm "$@"\n')
+        fake.chmod(0o755)
+        result = self.run_script()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(self.names(), before - (self.OLD - {'exactly-edge-20261001.sql.gz'}))
+        self.assertIn('WARNING: could not delete', result.stdout)
+        self.assertIn('dumps deleted: 2', result.stdout)
+        self.assertIn('disk after', result.stdout)
+
+    def test_keep_days_below_seven_is_clamped_to_seven(self):
+        self.nightly_dir()
+        self.dump('eight-days-20261016.sql.gz', 8)
+        self.dump('five-days-20261019.sql.gz', 5)
+        env = dict(os.environ, DUMP_DIR=str(self.dumps), NIGHTLY_DIR=str(self.nightly), KEEP_DAYS='0',
+                   PATH=f'{self.bin}:{os.environ["PATH"]}')
+        result = subprocess.run(['bash', str(SCRIPT)], env=env, capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('WARNING: KEEP_DAYS=0 is below the minimum, using 7', result.stdout)
+        self.assertEqual(self.names(), {'five-days-20261019.sql.gz'})
+
+    def test_newline_in_file_name_is_handled(self):
+        self.nightly_dir()
+        self.dump('weird\nname-20260101.sql.gz', 30)
+        self.dump('keep-20260102.sql.gz', 1)
+        self.assertEqual(self.run_script().returncode, 0)
+        self.assertEqual(self.names(), {'keep-20260102.sql.gz'})
 
     # ── misc ────────────────────────────────────────────────────────────────
     def test_only_build_cache_is_pruned_never_images(self):

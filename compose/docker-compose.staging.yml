@@ -193,6 +193,14 @@ services:
     container_name: algo-staging-auth
     logging: *default-logging
     environment:
+      - CONSOLE_HOSTS=console.algolab.me
+      - CONSOLE_URL=https://console.algolab.me
+      - ADMIN_NOTIFICATION_EMAIL=${ADMIN_NOTIFICATION_EMAIL:-}
+      - SMTP_FROM_NAME=ALGO
+      - MAIL_REPLY_TO=${MAIL_REPLY_TO:-}
+      - SITE_URL=https://algolab.me
+      - SELF_REGISTRATION_CLOSED=true
+      - AUTO_APPROVE_ORGANIZATIONS=false
       - SMTP_HOST=smtp-relay.brevo.com
       - SMTP_PORT=587
       - SMTP_USER=${SMTP_USER:-}

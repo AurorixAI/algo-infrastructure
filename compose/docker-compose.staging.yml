@@ -449,6 +449,9 @@ services:
       - ../nginx/conf.d:/etc/nginx/conf.d:ro
       - ../../certbot/www:/var/www/certbot:ro
       - /etc/letsencrypt:/etc/letsencrypt:ro
+      # «Панель ALGO» static exports (K1), written by the front deploy.
+      - ../../console/prod:/usr/share/nginx/console-prod:ro
+      - ../../console/stage:/usr/share/nginx/console-stage:ro
     depends_on:
       - frontend
       - auth-service

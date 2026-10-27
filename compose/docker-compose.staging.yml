@@ -460,6 +460,8 @@ services:
       # «Панель ALGO» static exports (K1), written by the front deploy.
       - ../../console/prod:/usr/share/nginx/console-prod:ro
       - ../../console/stage:/usr/share/nginx/console-stage:ro
+      # Telegram Mini App demo (tg.algolab.me), static build copied in place.
+      - ../../tma/prod:/usr/share/nginx/tma:ro
     depends_on:
       - frontend
       - auth-service

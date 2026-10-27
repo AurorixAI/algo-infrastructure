@@ -13,8 +13,11 @@ name: CI
 on:
   push:
     branches: [main, master, develop, CEO]
+    # A change of the plan / lessons / evidence alone checks nothing (27.10: 86 doc-only runs ate 344 of the month's Actions minutes).
+    paths-ignore: ["docs/**", "**/*.md"]
   pull_request:
     branches: [main, master]
+    paths-ignore: ["docs/**", "**/*.md"]
 
 jobs:
   compose:

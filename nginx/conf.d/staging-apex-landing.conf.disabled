@@ -13,32 +13,44 @@
 #   * www.algolab.me -> 302 https://algolab.me$request_uri.
 #
 # ── HOW TO ENABLE (step 7) — ONE change, because two server blocks `algolab.me` + `default_server` cannot coexist ──
-#   In the infrastructure repo, ONE commit that does all of:
+#   In the infrastructure repo, ONE commit (so that rollback is `git revert` of exactly this commit):
 #     1. git mv nginx/conf.d/staging-apex-landing.conf.disabled nginx/conf.d/staging-apex-landing.conf
 #     2. in nginx/conf.d/staging.conf delete the OLD apex product block: everything from the line `# ── HTTPS ───…`
 #        up to (not including) the line `# ── app.algolab.me …`:
 #          awk '/^# ── HTTPS ─/{s=1} /^# ── app.algolab.me/{s=0} !s' staging.conf > x && mv x staging.conf
-#        and delete the line `upstream landing { server algo-staging-landing:5000; }`  (I6; the block with
-#        `/landing/` goes away together with the old apex block).
-#     3. in compose/docker-compose.staging.yml delete the service `landing` (container algo-staging-landing).
-#     4. FRONTEND_URL / DIAGNOSTIC_BASE_URL / FRONTEND_SITE_URL in the server .env (A10) — the same window.
-#   Then on the server, in this order (never remove the container before the reload):
+#        and delete the line `upstream landing { server algo-staging-landing:5000; }`  (the old block with `/landing/` is gone).
+#        ⚠ The CONTAINER algo-staging-landing and the compose service `landing` STAY until day 7 (see below). The old
+#        staging.conf names it in `upstream landing`; without the container `nginx -t` fails (`host not found in upstream`)
+#        and a restart of nginx takes the whole production down. CI proves that failure (job «nginx»).
+#     3. FRONTEND_URL / DIAGNOSTIC_BASE_URL in the server .env (A10) in the same window, and, with the repo of the front,
+#        nothing else yet (see the list «AFTER STEP 7»).
+#   On the server, in this order:
 #     a. back up conf.d (cp -a ~/algo/algo-infrastructure/nginx/conf.d ~/algo/backup/conf.d.pre-step7);
-#     b. nginx -t in a SEPARATE container with the same mounts, and only then `docker exec algo-staging-nginx nginx -s reload`;
-#     c. smoke: https://algolab.me/ 200 with CSP; /login 302 -> app.algolab.me/login; app.algolab.me/api/version = sha;
-#     d. `docker compose rm -sf landing` (remove algo-staging-landing) and recreate nginx once for the new mounts.
-# ── HOW TO ROLL BACK ───────────────────────────────────────────────────────────────────────────────────────────────
-#   Restore the backup conf.d (apex is the product again; `.disabled` file back in place) -> nginx -t -> reload.
-#   app.algolab.me, the certificate, auth and the mails with app. addresses stay (K3 §5). The container
-#   algo-staging-landing was removed: put the service back only if the old landing is really needed (it is not: the
-#   old landing is replaced by the static build).
+#     b. the mounts `landing-stage`, `landing-prod` and `nginx-alias-log` come from the compose file: if nginx was not recreated
+#        since they were added (K3 step 6 does that), recreate it FIRST (`docker compose … up -d --no-deps nginx`, after an
+#        `nginx -t` of the same conf.d in a separate container), then CHECK before any reload:
+#          docker exec algo-staging-nginx ls /usr/share/nginx/landing-prod/index.html /usr/share/nginx/landing-stage/index.html /var/log/nginx-alias
+#     c. nginx -t in a SEPARATE container with the same mounts, and only then `docker exec algo-staging-nginx nginx -s reload`;
+#     d. smoke: https://algolab.me/ 200 with CSP; /login 302 -> app.algolab.me/login; app.algolab.me/api/version = sha.
+# ── HOW TO ROLL BACK (day 0–7) ─────────────────────────────────────────────────────────────────────────────────────────
+#   `git revert` of the step-7 commit (apex is the product again, the `.disabled` file is back, `upstream landing` is back and
+#   the container is still alive) -> `nginx -t` -> `nginx -s reload`. app.algolab.me, the certificate, auth and the mails with
+#   app. addresses stay (K3 §5); whoever signed in on app. signs in again.
+#   After day 7 (container removed, 301 given) there is no rollback of this kind and none is needed.
 #
 # ── AFTER STEP 7 ────────────────────────────────────────────────────────────────────────────────────────────────────
-#   day 7  : 302 -> 301 here (the redirects `return 302` below; 307 -> 308) and in the www block;
+#   day 7  : (1) 302 -> 301 here (the `return 302` below; 307 -> 308) and in the www block;
+#            (2) ONLY NOW remove the old landing: the service `landing` from compose/docker-compose.staging.yml and
+#                `docker compose … rm -sf landing` (container algo-staging-landing). Never before: it is the thing that keeps the
+#                old staging.conf valid for a rollback.
+#            For stage the old `/landing/` location of preview.conf (container algo-preview-landing) is removed in the same change.
+#   in the repository of the front, AT THE MOMENT of step 7 (not before): algo-front/.github/workflows/deploy.yml, the production
+#            check `site=https://algolab.me` -> `site=https://app.algolab.me` (the check reads /api/version; on algolab.me it would
+#            read the landing). Record only: not done here.
 #   day 30 : remove the section «TRANSITIONAL ALIAS» (and the log) if `api-alias.log` has no hits for a week:
 #              awk '{print substr($1,1,10)}' ~/algo/nginx-alias-log/api-alias.log | sort | uniq -c
 #            (fields: ISO time, method, path with one-time codes redacted, status, bytes, seconds, user agent; the
-#            query string and the Referer are deliberately not logged).
+#            query string and the Referer are deliberately not logged; `/api/version` is not counted).
 #   CORS: nothing in this file sets CORS headers. `https://algolab.me` must NEVER be added to CORS_ORIGINS (K3 §0 п.5).
 #   Payment callbacks and any webhook: only on app.algolab.me, never here (K3 I11).
 #
@@ -67,9 +79,10 @@ map "$landing_prod_bot_ua$landing_prod_robots_path" $landing_prod_bot {
     "10"    1;
 }
 
-# Hits of the transitional alias (and of API-like paths that only get redirected): a separate log for the 30-day counter.
+# Hits of the transitional alias (and of API-like paths that only get redirected, except /api/version): a separate log for the 30-day counter.
 map $uri $landing_prod_api_alias {
     default                0;
+    ~^/api/version         0;        # the deploy check reads it; not a hit of the old API
     ~^/api/v1/(public|platform)/ 0;
     ~^/api/                1;
 }

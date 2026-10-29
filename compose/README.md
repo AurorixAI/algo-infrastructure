@@ -104,6 +104,42 @@ paste keys into terminal output or CI logs.
   (job «nginx», step «step 7 rehearsal»).
 * Both stacks' env files must contain `FRONTEND_SITE_URL`: compose refuses to start the frontend without it.
 
+### Rollout order of the variables (K3 steps 4–5), as explicit items
+
+1. **Before `git pull`/path-checkout of this infrastructure on the server:** add `FRONTEND_SITE_URL` to `~/algo/.env.preview`
+   (`https://landing.stage.algolab.me`) and `~/algo/.env.staging` (`https://algolab.me`). Otherwise every compose command of the
+   stack fails with `FRONTEND_SITE_URL is required`, including the deploy jobs that run `nginx -t && reload`. Back up both
+   files first; run `config -q` with each file.
+2. **Empty the three `NEXT_PUBLIC_*_API_URL` on the server** in both env files (set them to nothing, do not delete the lines
+   with other values left behind). Do it together with the first frontend build that contains K3 P1: an older frontend build
+   with empty addresses would call `localhost`.
+3. Then the order of the spec: the `app.` block (step 5), landing.stage (step 6), apex (step 7).
+
+### Applying this nginx/compose change (step 6, and the same before step 7)
+
+1. Create `~/algo/landing/stage`, `~/algo/landing/prod`, `~/algo/nginx-alias-log` (otherwise Docker creates them owned by root).
+2. `nginx -t` of the new `conf.d` in a **separate** container with the same mounts and the real `/etc/letsencrypt`.
+3. **Recreate** the nginx container (`up -d --no-deps nginx`): new bind mounts do not appear on `reload`.
+4. **Before any reload or smoke test** check the mounts: `docker exec algo-staging-nginx ls /usr/share/nginx/landing-stage/index.html
+   /usr/share/nginx/landing-prod /var/log/nginx-alias` (an empty `landing-prod` is fine until the first prod deploy of the landing).
+5. Only then the smoke tests; at step 7 the same check precedes the reload (see the header of the `.disabled` file).
+
+### Known differences (accepted by the lead)
+
+* **gzip of JSON on the alias** (`algolab.me`, after step 7): the landing block turns `gzip` on for the whole server, so JSON of the
+  transitional API alias is compressed too. Harmless, removed with the alias on day 30.
+* **`proxy_pass` without URI on `landing.stage`** (and the alias): the path goes to the upstream as received and is not normalised
+  by nginx, exactly as on production. Not exploitable here: the upstreams are our own APIs behind their own routing.
+* **Tokens in `error_log` on a 502** (deploy windows): nginx writes the request line of a failed upstream to `error_log`, and that
+  line is not masked by the access-log maps. Short windows during deploys; keep `error_log` out of shared channels.
+* **`/.well-known/*` on the landing answers 404** (the `^~ /.` rule), except ACME on port 80 handled in `staging.conf`. A future
+  `security.txt` needs its own explicit `location = /.well-known/security.txt` line before that rule.
+* **Stage `/landing/`** on `stage.algolab.me` still goes to the old container `algo-preview-landing`; it is removed together with
+  the old landing on day 7 after step 7 (for stage the same change).
+* **Redacted logs:** `$prod_safe_uri` / `$preview_safe_uri` mask `/d|e|invite|diagnostic|set-password/<code>`,
+  `/api/v1/auth/password-links/<token>`, `/api/v1/(auth|internal)/diagnostic/<code>`, `/api/v1/auth/invite/<code>`,
+  `/api/v1/exams/by-code/<code>[/…]` and `…/session-status/<id>`. The alias log of the landing uses the same map.
+
 ## Release identity and verification
 
 Every application deployment carries three **non-secret**, runtime-only values:

@@ -118,6 +118,30 @@ jobs:
             -v "$PWD/alias-log:/var/log/nginx-alias" \
             nginx:1.27-alpine nginx -t
 
+      - name: nginx -t of the pre-step-7 config WITHOUT the old landing container must fail
+        run: |
+          # Why the container algo-staging-landing is removed only on day 7 (K3 round 2): the config that a rollback of step 7
+          # restores names it in `upstream landing`. Without the container nginx does not start (`host not found`), and a restart
+          # of the shared nginx takes production down. This step keeps that order written down: if someone makes the old config
+          # independent of the container, or removes the upstream earlier, the expectation below changes on purpose.
+          mkdir -p certs
+          HOSTS=""
+          for c in frontend auth diagnostic exam content; do
+            HOSTS="$HOSTS --add-host algo-staging-$c:127.0.0.1 --add-host algo-preview-$c:127.0.0.1"
+          done
+          set +e
+          # shellcheck disable=SC2086
+          out=$(docker run --rm $HOSTS \
+            -v "$PWD/nginx/conf.d/staging.conf:/etc/nginx/conf.d/default.conf:ro" \
+            -v "$PWD/nginx/conf.d/preview.conf:/etc/nginx/conf.d/preview.conf:ro" \
+            -v "$PWD/certs:/etc/letsencrypt/live/algolab.me:ro" \
+            nginx:1.27-alpine nginx -t 2>&1)
+          rc=$?
+          set -e
+          echo "$out" | tail -3
+          if [ "$rc" -eq 0 ]; then echo 'expected nginx -t to fail without algo-staging-landing' >&2; exit 1; fi
+          echo "$out" | grep -q 'host not found in upstream "algo-staging-landing' || { echo 'failed for another reason' >&2; exit 1; }
+
   runtime-contract:
     name: Keep internal callback contract explicit
     runs-on: ubuntu-latest

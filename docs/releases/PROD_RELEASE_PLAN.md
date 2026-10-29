@@ -42,21 +42,22 @@
    - добавить `MIN_ITEMS=12`, `MIN_SECTION_COVERAGE=5`. `CLASSIFICATION_*` не нужны: compose прода их не пробрасывает, а дефолты кода 20 / 0,40 / 0,90 совпадают с stage. Проверено на репетиции;
    - выставить `MAX_ITEMS=42` и `WARMUP_ITEMS=5`;
    - `AZURE_DEEPSEEK_*` и `VERTEX_*` на проде отсутствуют. Сейчас отчёты идут через Gemini; поведение не меняется, это отдельный пункт N06;
-   - проверить `CORS_ORIGINS=https://algolab.me`.
+   - проверить `CORS_ORIGINS`: до шага 7 K3 остаётся прежний, после него только продукт `https://app.algolab.me`; `https://algolab.me` (лендинг) туда не добавлять никогда;
+   - K3: `NEXT_PUBLIC_*_API_URL` пустые, `FRONTEND_SITE_URL=https://algolab.me` (см. `compose/README.md`, раздел Domains).
    - Бэкап файла — до правки.
 4. **Compose прода.**
    - Path-checkout `compose/docker-compose.staging.yml` из CEO в `~/algo/algo-infrastructure`. Остальное не трогать.
    - Проверка: `docker compose -f compose/docker-compose.staging.yml -p algo-staging --env-file ../.env.staging config -q`.
 
 ## Этап 2. Сервисы, не зависящие от банка 🔒
-Выкладка = `git push origin CEO:main` в репозитории, затем ожидание CI. После каждого шага проверить: revision label = SHA, healthy, algolab.me = 200.
+Выкладка = `git push origin CEO:main` в репозитории, затем ожидание CI. После каждого шага проверить: revision label = SHA, healthy, `app.algolab.me/api/version` = SHA (до шага 7 K3 продукт отвечает и на `algolab.me`).
 1. **auth-service.**
 2. **diagnostic-service.**
    - Миграция `009` применится при старте.
    - Сразу после этого: `docker exec algo-staging-diagnostic python -m scripts.backfill_task_snapshots` (dry-run), затем `--execute`.
    - Снимки берутся из СТАРОГО банка, который ещё на месте. На репетиции получилось 47 из 47, ошибок 0.
 3. **exam-service.**
-4. **algo-front.** Сборка для `main` берёт `NEXT_PUBLIC_*` из `.env.staging`, то есть `https://algolab.me`.
+4. **algo-front.** Сборка для `main` берёт `NEXT_PUBLIC_*` из `.env.staging`: с K3 все три пустые (адрес API = адрес страницы); адрес лендинга — `FRONTEND_SITE_URL`. Продукт на проде живёт на `app.algolab.me`; колбэки платёжек — только на `app.algolab.me/api/v1/…`.
 
 ## Этап 3. Замена банка задач (окно работ) 🔒
 0. **Перед заменой:**

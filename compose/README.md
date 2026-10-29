@@ -9,8 +9,8 @@ in git anywhere.
 
 | File | Environment | Domain |
 |---|---|---|
-| `docker-compose.staging.yml` | **Production** — the live site | `algolab.me` |
-| `docker-compose.preview.yml` | Staging / pre-prod testing | `stage.algolab.me` |
+| `docker-compose.staging.yml` | **Production** — the live site | product `app.algolab.me`, landing `algolab.me` (see «Domains» below) |
+| `docker-compose.preview.yml` | Staging / pre-prod testing | product `stage.algolab.me`, landing `landing.stage.algolab.me` |
 | `docker-compose.local.yml` | Local development | `localhost` |
 
 > **Naming note.** `docker-compose.staging.yml` and the `algo-staging-*`
@@ -65,10 +65,44 @@ docker compose -f algo-infrastructure/compose/docker-compose.staging.yml \
   -p algo-staging --env-file .env.staging config -q
 ```
 
-Use `algolab.me` in `CORS_ORIGINS` and all `NEXT_PUBLIC_*_API_URL` values for
-production; use only `stage.algolab.me` for preview. The Azure endpoint must
+`NEXT_PUBLIC_AUTH_API_URL`, `NEXT_PUBLIC_EXAM_API_URL` and `NEXT_PUBLIC_DIAG_API_URL` stay **empty** in both server env
+files (K3 P1): the frontend then calls the origin the page was opened from, so one image serves every domain. The
+frontend takes the address of the landing from the runtime variable `FRONTEND_SITE_URL` (passed to the container as
+`SITE_URL`); there is no `NEXT_PUBLIC_SITE_URL`. `CORS_ORIGINS` names only the product origin (`app.algolab.me`,
+`stage.algolab.me`) and **never `https://algolab.me`** (the landing). The Azure endpoint must
 be a complete Azure chat-completions URL for the configured deployment. Do not
 paste keys into terminal output or CI logs.
+
+## Domains (K3)
+
+| Name | What it serves | Where it is defined |
+|---|---|---|
+| `app.algolab.me` | **the product** (frontend + all APIs except the console's) | `nginx/conf.d/staging.conf` (production stack) |
+| `algolab.me`, `www` | today: the product; from K3 step 7: the **landing** (static), `/api/v1/public/` -> auth, 30-day API alias, everything else -> 302 to `app.` | `staging.conf` now; `staging-apex-landing.conf.disabled` is the prepared replacement |
+| `console.algolab.me` | «Панель ALGO» (static) + `/api/v1/platform/` | `staging.conf` |
+| `stage.algolab.me` | the product on stage (the mirror of `app.`) | `preview.conf` |
+| `landing.stage.algolab.me` | the landing on stage (the mirror of `algolab.me`), everything else -> 302 to `stage.algolab.me` | `preview.conf` |
+
+* **Landing statics** are written in place by `algo-landing/deploy/deploy_landing.sh` to `~/algo/landing/{stage,prod}`
+  and mounted read-only into `algo-staging-nginx` (`/usr/share/nginx/landing-{stage,prod}`). Never rename or recreate
+  these folders: the bind mount would stay on the old inode and nginx would answer 404 until restarted. Create both
+  folders before the first `up` (otherwise Docker creates them owned by root).
+* **Payment callbacks and any other webhook go only to `https://app.algolab.me/api/v1/…`** (stage: `stage.algolab.me`),
+  **never to `algolab.me`** (K3 I11): after step 7 that host is the landing and keeps only a temporary alias of the old API.
+* **Env values (server files, not in git):**
+
+  | Variable | `.env.preview` | `.env.staging` now | `.env.staging` after step 7 |
+  |---|---|---|---|
+  | `FRONTEND_SITE_URL` | `https://landing.stage.algolab.me` | `https://algolab.me` | `https://algolab.me` |
+  | `SUPPORT_EMAIL` | optional | optional | optional |
+  | `NEXT_PUBLIC_*_API_URL` (3) | empty | empty | empty |
+
+  Addresses for auth-service (`FRONTEND_URL`, `DIAGNOSTIC_BASE_URL`, `SITE_URL`, `CONSOLE_URL`) are in `.env.example`:
+  `FRONTEND_URL=https://app.algolab.me` and `DIAGNOSTIC_BASE_URL=https://app.algolab.me/d` from step 7 (stage: `stage.algolab.me`).
+* **Step 7 (algolab.me becomes the landing)** is one change, described in the header of
+  `nginx/conf.d/staging-apex-landing.conf.disabled` (how to enable and how to roll back). CI rehearses it on every run
+  (job «nginx», step «step 7 rehearsal»).
+* Both stacks' env files must contain `FRONTEND_SITE_URL`: compose refuses to start the frontend without it.
 
 ## Release identity and verification
 
@@ -105,7 +139,7 @@ docker exec algo-staging-diagnostic curl -fsS http://localhost:8002/version
 The deployment job also stores `release-manifest.txt` as a CI artifact with the
 service, source SHA/ref, container image ID and deployment time. For frontend,
 the same non-secret identity can be viewed at
-`https://algolab.me/api/version` (or the preview domain).
+`https://app.algolab.me/api/version` (stage: `https://stage.algolab.me/api/version`; until K3 step 7 the product still answers on `algolab.me` too).
 
 ### Rollback rule
 

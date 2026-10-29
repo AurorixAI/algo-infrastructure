@@ -13,8 +13,13 @@ nginx (`algo-staging-nginx`) общий для stage и prod: любой deploy 
    `up -d --no-build --no-deps <svc>`, `nginx -t && reload`, проверки health/revision/200.
 3. Сервисы выкатывать по одному, дожидаясь зелёного job. Compose берётся из
    `~/algo/algo-infrastructure/compose/docker-compose.preview.yml`, секреты из `~/algo/.env.preview`.
-4. NEXT_PUBLIC_* для frontend подставляются из `.env.preview` (все три = `https://stage.algolab.me`)
-   как build args; CI ничего не передаёт сам. Для `main` те же args берутся из `.env.staging` (`https://algolab.me`).
+4. `NEXT_PUBLIC_*_API_URL` для frontend (три) в `.env.preview` и `.env.staging` **пустые** (K3 P1: адрес API = адрес открытой
+   страницы, один образ на любом домене). Адрес лендинга frontend берёт из runtime-переменной `FRONTEND_SITE_URL`
+   (в контейнер идёт как `SITE_URL`): stage `https://landing.stage.algolab.me`, prod `https://algolab.me`.
+5. Адреса stage (K3): продукт `stage.algolab.me`, лендинг `landing.stage.algolab.me` (статика `~/algo/landing/stage`,
+   выкладка `algo-landing/deploy/deploy_landing.sh stage`). Продукт на prod — `app.algolab.me`; колбэки платёжных систем и
+   любые вебхуки — только на `https://app.algolab.me/api/v1/…` (stage: `stage.algolab.me`), никогда на `algolab.me`.
+   Проверка выкладки frontend — `GET <продукт>/api/version`, не «200 на лендинге».
 
 ## Разовая подготовка сервера (до первого CI-деплоя на stage)
 

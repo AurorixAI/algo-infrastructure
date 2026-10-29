@@ -396,11 +396,12 @@ services:
       context: ../../algo-front
       dockerfile: Dockerfile
       args:
-        # These are baked into the Next.js bundle at build time.
+        # Baked into the Next.js bundle at build time. K3 P1: EMPTY = the origin the page was opened from, so one
+        # image serves any domain (prod / stage / app.). Keep these three empty in the server .env files.
         # For staging, point to the same host the user accesses (via Nginx path).
-        NEXT_PUBLIC_AUTH_API_URL: ${NEXT_PUBLIC_AUTH_API_URL:?NEXT_PUBLIC_AUTH_API_URL is required}
-        NEXT_PUBLIC_EXAM_API_URL: ${NEXT_PUBLIC_EXAM_API_URL:?NEXT_PUBLIC_EXAM_API_URL is required}
-        NEXT_PUBLIC_DIAG_API_URL: ${NEXT_PUBLIC_DIAG_API_URL:?NEXT_PUBLIC_DIAG_API_URL is required}
+        NEXT_PUBLIC_AUTH_API_URL: ${NEXT_PUBLIC_AUTH_API_URL:-}
+        NEXT_PUBLIC_EXAM_API_URL: ${NEXT_PUBLIC_EXAM_API_URL:-}
+        NEXT_PUBLIC_DIAG_API_URL: ${NEXT_PUBLIC_DIAG_API_URL:-}
     container_name: algo-staging-frontend
     logging: *default-logging
     environment:
@@ -411,6 +412,11 @@ services:
       - RELEASE_SHA=${RELEASE_SHA:-unknown}
       - RELEASE_REF=${RELEASE_REF:-unknown}
       - RELEASED_AT=${RELEASED_AT:-unknown}
+      # K3 P2: public address of the landing (the «Нет доступа? Запросить демо» link and the old /request-demo, /register
+      # links go there). RUNTIME variable, not NEXT_PUBLIC_*: one image on every domain. Named FRONTEND_SITE_URL in the
+      # env file so it cannot be confused with SITE_URL of auth-service (the two may differ in future).
+      - SITE_URL=${FRONTEND_SITE_URL:?FRONTEND_SITE_URL is required (public landing address, e.g. https://algolab.me)}
+      - SUPPORT_EMAIL=${SUPPORT_EMAIL:-}
     depends_on:
       auth-service:
         condition: service_healthy
@@ -466,6 +472,14 @@ services:
       - ../../console/stage:/usr/share/nginx/console-stage:ro
       # Telegram Mini App demo (tg.algolab.me), static build copied in place.
       - ../../tma/prod:/usr/share/nginx/tma:ro
+      # Landing static builds (K3 L9/I7), written IN PLACE by algo-landing/deploy/deploy_landing.sh (rsync). Never rename
+      # these folders: nginx would stay on the old deleted inode. `stage` is served by landing.stage.algolab.me (preview.conf);
+      # `prod` is mounted ahead of step 7 and is used only by staging-apex-landing.conf (disabled until then).
+      - ../../landing/stage:/usr/share/nginx/landing-stage:ro
+      - ../../landing/prod:/usr/share/nginx/landing-prod:ro
+      # Counter of the 30-day API alias on algolab.me (K3 I4): written by nginx, kept outside the container so a recreate
+      # does not lose the evidence for «0 hits for a week». Used only after step 7 (staging-apex-landing.conf).
+      - ../../nginx-alias-log:/var/log/nginx-alias
     depends_on:
       - frontend
       - auth-service

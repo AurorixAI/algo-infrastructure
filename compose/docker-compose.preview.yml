@@ -408,11 +408,12 @@ services:
       context: ../../preview-src/algo-front
       dockerfile: Dockerfile
       args:
-        # These are baked into the Next.js bundle at build time.
+        # Baked into the Next.js bundle at build time. K3 P1: EMPTY = the origin the page was opened from, so one
+        # image serves any domain (prod / stage / app.). Keep these three empty in the server .env files.
         # For staging, point to the same host the user accesses (via Nginx path).
-        NEXT_PUBLIC_AUTH_API_URL: ${NEXT_PUBLIC_AUTH_API_URL:?NEXT_PUBLIC_AUTH_API_URL is required}
-        NEXT_PUBLIC_EXAM_API_URL: ${NEXT_PUBLIC_EXAM_API_URL:?NEXT_PUBLIC_EXAM_API_URL is required}
-        NEXT_PUBLIC_DIAG_API_URL: ${NEXT_PUBLIC_DIAG_API_URL:?NEXT_PUBLIC_DIAG_API_URL is required}
+        NEXT_PUBLIC_AUTH_API_URL: ${NEXT_PUBLIC_AUTH_API_URL:-}
+        NEXT_PUBLIC_EXAM_API_URL: ${NEXT_PUBLIC_EXAM_API_URL:-}
+        NEXT_PUBLIC_DIAG_API_URL: ${NEXT_PUBLIC_DIAG_API_URL:-}
     container_name: algo-preview-frontend
     logging: *default-logging
     environment:
@@ -423,6 +424,11 @@ services:
       - RELEASE_SHA=${RELEASE_SHA:-unknown}
       - RELEASE_REF=${RELEASE_REF:-unknown}
       - RELEASED_AT=${RELEASED_AT:-unknown}
+      # K3 P2: public address of the landing (the «Нет доступа? Запросить демо» link and the old /request-demo, /register
+      # links go there). RUNTIME variable, not NEXT_PUBLIC_*: one image on every domain. Named FRONTEND_SITE_URL in the
+      # env file so it cannot be confused with SITE_URL of auth-service (the two may differ in future).
+      - SITE_URL=${FRONTEND_SITE_URL:?FRONTEND_SITE_URL is required (public landing address, e.g. https://algolab.me)}
+      - SUPPORT_EMAIL=${SUPPORT_EMAIL:-}
     depends_on:
       auth-service:
         condition: service_healthy

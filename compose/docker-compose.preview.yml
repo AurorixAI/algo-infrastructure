@@ -202,14 +202,18 @@ services:
     logging: *default-logging
     environment:
       - CONSOLE_HOSTS=console.stage.algolab.me
-      - CONSOLE_URL=https://console.stage.algolab.me
+      - CONSOLE_URL=${CONSOLE_URL:?CONSOLE_URL is required}
       - ADMIN_NOTIFICATION_EMAIL=${ADMIN_NOTIFICATION_EMAIL:-}
       - SMTP_FROM_NAME=ALGO
-      - SITE_URL=https://stage.algolab.me
+      - SITE_URL=${SITE_URL:?SITE_URL is required}
       - SELF_REGISTRATION_CLOSED=true
       - AUTO_APPROVE_ORGANIZATIONS=false
-      - FRONTEND_URL=https://stage.algolab.me
-      - DIAGNOSTIC_BASE_URL=https://stage.algolab.me/d
+      - FRONTEND_URL=${FRONTEND_URL:?FRONTEND_URL is required}
+      - DIAGNOSTIC_BASE_URL=${DIAGNOSTIC_BASE_URL:?DIAGNOSTIC_BASE_URL is required}
+      - REQUIRE_DIAGNOSTIC_BASE_URL=true
+      - REQUIRE_DISTINCT_SITE_HOSTS=${REQUIRE_DISTINCT_SITE_HOSTS:-false}
+      - TURNSTILE_SECRET_KEY=${TURNSTILE_SECRET_KEY:-}
+      - TURNSTILE_HOSTNAMES=${TURNSTILE_HOSTNAMES:-}
       - DATABASE_URL=postgresql+psycopg2://algo:${POSTGRES_PASSWORD:?required}@auth-db:5432/algo_auth
       - REDIS_URL=redis://auth-redis:6379/0
       - APP_ENV=staging

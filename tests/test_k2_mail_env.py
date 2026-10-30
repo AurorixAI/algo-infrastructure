@@ -43,9 +43,12 @@ class MailEnvTests(unittest.TestCase):
             self.assertEqual(env["MAIL_ALLOWLIST"], "${MAIL_ALLOWLIST:-}")
             self.assertEqual(env["JWT_REFRESH_TTL_DAYS"], "${JWT_REFRESH_TTL_DAYS:-14}")
 
-    def test_the_stage_has_no_smtp_keys_in_compose_literals(self):
-        # the stage is guarded by the allow-list AND by having no SMTP host of its own: a literal SMTP_HOST here would make the allow-list the only guard
-        self.assertNotIn("SMTP_HOST", self.stage)
+    def test_the_stage_mails_only_behind_the_stage_guard(self):
+        # lead 30.10: the stage walk needs real letters (owner's Zoho), so the stage has the prod relay; then the guard is the stage mode
+        # (auth sends only to MAIL_ALLOWLIST, nothing while it is empty; checked twice in auth, send() and deliver())
+        if "SMTP_HOST" in self.stage:
+            self.assertEqual(self.stage.get("MAIL_STAGE_MODE"), "true")
+            self.assertEqual(self.stage.get("MAIL_ALLOWLIST"), "${MAIL_ALLOWLIST:-}")
 
     def test_the_env_example_documents_the_four_variables(self):
         text = (COMPOSE / ".env.example").read_text(encoding="utf-8")

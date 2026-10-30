@@ -215,6 +215,13 @@ services:
       - SITE_URL=${SITE_URL:?SITE_URL is required}
       - SELF_REGISTRATION_CLOSED=true
       - AUTO_APPROVE_ORGANIZATIONS=false
+      # K2-1 stage walk: the stage had no SMTP lines at all (every letter silently "not sent"); same relay as prod, keys in .env.preview,
+      # MAIL_ALLOWLIST + MAIL_STAGE_MODE above keep it to our own addresses.
+      - SMTP_HOST=smtp-relay.brevo.com
+      - SMTP_PORT=587
+      - SMTP_USER=${SMTP_USER:-}
+      - SMTP_PASSWORD=${SMTP_PASSWORD:-}
+      - SMTP_FROM=noreply@algolab.me
       - FRONTEND_URL=${FRONTEND_URL:?FRONTEND_URL is required}
       - DIAGNOSTIC_BASE_URL=${DIAGNOSTIC_BASE_URL:?DIAGNOSTIC_BASE_URL is required}
       - REQUIRE_DIAGNOSTIC_BASE_URL=true

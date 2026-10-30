@@ -41,6 +41,10 @@ jobs:
       FRONTEND_URL: https://app.ci.invalid
       DIAGNOSTIC_BASE_URL: https://app.ci.invalid/d
       CORS_ORIGINS: '["https://ci.invalid"]'
+      # K2-1: letters (Reply-To, stage allow-list) and the length of a remembered session
+      MAIL_REPLY_TO: support@ci.invalid
+      MAIL_ALLOWLIST: ci@ci.invalid
+      JWT_REFRESH_TTL_DAYS: "14"
     steps:
       - uses: actions/checkout@v4
 

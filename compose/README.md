@@ -102,6 +102,10 @@ paste keys into terminal output or CI logs.
 * **Step 7 (algolab.me becomes the landing)** is one change, described in the header of
   `nginx/conf.d/staging-apex-landing.conf.disabled` (how to enable and how to roll back). CI rehearses it on every run
   (job «nginx», step «step 7 rehearsal»).
+* **Letters and sessions (K2-1):** `MAIL_REPLY_TO` (the support alias, the same on both stacks), `MAIL_ALLOWLIST` (prod: empty = no restriction; stage: the
+  only addresses/domains that get a letter, nobody while empty), `MAIL_STAGE_MODE=true` (written in `docker-compose.preview.yml`, never on prod),
+  `JWT_REFRESH_TTL_DAYS=14`. All have defaults in compose; `tests/test_k2_mail_env.py` (CI, job «scripts») fails when the stacks drift apart.
+  Before the first walk-through of the stage put the mailboxes of the checkers and the `ADMIN_NOTIFICATION_EMAIL` address into `MAIL_ALLOWLIST` of `.env.preview`.
 * Both stacks' env files must contain `FRONTEND_SITE_URL`: compose refuses to start the frontend without it.
 
 ### Rollout order of the variables (K3 steps 4–5), as explicit items

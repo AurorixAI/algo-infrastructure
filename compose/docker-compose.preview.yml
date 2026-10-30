@@ -428,6 +428,8 @@ services:
         NEXT_PUBLIC_AUTH_API_URL: ${NEXT_PUBLIC_AUTH_API_URL:-}
         NEXT_PUBLIC_EXAM_API_URL: ${NEXT_PUBLIC_EXAM_API_URL:-}
         NEXT_PUBLIC_DIAG_API_URL: ${NEXT_PUBLIC_DIAG_API_URL:-}
+        # K2-2 (B): the PUBLIC site key of the Cloudflare Turnstile widget of «Забыли пароль» (the same widget serves app. and stage.; the secret is TURNSTILE_SECRET_KEY of auth).
+        NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${NEXT_PUBLIC_TURNSTILE_SITE_KEY:-}
     container_name: algo-preview-frontend
     logging: *default-logging
     environment:

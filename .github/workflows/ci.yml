@@ -34,6 +34,8 @@ jobs:
       NEXT_PUBLIC_AUTH_API_URL: ""
       NEXT_PUBLIC_EXAM_API_URL: ""
       NEXT_PUBLIC_DIAG_API_URL: ""
+      # K2-2 (B): the public Turnstile site key of the front (the Cloudflare TEST key «always passes»)
+      NEXT_PUBLIC_TURNSTILE_SITE_KEY: 1x00000000000000000000AA
       # K3 A9 / P2: public addresses are required in the env files (no literals in compose)
       CONSOLE_URL: https://console.ci.invalid
       SITE_URL: https://ci.invalid

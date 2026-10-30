@@ -104,7 +104,7 @@ paste keys into terminal output or CI logs.
   (job «nginx», step «step 7 rehearsal»).
 * **Letters and sessions (K2-1):** `MAIL_REPLY_TO` (the support alias, the same on both stacks), `MAIL_ALLOWLIST` (prod: empty = no restriction; stage: the
   only addresses/domains that get a letter, nobody while empty), `MAIL_STAGE_MODE=true` (written in `docker-compose.preview.yml`, never on prod),
-  `JWT_REFRESH_TTL_DAYS=14`. All have defaults in compose; `tests/test_k2_mail_env.py` (CI, job «scripts») fails when the stacks drift apart.
+  `JWT_REFRESH_TTL_DAYS=14`. K2-2: `NEXT_PUBLIC_TURNSTILE_SITE_KEY` (build arg of the front, the public key of the «Забыли пароль» widget) and `TURNSTILE_HOSTNAMES` of auth must name `app.` and `stage.`. All have defaults in compose; `tests/test_k2_mail_env.py` (CI, job «scripts») fails when the stacks drift apart.
   Before the first walk-through of the stage put the mailboxes of the checkers and the `ADMIN_NOTIFICATION_EMAIL` address into `MAIL_ALLOWLIST` of `.env.preview`.
 * Both stacks' env files must contain `FRONTEND_SITE_URL`: compose refuses to start the frontend without it.
 

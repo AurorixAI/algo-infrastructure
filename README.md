@@ -147,11 +147,10 @@ git clone https://github.com/your-org/algo.git /opt/algo && cd /opt/algo
 docker network create algo-network
 docker network create algo-back_algo-network
 
-# 5. Запустить сервисы
-cd auth-service      && docker compose -f docker-compose.prod.yml up -d && cd ..
-cd diagnostic-service && docker compose -f docker-compose.prod.yml up -d && cd ..
-cd exam-service      && docker compose -f docker-compose.prod.yml up -d && cd ..
-cd content-service   && docker compose -f docker-compose.prod.yml up -d && cd ..
+# 5. Запустить сервисы — одним стеком из этого репозитория (compose-файлов в репозиториях сервисов нет:
+#    деплой идёт ТОЛЬКО отсюда; соответствие файлов и окружений, имена проектов и env-файлы — в compose/README.md)
+cd ~/algo
+docker compose -f algo-infrastructure/compose/docker-compose.staging.yml -p algo-staging --env-file .env.staging up -d
 
 # 6. Запустить Nginx + Certbot
 cd nginx && docker compose -f docker-compose.nginx.yml up -d

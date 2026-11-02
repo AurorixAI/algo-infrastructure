@@ -147,7 +147,7 @@ git clone https://github.com/your-org/algo.git /opt/algo && cd /opt/algo
 docker network create algo-network
 docker network create algo-back_algo-network
 
-# 5. Запустить сервисы — одним стеком из этого репозитория (compose-файлов в репозиториях сервисов нет:
+# 5. Запустить сервисы — одним стеком из этого репозитория (compose-файлы, которые ещё лежат в репозиториях сервисов, для деплоя не используются:
 #    деплой идёт ТОЛЬКО отсюда; соответствие файлов и окружений, имена проектов и env-файлы — в compose/README.md)
 cd ~/algo
 docker compose -f algo-infrastructure/compose/docker-compose.staging.yml -p algo-staging --env-file .env.staging up -d

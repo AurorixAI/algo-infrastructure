@@ -83,6 +83,7 @@
 
 ## Откат
 - **Код:** CI ставит `algolab-rollback-algo-staging-<svc>:<sha>` на прежний образ; переключить образ этим тегом.
+- **exam после волны D (018 удаляет `task_templates`):** откат на образ до волны D — сначала `alembic downgrade 017_exam_pass_threshold` (воссоздаёт пустую таблицу), иначе старый образ не стартует (`src/main.py` проверяет ревизию).
 - **diagnostic:** сначала `alembic downgrade 008_durable_auth_sync`, затем старый образ. Если банк уже заменён — восстановить дамп diagnostic-БД из этапа 3, п. 0.
 - **Банк.** `pg_restore --clean` здесь НЕ работает: в старом дампе нет таблиц аттестаций, а их внешние ключи держат `tasks_master_pkey`. Порядок:
   1. Остановить diag, exam и content.
